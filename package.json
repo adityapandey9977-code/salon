@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:services": "turbo run build --filter=@salon-spa-saas/api-gateway --filter=\"@salon-spa-saas/*-service\"",
     "start": "node scripts/start-services.mjs",
     "start:services": "node scripts/start-services.mjs",
     "dev": "turbo run dev --concurrency=20",

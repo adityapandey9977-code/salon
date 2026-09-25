@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Services to start
+// Microservices list with their internal loopback ports
 const services = [
   { name: 'identity-service', path: 'apps/services/identity-service', port: 6001 },
   { name: 'organization-service', path: 'apps/services/organization-service', port: 6002 },
@@ -35,7 +35,8 @@ function startProcess(name, dir, scriptFile, envOverrides = {}) {
 
   const isTs = entryPoint.endsWith('.ts');
   const runner = isTs ? 'npx' : 'node';
-  const args = isTs ? ['tsx', entryPoint] : [entryPoint];
+  // Use memory limit flag --max-old-space-size=48 on node to prevent Render 512MB OOM
+  const args = isTs ? ['tsx', entryPoint] : ['--max-old-space-size=48', entryPoint];
 
   console.log(`[START] Launching ${name.padEnd(24)} on port ${(envOverrides.PORT || 'default')}...`);
 
@@ -51,34 +52,47 @@ function startProcess(name, dir, scriptFile, envOverrides = {}) {
   });
 
   proc.on('exit', (code, signal) => {
-    console.warn(`[EXIT] ${name} exited with code ${code} (${signal})`);
+    if (code !== 0 && code !== null) {
+      console.warn(`[EXIT] ${name} exited with code ${code} (${signal})`);
+    }
   });
 
   runningProcesses.push({ name, proc });
   return proc;
 }
 
-// 1. Start all 12 Microservices
-for (const svc of services) {
-  const distFile = path.join(svc.path, 'dist', 'main.js');
-  const srcFile = path.join(svc.path, 'src', 'main.ts');
-  const entry = fs.existsSync(distFile) ? 'dist/main.js' : 'src/main.ts';
+// 1. Start API Gateway FIRST so Render port scanner immediately detects open port
+const gwDist = 'apps/api-gateway/dist/main.js';
+const gwSrc = 'apps/api-gateway/src/main.ts';
+const gwEntry = fs.existsSync(path.resolve(process.cwd(), gwDist)) ? 'dist/main.js' : 'src/main.ts';
 
-  startProcess(svc.name, svc.path, entry, {
-    PORT: String(svc.port),
-  });
+const gatewayPort = process.env.PORT || '3030';
+console.log(`[GATEWAY] Launching Unified API Gateway immediately on port ${gatewayPort}...`);
+startProcess('api-gateway', 'apps/api-gateway', gwEntry, {
+  PORT: gatewayPort,
+});
+
+// 2. Launch the 12 Microservices staggered (150ms apart) to prevent CPU/memory spikes
+async function startAllServices() {
+  for (let i = 0; i < services.length; i++) {
+    const svc = services[i];
+    const distFile = path.join(svc.path, 'dist', 'main.js');
+    const srcFile = path.join(svc.path, 'src', 'main.ts');
+    const entry = fs.existsSync(distFile) ? 'dist/main.js' : 'src/main.ts';
+
+    startProcess(svc.name, svc.path, entry, {
+      PORT: String(svc.port),
+    });
+
+    // Small stagger delay between spawning services
+    await new Promise((resolve) => setTimeout(resolve, 150));
+  }
+  console.log('\n[READY] All microservices and API Gateway launched successfully.\n');
 }
 
-// 2. Start API Gateway (with a 3-second delay to let downstream services initialize)
-setTimeout(() => {
-  const gwDist = 'apps/api-gateway/dist/main.js';
-  const gwEntry = fs.existsSync(path.resolve(process.cwd(), gwDist)) ? 'dist/main.js' : 'src/main.ts';
-
-  console.log('\n[GATEWAY] Launching Unified API Gateway...');
-  startProcess('api-gateway', 'apps/api-gateway', gwEntry, {
-    PORT: process.env.PORT || '3030',
-  });
-}, 3000);
+startAllServices().catch((err) => {
+  console.error('[ERROR] Failed starting services:', err);
+});
 
 // Graceful shutdown handling
 function handleShutdown(signal) {
