@@ -1,4 +1,4 @@
-import { spawn, execSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -21,19 +21,6 @@ const services = [
 console.log('===================================================================');
 console.log('     🚀 STARTING DIGIFLEX SALON & SPA MICROSERVICES SUITE         ');
 console.log('===================================================================\n');
-
-// Ensure dist/ exists; if not, build services on the fly
-const gwDist = path.resolve(process.cwd(), 'apps/api-gateway/dist/main.js');
-if (!fs.existsSync(gwDist)) {
-  console.log('[BUILD] dist/main.js not found. Compiling backend services on the fly...');
-  try {
-    execSync('pnpm build:services', { stdio: 'inherit' });
-    console.log('[BUILD] Backend services compiled successfully.\n');
-  } catch (err) {
-    console.warn('[BUILD] Pre-compile failed, falling back to source runtime:', err.message);
-  }
-}
-
 const runningProcesses = [];
 
 function startProcess(name, dir, scriptFile, envOverrides = {}) {
@@ -76,6 +63,7 @@ function startProcess(name, dir, scriptFile, envOverrides = {}) {
 }
 
 // 1. Start API Gateway FIRST so Render port scanner immediately detects open port
+const gwDist = path.resolve(process.cwd(), 'apps/api-gateway/dist/main.js');
 const gwEntry = fs.existsSync(gwDist) ? 'dist/main.js' : 'src/main.ts';
 const gatewayPort = process.env.PORT || '3030';
 

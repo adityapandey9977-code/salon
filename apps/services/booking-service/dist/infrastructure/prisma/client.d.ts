@@ -1,0 +1,6 @@
+import { PrismaClient } from './generated-client';
+declare global {
+    var __bookingPrisma: PrismaClient | undefined;
+}
+export declare const prisma: PrismaClient<import("./generated-client").Prisma.PrismaClientOptions, never, import("./generated-client/runtime/library").DefaultArgs>;
+//# sourceMappingURL=client.d.ts.map

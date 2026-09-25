@@ -1,0 +1,82 @@
+import { AuditRepository } from '../../infrastructure/repositories/audit.repository';
+export class AuditService {
+    static async queryAuditLogs(filter) {
+        return AuditRepository.queryAuditLogs({
+            tenantId: filter.tenantId,
+            branchId: filter.branchId,
+            entityType: filter.entityType,
+            entityId: filter.entityId,
+            actorUserId: filter.actorUserId,
+            action: filter.action,
+            category: filter.category,
+            search: filter.search,
+            startDate: filter.startDate ? new Date(filter.startDate) : undefined,
+            endDate: filter.endDate ? new Date(filter.endDate) : undefined,
+            limit: filter.limit,
+            offset: filter.offset,
+        });
+    }
+    static async createAuditLog(data) {
+        const eventId = `evt-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        const correlationId = `cor-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        const metadata = {
+            ...(typeof data.metadataJson === 'object' && data.metadataJson !== null
+                ? data.metadataJson
+                : {}),
+        };
+        if (data.actorName)
+            metadata.actorName = data.actorName;
+        if (data.category)
+            metadata.category = data.category;
+        return AuditRepository.createAuditEvent({
+            eventId,
+            action: data.action,
+            entityType: data.entityType || 'Platform',
+            entityId: data.entityId || `ent-${Date.now()}`,
+            tenantId: data.tenantId,
+            branchId: data.branchId,
+            franchiseId: data.franchiseId,
+            principalType: data.principalType || 'SUPER_ADMIN',
+            actorUserId: data.actorUserId,
+            correlationId,
+            beforeJson: data.beforeJson,
+            afterJson: data.afterJson,
+            metadataJson: metadata,
+            ipAddress: data.ipAddress,
+            userAgent: data.userAgent,
+            occurredAt: data.occurredAt ? new Date(data.occurredAt) : new Date(),
+        });
+    }
+    static async exportAuditLogs(filter) {
+        const { items, total } = await this.queryAuditLogs({
+            ...filter,
+            limit: 5000,
+        });
+        const csvRows = [
+            ['Trace ID', 'Timestamp', 'Event Action', 'Entity Type', 'Target Resource / Entity ID', 'Actor / Operator', 'IP Address'],
+            ...items.map((it) => {
+                const meta = (it.metadataJson && typeof it.metadataJson === 'object' ? it.metadataJson : {});
+                const actor = meta.actorName || it.actorUserId || it.principalType || 'system_root';
+                const target = meta.targetName || it.entityId || 'Platform';
+                return [
+                    it.id,
+                    it.occurredAt.toISOString(),
+                    it.action,
+                    it.entityType,
+                    `"${target}"`,
+                    `"${actor}"`,
+                    it.ipAddress || '127.0.0.1',
+                ];
+            }),
+        ];
+        const csvContent = csvRows.map((r) => r.join(',')).join('\n');
+        return {
+            exportUrl: `https://storage.digiflexsalon.internal/audit_exports/audit_export_${Date.now()}.csv`,
+            recordsCount: items.length,
+            totalCount: total,
+            exportedAt: new Date().toISOString(),
+            csvData: csvContent,
+            items,
+        };
+    }
+}

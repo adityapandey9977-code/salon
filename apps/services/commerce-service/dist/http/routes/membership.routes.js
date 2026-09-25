@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { authMiddleware } from '../../middleware/auth.middleware';
+import { requirePermission } from '../../middleware/permission.middleware';
+import { membershipController } from '../controllers/membership.controller';
+const router = Router();
+router.use(authMiddleware);
+router.get('/', requirePermission('membership.read'), membershipController.listMemberships.bind(membershipController));
+router.post('/', requirePermission('membership.manage'), membershipController.createMembership.bind(membershipController));
+router.put('/:id', requirePermission('membership.manage'), membershipController.updateMembership.bind(membershipController));
+router.get('/benefits', requirePermission('membership.read'), membershipController.listBenefits.bind(membershipController));
+router.post('/benefits', requirePermission('membership.manage'), membershipController.createBenefit.bind(membershipController));
+router.get('/renewals', requirePermission('membership.read'), membershipController.listRenewals.bind(membershipController));
+router.post('/renewals/:id/renew', requirePermission('membership.manage'), membershipController.renewMembership.bind(membershipController));
+router.get('/:id', requirePermission('membership.read'), membershipController.getMembershipById.bind(membershipController));
+export const membershipRoutes = router;

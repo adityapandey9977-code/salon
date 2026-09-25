@@ -1,5 +1,8 @@
 node_modules
-dist
+apps/web/dist
+apps/customer-mobile/dist
+apps/api/
+apps/customer-web/
 build
 .env
 .env.local
