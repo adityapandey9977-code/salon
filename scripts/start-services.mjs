@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -22,6 +22,18 @@ console.log('===================================================================
 console.log('     🚀 STARTING DIGIFLEX SALON & SPA MICROSERVICES SUITE         ');
 console.log('===================================================================\n');
 
+// Ensure dist/ exists; if not, build services on the fly
+const gwDist = path.resolve(process.cwd(), 'apps/api-gateway/dist/main.js');
+if (!fs.existsSync(gwDist)) {
+  console.log('[BUILD] dist/main.js not found. Compiling backend services on the fly...');
+  try {
+    execSync('pnpm build:services', { stdio: 'inherit' });
+    console.log('[BUILD] Backend services compiled successfully.\n');
+  } catch (err) {
+    console.warn('[BUILD] Pre-compile failed, falling back to source runtime:', err.message);
+  }
+}
+
 const runningProcesses = [];
 
 function startProcess(name, dir, scriptFile, envOverrides = {}) {
@@ -40,11 +52,13 @@ function startProcess(name, dir, scriptFile, envOverrides = {}) {
 
   console.log(`[START] Launching ${name.padEnd(24)} on port ${(envOverrides.PORT || 'default')}...`);
 
+  // On Linux POSIX, shell must be false when passing args array so execve is called directly
+  const useShell = isTs && process.platform === 'win32';
   const proc = spawn(runner, args, {
     cwd: fullDir,
     env,
     stdio: 'inherit',
-    shell: true,
+    shell: useShell,
   });
 
   proc.on('error', (err) => {
@@ -62,17 +76,17 @@ function startProcess(name, dir, scriptFile, envOverrides = {}) {
 }
 
 // 1. Start API Gateway FIRST so Render port scanner immediately detects open port
-const gwDist = 'apps/api-gateway/dist/main.js';
-const gwSrc = 'apps/api-gateway/src/main.ts';
-const gwEntry = fs.existsSync(path.resolve(process.cwd(), gwDist)) ? 'dist/main.js' : 'src/main.ts';
-
+const gwEntry = fs.existsSync(gwDist) ? 'dist/main.js' : 'src/main.ts';
 const gatewayPort = process.env.PORT || '3030';
+
 console.log(`[GATEWAY] Launching Unified API Gateway immediately on port ${gatewayPort}...`);
 startProcess('api-gateway', 'apps/api-gateway', gwEntry, {
   PORT: gatewayPort,
+  API_GATEWAY_PORT: gatewayPort,
+  GATEWAY_PORT: gatewayPort,
 });
 
-// 2. Launch the 12 Microservices staggered (150ms apart) to prevent CPU/memory spikes
+// 2. Launch the 12 Microservices staggered (100ms apart) to prevent CPU/memory spikes
 async function startAllServices() {
   for (let i = 0; i < services.length; i++) {
     const svc = services[i];
@@ -85,7 +99,7 @@ async function startAllServices() {
     });
 
     // Small stagger delay between spawning services
-    await new Promise((resolve) => setTimeout(resolve, 150));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
   console.log('\n[READY] All microservices and API Gateway launched successfully.\n');
 }

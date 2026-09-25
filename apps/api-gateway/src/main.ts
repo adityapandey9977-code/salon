@@ -8,9 +8,9 @@ const logger = createLogger('api-gateway');
 async function bootstrap() {
   const app = buildGatewayApp();
 
-  const server = app.listen(gatewayConfig.PORT, () => {
-    logger.info(`API Gateway active on http://localhost:${gatewayConfig.PORT}`);
-    logger.info(`Unified Gateway Swagger UI: http://localhost:${gatewayConfig.PORT}/docs`);
+  const server = app.listen(gatewayConfig.PORT, '0.0.0.0', () => {
+    logger.info(`API Gateway active on http://0.0.0.0:${gatewayConfig.PORT}`);
+    logger.info(`Unified Gateway Swagger UI: http://0.0.0.0:${gatewayConfig.PORT}/docs`);
     logger.info(`Proxying Auth & Identity traffic to: ${gatewayConfig.IDENTITY_SERVICE_URL}`);
   });
 

@@ -33,7 +33,7 @@ export type GatewayConfig = z.infer<typeof GatewayConfigSchema>;
 
 export const gatewayConfig: GatewayConfig = GatewayConfigSchema.parse({
   NODE_ENV: process.env.NODE_ENV,
-  PORT: process.env.API_GATEWAY_PORT || process.env.GATEWAY_PORT || process.env.PORT || 3030,
+  PORT: process.env.PORT || process.env.API_GATEWAY_PORT || process.env.GATEWAY_PORT || 3030,
   REDIS_URL: process.env.REDIS_URL,
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
   SERVICE_INTERNAL_SECRET: process.env.SERVICE_INTERNAL_SECRET,
