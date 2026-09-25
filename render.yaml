@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: ohio
-    buildCommand: pnpm install --frozen-lockfile && pnpm prisma:generate
+    buildCommand: touch .env && pnpm install --prod=false && pnpm prisma:generate
     startCommand: node scripts/start-services.mjs
     envVars:
       - key: NODE_VERSION

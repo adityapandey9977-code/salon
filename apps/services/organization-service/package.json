@@ -10,11 +10,11 @@
     "lint": "biome check src",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "prisma:generate": "node --env-file=../../../.env node_modules/prisma/build/index.js generate",
-    "prisma:migrate": "node --env-file=../../../.env node_modules/prisma/build/index.js migrate dev",
-    "prisma:push": "node --env-file=../../../.env node_modules/prisma/build/index.js db push",
-    "db:push": "node --env-file=../../../.env node_modules/prisma/build/index.js db push",
-    "db:migrate": "node --env-file=../../../.env node_modules/prisma/build/index.js migrate dev",
+    "prisma:generate": "node node_modules/prisma/build/index.js generate",
+    "prisma:migrate": "node node_modules/prisma/build/index.js migrate dev",
+    "prisma:push": "node node_modules/prisma/build/index.js db push",
+    "db:push": "node node_modules/prisma/build/index.js db push",
+    "db:migrate": "node node_modules/prisma/build/index.js migrate dev",
     "prisma:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
