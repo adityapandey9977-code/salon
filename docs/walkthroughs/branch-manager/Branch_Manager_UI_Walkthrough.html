@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Branch Manager Panel - UI Architecture & PRD Traceability Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Inter', sans-serif;
+        font-size: 8pt;
+        color: #8A7E9A;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1F152B;
+      background-color: #FFFFFF;
+      font-size: 9.5pt;
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .header-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background-color: rgba(90, 46, 166, 0.08);
+      border: 1px solid rgba(90, 46, 166, 0.25);
+      border-radius: 9999px;
+      color: #5A2EA6;
+      font-size: 7.5pt;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20pt;
+      font-weight: 700;
+      color: #1F152B;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 9.5pt;
+      color: #6C5E7E;
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    .executive-summary {
+      background-color: #FAF8FD;
+      border-left: 4px solid #5A2EA6;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+
+    .executive-summary h3 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin-bottom: 6px;
+    }
+
+    .executive-summary p {
+      font-size: 9pt;
+      color: #4A3E5C;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1F152B;
+      border-bottom: 1.5px solid rgba(90, 46, 166, 0.15);
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 14px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid rgba(90, 46, 166, 0.15);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(90, 46, 166, 0.03);
+    }
+
+    .card-title {
+      font-size: 8.5pt;
+      font-weight: 700;
+      color: #5A2EA6;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .card-desc {
+      font-size: 8.5pt;
+      color: #4A3E5C;
+      line-height: 1.4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      margin-bottom: 24px;
+      font-size: 8.5pt;
+    }
+
+    th {
+      background-color: #F6F0FF;
+      color: #3B1C75;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 7.5pt;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #E4D8F5;
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid #ECE4F7;
+      vertical-align: top;
+      color: #2D223B;
+      line-height: 1.45;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #FCFAFE;
+    }
+
+    .req-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: rgba(90, 46, 166, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 7pt;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tag-purple {
+      background: #EDE6FA;
+      color: #5A2EA6;
+    }
+
+    .tag-emerald {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .rationale-block {
+      background: #FCFAFE;
+      border: 1px solid #EBE3F7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .rationale-title {
+      font-weight: 700;
+      font-size: 9pt;
+      color: #5A2EA6;
+      margin-bottom: 4px;
+    }
+
+    .rationale-text {
+      font-size: 8.5pt;
+      color: #4A3E5C;
+      line-height: 1.45;
+    }
+
+    .footer-note {
+      font-size: 7.5pt;
+      color: #8A7E9A;
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid #ECE4F7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-badge">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+  <h1>Branch Manager Workspace</h1>
+  <div class="subtitle">Top Navigation Architecture, Front-Desk Operations & Comprehensive PRD Specification</div>
+
+  <div class="executive-summary">
+    <h3>Executive Summary</h3>
+    <p>
+      The <strong>Branch Manager / Reception</strong> panel has been updated from a fixed vertical sidebar to a unified <strong>Top Navbar Layout</strong> identical in sophistication to the Admin panel. Designed strictly around the dedicated single-branch manager persona (Indrapuri Flagship Outlet · Bhopal), the architecture consolidates brand identity and assigned location into a clean single column, streams front-desk diary operations into focused dropdowns, and eliminates unnecessary multi-branch selector bloat while maintaining 100% PRD compliance and design system reusability.
+    </p>
+  </div>
+
+  <h2 class="section-title">1. UI Architecture & Page Flow</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">Brand & Location (Single Column)</div>
+      <div class="card-desc">
+        Combines <strong>Atelier Brand Logo</strong> with the active assigned outlet <strong>Indrapuri Flagship · Bhopal</strong>. Eliminates cross-location selector dropdowns since branch managers are strictly scoped to one branch.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Front Desk Operations</div>
+      <div class="card-desc">
+        Integrated dropdown covering <strong>Appointments Diary</strong> (multi-service calendar), <strong>Walk-ins & Live Queue</strong> (wait time tokens), and <strong>Client Health & Allergy Cautions</strong> (ammonia/latex alerts).
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Clients & Team Management</div>
+      <div class="card-desc">
+        Direct access to <strong>Client CRM & Household Profiles</strong>, <strong>Stylist Rosters & Attendance</strong>, and <strong>Branch Service Menu</strong> with treatment buffers and station allocations.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">POS, Commercial & Shift Closure</div>
+      <div class="card-desc">
+        Covers <strong>New POS Checkout</strong> (instant cart billing), <strong>Invoices & Receipts</strong>, <strong>Retail Shelf Stock</strong> (low-stock alerts), and <strong>Daily Cashier Shift Closure</strong> with drawer cash balancing.
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">2. PRD Traceability Matrix (Branch Manager Role)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">PRD Requirement ID</th>
+        <th style="width: 25%;">Feature Name</th>
+        <th style="width: 32%;">Product Requirement Description</th>
+        <th style="width: 28%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="req-code">SALO-PR-019</span><br><span class="req-code">SALO-PR-023</span></td>
+        <td><strong>Appointments Diary & Multi-Service Slots</strong></td>
+        <td>Provide multi-stylist booking diary, service duration buffers, and conflict-free chair scheduling.</td>
+        <td><code>AppointmentsPage.tsx</code> with timeline diary view, slot status chips, and booking modal integration.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-022</span></td>
+        <td><strong>Walk-in & Queue Management</strong></td>
+        <td>Real-time walk-in token generation, automated wait time estimates, and chairside check-in.</td>
+        <td><code>WalkinsPage.tsx</code> with live queue tracker, estimated wait calculation, and service assignment.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-015</span><br><span class="req-code">P-01</span></td>
+        <td><strong>Client Allergy & Safety Alerts</strong></td>
+        <td>Proactive alerts for client contraindications, patch tests, and ammonia/latex sensitivities before service.</td>
+        <td>Allergy banner in <code>DashboardPage.tsx</code> and notification dropdown with amber high-priority badge.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-042</span><br><span class="req-code">SALO-PR-043</span></td>
+        <td><strong>Service & Retail POS Billing</strong></td>
+        <td>Fast point-of-sale checkout, GST invoicing, split payment modes (Cash, UPI, Card), and receipt generation.</td>
+        <td><code>CreateInvoicePage.tsx</code> and <code>PaymentsPage.tsx</code> with tax calculations and payment modals.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-052</span><br><span class="req-code">SALO-PR-053</span></td>
+        <td><strong>Daily Cashier Shift Closure</strong></td>
+        <td>End-of-shift cash drawer balancing, digital vs cash reconciliation, and supervisor shift locking.</td>
+        <td>Cashier closure lock action in <code>DashboardPage.tsx</code> and shift audit reports in <code>PaymentsPage.tsx</code>.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-065</span><br><span class="req-code">SALO-PR-066</span></td>
+        <td><strong>Stylist Rosters & Attendance</strong></td>
+        <td>Real-time chairside station occupancy, active shift check-ins, stylist targets, and productivity.</td>
+        <td>Resource & Chair Roster panel in <code>DashboardPage.tsx</code> and roster views in <code>TeamPage.tsx</code>.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-076</span><br><span class="req-code">SALO-PR-086</span></td>
+        <td><strong>Retail Stock & Reorder Alerts</strong></td>
+        <td>Track branch retail shelf SKUs, consumable dispensary stocks, and threshold reorder warnings.</td>
+        <td><code>RetailPage.tsx</code> with low-stock badge indicators in top navbar and notification center.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PR-111</span><br><span class="req-code">SALO-PR-112</span></td>
+        <td><strong>Branch Revenue & Occupancy Reports</strong></td>
+        <td>Real-time daily collection metrics, chair occupancy percentage, no-show rates, and cashier summaries.</td>
+        <td><code>MetricCard</code> telemetry grid in <code>DashboardPage.tsx</code> and detailed analytics in <code>ReportsPage.tsx</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">3. Business Rationale & Why We Implemented Everything</h2>
+  
+  <div class="rationale-block">
+    <div class="rationale-title">Why Single Column Brand & Branch Identifier?</div>
+    <div class="rationale-text">
+      Unlike the Brand Owner / Super Director (who oversees 5+ multi-city branches), a Branch General Manager is dedicated to their specific physical outlet (Indrapuri Flagship). Showing a multi-location switcher dropdown was not only redundant but confused operational accountability. Unifying the brand and outlet into a single left-hand column frees up over 200px of header space and guarantees that shift badges, notifications, and profile controls never overflow on standard 1366px laptop screens.
+    </div>
+  </div>
+
+  <div class="rationale-block">
+    <div class="rationale-title">Why Top Navbar over Sidebar for Front Desk?</div>
+    <div class="rationale-text">
+      Front desk receptionists and branch managers spend 90% of their time looking at wide horizontal data structures: multi-column appointment diaries, live walk-in queue tables, and complex POS line items. A vertical sidebar permanently consumed 260px of screen real estate. The sticky Top Navbar maximizes the horizontal grid for appointment scheduling and allows rapid tab switching without vertical distraction.
+    </div>
+  </div>
+
+  <div class="rationale-block">
+    <div class="rationale-title">Why Prominent Shift & Cashier Lock Controls?</div>
+    <div class="rationale-text">
+      In salon operations, cash leakage and untracked drawer discrepancies during shift handovers are major operational risks. Having the active shift badge (<code>Shift #01 Active</code>) directly in the header and an instant <code>Close Cashier Shift</code> action guarantees that drawer reconciliation happens on schedule before shift handover.
+    </div>
+  </div>
+
+  <div class="footer-note">
+    DIGIFLEX SALON & SPA SAAS · CONFIDENTIAL PRD & UI ARCHITECTURE WALKTHROUGH · VERSION 1.0
+  </div>
+
+</body>
+</html>

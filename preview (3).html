@@ -1,0 +1,2628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier — Salon Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ───────────────────────────────────── */
+:root {
+  --paper:   #f6f5f0;
+  --white:   #ffffff;
+  --ink:     #1a2320;
+  --soft:    #66726d;
+  --muted:   #9ba5a0;
+  --line:    #e4e5de;
+  --pine:    #1d3f39;
+  --pine2:   #295049;
+  --pine3:   #3d6b61;
+  --clay:    #c85f3c;
+  --clay-s:  #f3e0d8;
+  --sage:    #d8e9dc;
+  --gold:    #e8b84b;
+  --shadow-sm: 0 1px 3px rgba(26,35,32,.06), 0 4px 12px rgba(26,35,32,.04);
+  --shadow:    0 2px 8px rgba(26,35,32,.07), 0 8px 24px rgba(26,35,32,.05);
+  --r: 10px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 14px/1.5 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; cursor: pointer; }
+svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── Layout ───────────────────────────────────── */
+.app   { display: flex; min-height: 100vh; }
+.main  { flex: 1; min-width: 0; padding: 0 40px 48px; }
+.content { max-width: 1380px; margin: 0 auto; }
+
+/* ── Sidebar ──────────────────────────────────── */
+.side {
+  width: 248px;
+  flex-shrink: 0;
+  background: var(--pine);
+  color: #cdd9d4;
+  padding: 28px 12px 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.identity {
+  padding: 0 10px 28px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.monogram {
+  width: 34px; height: 34px;
+  border: 1.5px solid rgba(255,255,255,.18);
+  border-radius: 8px;
+  display: grid; place-items: center;
+  font: italic 20px 'DM Serif Display', serif;
+  color: #f4e7ce;
+  background: rgba(255,255,255,.05);
+}
+.identity b   { font: 600 15px 'Inter'; color: #fff; letter-spacing: .1px; }
+.identity small { display: block; text-transform: uppercase; letter-spacing: 1.6px; font-size: 9px; color: #8aada1; margin-top: 1px; }
+
+.location {
+  border-top: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 14px 10px;
+  margin: 0 0 20px;
+  display: flex; gap: 10px; align-items: center;
+}
+.location .pin {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.09);
+  display: grid; place-items: center;
+  color: #d8c89a;
+  flex-shrink: 0;
+}
+.location strong { display: block; color: #f0f3ee; font-size: 12px; font-weight: 600; }
+.location span   { font-size: 10px; color: #8aada1; }
+.location .switch { margin-left: auto; color: #7d9e94; font-size: 16px; line-height: 1; }
+
+.nav-group { margin-bottom: 22px; }
+.nav-group label {
+  display: block;
+  padding: 0 10px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: #5c7e73;
+}
+.nav button {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%; border: 0; background: transparent;
+  color: #a8c0b8; text-align: left;
+  padding: 9px 10px;
+  border-radius: 7px;
+  font-size: 13px; font-weight: 500;
+  margin: 1px 0;
+  transition: background .15s, color .15s;
+}
+.nav button svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav button:hover   { background: rgba(255,255,255,.07); color: #e2eeea; }
+.nav button.active  {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  font-weight: 600;
+}
+.nav .count {
+  margin-left: auto;
+  font-size: 10px; font-weight: 600;
+  background: rgba(255,255,255,.12);
+  color: #d0e2da;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+.nav .active .count { background: rgba(255,255,255,.22); color: #fff; }
+
+.side-bottom { margin-top: auto; }
+.support {
+  padding: 14px 10px 12px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 11px;
+  color: #7a9e94;
+}
+.support b   { display: block; color: #e8eeeb; font-size: 12px; margin-bottom: 3px; font-weight: 600; }
+.support a   { color: #e2b94a; text-decoration: none; font-weight: 600; font-size: 11px; }
+.support a:hover { text-decoration: underline; }
+.profile {
+  display: flex; gap: 9px; align-items: center;
+  padding: 14px 10px 4px;
+}
+.profile .avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #b56e53; color: #fff;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.profile strong { display: block; color: #fff; font-size: 12px; font-weight: 600; }
+.profile span   { font-size: 10px; color: #7a9e94; }
+.dots { margin-left: auto; color: #6a8e84; font-size: 18px; line-height: 1; }
+
+/* ── Top bar ──────────────────────────────────── */
+.top {
+  height: 72px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.breadcrumbs { font-size: 12px; color: #7a8680; }
+.breadcrumbs b { color: #38524b; font-weight: 600; }
+.topright { display: flex; gap: 12px; align-items: center; }
+.search {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 13px 7px 34px;
+  width: 220px; font-size: 13px;
+  color: var(--ink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239ba5a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 11px center;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.search:focus { border-color: var(--pine3); box-shadow: 0 0 0 3px rgba(61,107,97,.12); }
+.search::placeholder { color: var(--muted); }
+.date-btn {
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 8px;
+  padding: 7px 13px;
+  color: #485850; font-size: 12px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+  transition: border-color .15s;
+}
+.date-btn svg { width: 14px; height: 14px; color: var(--muted); }
+.date-btn:hover { border-color: var(--pine3); }
+.bell {
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 8px;
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  color: var(--soft);
+  position: relative;
+  transition: border-color .15s;
+}
+.bell:hover { border-color: var(--pine3); }
+.bell::after {
+  content: '';
+  position: absolute; right: 7px; top: 7px;
+  background: var(--clay); width: 6px; height: 6px;
+  border-radius: 50%; border: 1.5px solid var(--white);
+}
+
+/* ── Welcome / Page Header ──────────────────────────────────── */
+.page-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 36px 0 28px;
+}
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 10px; font-weight: 600;
+  color: var(--muted); letter-spacing: 1.4px;
+}
+.page-header h1 {
+  font: normal 34px/1.05 'DM Serif Display', serif;
+  margin: 6px 0 4px; letter-spacing: -.4px; color: var(--ink);
+}
+.page-header p { margin: 0; color: var(--soft); font-size: 13px; }
+
+.new-booking, .primary-btn {
+  border: 0;
+  background: var(--clay); color: #fff;
+  padding: 11px 20px;
+  border-radius: 8px;
+  font-weight: 600; font-size: 13px;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 2px 8px rgba(200,95,60,.25), 0 1px 2px rgba(200,95,60,.3);
+  transition: background .15s, box-shadow .15s, transform .1s;
+  white-space: nowrap;
+}
+.new-booking:hover, .primary-btn:hover {
+  background: #b55133;
+  box-shadow: 0 4px 14px rgba(200,95,60,.3);
+  transform: translateY(-1px);
+}
+.new-booking:active, .primary-btn:active { transform: translateY(0); }
+.new-booking svg, .primary-btn svg { width: 16px; height: 16px; }
+
+/* ── Stats row ────────────────────────────────── */
+.stats {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--white);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.stat {
+  padding: 22px 24px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.stat:last-child { border-right: 0; }
+.stat-label {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat .number {
+  font: normal 30px/1 'DM Serif Display', serif;
+  margin-top: 14px; letter-spacing: -.5px;
+}
+.stat .meta { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.positive { color: #2e7d5e; font-weight: 600; }
+
+/* Revenue stat */
+.stat.revenue {
+  background: var(--pine);
+  color: #e4eeea;
+  overflow: hidden;
+}
+.stat.revenue::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, rgba(232,184,75,.13) 0%, transparent 60%);
+  pointer-events: none;
+}
+.stat.revenue::after {
+  content: '';
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.07);
+  right: -60px; bottom: -80px;
+  pointer-events: none;
+}
+.revenue .stat-label { color: rgba(255,255,255,.45); }
+.revenue .meta       { color: rgba(255,255,255,.45); }
+.revenue .number     { color: #fff; font-size: 33px; }
+.revenue .positive   { color: #a8dfc5; }
+.revenue-arrow {
+  position: absolute; right: 20px; top: 20px;
+  width: 28px; height: 28px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 6px;
+  display: grid; place-items: center;
+  color: rgba(255,255,255,.5);
+}
+.revenue-arrow svg { width: 13px; height: 13px; }
+
+/* ── Panel grid ───────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, .8fr);
+  gap: 20px;
+  margin-top: 22px;
+}
+.panel {
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.panel-head {
+  padding: 20px 24px 14px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  border-bottom: 1px solid var(--line);
+}
+.panel-title { font: normal 20px 'DM Serif Display', serif; color: var(--ink); }
+.panel-sub   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.text-action {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--pine2);
+  font-size: 11px; font-weight: 600;
+  padding: 5px 10px; border-radius: 6px;
+  letter-spacing: .3px;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.text-action:hover { background: var(--sage); border-color: #b3cbbd; }
+
+/* ── Schedule / Tables ────────────────────────── */
+.schedule { padding: 0 24px 12px; }
+.slot {
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  min-height: 62px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+  gap: 12px;
+  transition: background .12s;
+  margin: 0 -24px;
+  padding: 0 24px;
+}
+.slot:last-of-type { border-bottom: 0; }
+.slot:hover { background: #fafaf8; }
+
+.slot time {
+  font-size: 11px; font-weight: 600;
+  color: var(--soft); line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+.slot time small { font-weight: 400; color: var(--muted); }
+
+.guest { display: flex; align-items: center; gap: 10px; }
+.guest .face {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+  letter-spacing: .3px;
+}
+.face.one   { background: #8d6355; }
+.face.two   { background: #4a647a; }
+.face.three { background: #a86878; }
+.face.four  { background: #7a6850; }
+.face.five  { background: #6b8e7f; }
+.face.six   { background: #a07b5c; }
+
+.guest b    { display: block; font-size: 13px; font-weight: 600; }
+.guest span { font-size: 11px; color: var(--muted); margin-top: 1px; display: block; }
+
+.badge {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.confirmed { background: #e4f0e9; color: #23694d; }
+.arrived   { background: #fef3d4; color: #8a6012; }
+.in-service {
+  background: var(--clay-s);
+  color: #a04028;
+  display: flex; align-items: center; gap: 5px;
+}
+.in-service::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--clay);
+  animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .5; transform: scale(.7); }
+}
+
+.timeline-footer {
+  border: 0; background: none;
+  width: 100%;
+  padding: 14px 0 4px;
+  color: var(--pine2);
+  font-weight: 600; font-size: 12px;
+  text-align: left;
+  display: flex; align-items: center; gap: 7px;
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+  transition: color .15s;
+}
+.timeline-footer:hover { color: var(--pine); }
+.timeline-footer svg { width: 14px; height: 14px; }
+
+/* ── Performance panel ────────────────────────── */
+.performance { padding-bottom: 20px; }
+.performance-body { padding: 16px 24px 0; }
+.value-line {
+  display: flex; align-items: baseline; gap: 10px;
+}
+.value-line b {
+  font: normal 30px 'DM Serif Display', serif;
+  letter-spacing: -.5px;
+}
+.value-line .up {
+  font-size: 11px; font-weight: 600;
+  color: #2e7d5e;
+  background: #e4f0e9; padding: 3px 7px; border-radius: 4px;
+}
+.chart {
+  height: 120px; margin-top: 14px;
+  position: relative;
+  border-bottom: 1px solid var(--line);
+}
+.chart svg { width: 100%; height: 100%; overflow: visible; }
+.chart .area { fill: url(#chartGrad); stroke: none; }
+.chart .line { stroke: var(--pine2); stroke-width: 2; fill: none; }
+.chart .point { fill: var(--clay); stroke: #fff; stroke-width: 3; }
+.chart-labels {
+  display: flex; justify-content: space-between;
+  color: var(--muted); font-size: 10px; font-weight: 500;
+  margin-top: 8px;
+  padding: 0 2px;
+}
+.legend {
+  display: flex; gap: 16px;
+  margin: 16px 24px 0;
+  font-size: 11px; color: var(--soft);
+}
+.legend span { display: flex; align-items: center; gap: 6px; }
+.legend i {
+  display: inline-block; width: 8px; height: 8px; border-radius: 2px;
+  background: var(--pine2); flex-shrink: 0;
+}
+.legend i.target { background: var(--line); }
+
+/* ── Attention section ────────────────────────── */
+.attention { margin-top: 20px; }
+.attention-wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+}
+
+.attention-list { padding: 8px 24px 16px; }
+.notice {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.notice:last-child { border-bottom: 0; }
+.notice-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: var(--sage); color: #2c6652;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.notice-icon svg { width: 16px; height: 16px; }
+.notice:nth-child(2) .notice-icon { background: var(--clay-s); color: #9a3d20; }
+.notice:nth-child(3) .notice-icon { background: #fef3d4; color: #7a5a0a; }
+.notice b    { font-size: 13px; font-weight: 600; display: block; }
+.notice span { font-size: 11px; color: var(--muted); margin-top: 2px; display: block; }
+.notice-action {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--pine2); font-size: 11px; font-weight: 600;
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.notice-action:hover { background: var(--sage); border-color: #b3cbbd; }
+
+/* ── Actions panel ────────────────────────────── */
+.actions { padding: 20px 24px; }
+.actions .panel-title { font: normal 20px 'DM Serif Display', serif; }
+.actions .panel-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+.action {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: left;
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 12px;
+  min-height: 74px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  transition: background .15s, border-color .15s, box-shadow .15s, transform .1s;
+}
+.action svg { color: var(--clay); }
+.action:hover {
+  background: #fff;
+  border-color: #baced4;
+  box-shadow: 0 2px 8px rgba(26,35,32,.07);
+  transform: translateY(-1px);
+}
+.action:active { transform: translateY(0); }
+
+/* ── Tables & Lists ───────────────────────────── */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th, .table td {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 13px;
+  border-bottom: 1px solid var(--line);
+}
+.table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  background: #fafaf8;
+}
+.table tbody tr:hover { background: #fafaf8; }
+.table .name { font-weight: 600; }
+.table .status { font-size: 10px; padding: 3px 9px; border-radius: 999px; font-weight: 700; }
+.table .action-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--pine2);
+  padding: 4px 11px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.table .action-btn:hover { background: var(--sage); }
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--soft);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.filter-btn.active {
+  background: var(--pine);
+  color: #fff;
+  border-color: var(--pine);
+}
+.filter-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* Cards grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+}
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.card h4 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+.card .meta { font-size: 12px; color: var(--muted); }
+.card .price { font: 600 17px 'DM Serif Display', serif; color: var(--pine); margin-top: 10px; }
+.card .pill {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 9px;
+  border-radius: 20px;
+  background: var(--sage);
+  color: #2c6652;
+  margin-top: 8px;
+}
+
+/* Team cards */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.staff-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+}
+.staff-card .avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.staff-card .info { flex: 1; }
+.staff-card .name { font-weight: 600; font-size: 15px; }
+.staff-card .role { font-size: 12px; color: var(--muted); }
+.staff-card .status { font-size: 11px; margin-top: 8px; }
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.status-online { background: #2e7d5e; }
+.status-busy { background: var(--clay); }
+
+/* Inventory */
+.stock-low { color: #c85f3c; font-weight: 600; }
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h3 { margin: 0; font: 600 18px 'Inter'; }
+.modal-body { padding: 24px; }
+.modal-body label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--soft); }
+.modal-body input, .modal-body select, .modal-body textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.modal-footer button {
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Toast */
+.toast {
+  position: fixed; right: 24px; bottom: 24px;
+  background: var(--pine); color: #e8f0ec;
+  padding: 11px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .18s, transform .18s;
+  pointer-events: none; z-index: 999;
+}
+.toast.show { opacity: 1; transform: none; }
+
+/* Responsive */
+@media (max-width: 1060px) {
+  .side { width: 64px; padding: 24px 8px; }
+  .identity { padding: 0 6px 24px; }
+  .identity b, .identity small,
+  .location div:not(.pin), .location .switch,
+  .nav-group label,
+  .nav .count,
+  .support, .profile div, .dots { display: none; }
+  .location { justify-content: center; padding: 10px 6px; }
+  .nav button { justify-content: center; padding: 10px; }
+  .nav button svg { width: 18px; height: 18px; }
+  .profile { justify-content: center; }
+  .main { padding-left: 28px; padding-right: 28px; }
+}
+@media (max-width: 720px) {
+  .side { display: none; }
+  .main { padding: 0 18px 32px; }
+  .top  { height: 60px; }
+  .search { display: none; }
+  .page-header  { padding: 24px 0 20px; }
+  .page-header h1 { font-size: 26px; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat  { border-bottom: 1px solid var(--line); }
+  .stat:nth-child(2) { border-right: 0; }
+  .grid, .attention-wrap { grid-template-columns: 1fr; gap: 14px; margin-top: 14px; }
+  .attention { margin-top: 14px; }
+  .new-booking span { display: none; }
+}
+
+/* Page content container */
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+
+/* Reports specific */
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.report-card {
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+
+/* ===== PRO DASHBOARD REDESIGN ===== */
+:root{
+  --shadow-xs:0 2px 8px rgba(0,0,0,.04);
+  --shadow-lg:0 20px 40px rgba(0,0,0,.08);
+}
+
+body{
+  background:
+    radial-gradient(circle at top right, rgba(232,184,75,.08), transparent 25%),
+    radial-gradient(circle at top left, rgba(41,80,73,.06), transparent 25%),
+    var(--paper);
+}
+
+.top{
+  position:sticky;
+  top:0;
+  z-index:100;
+  backdrop-filter:blur(16px);
+  background:rgba(246,245,240,.85);
+}
+
+.side{
+  box-shadow:12px 0 30px rgba(0,0,0,.12);
+}
+
+.monogram{
+  box-shadow:0 8px 20px rgba(232,184,75,.25);
+}
+
+.nav button{
+  border-radius:12px;
+}
+
+.nav button.active{
+  background:linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
+  position:relative;
+}
+
+.nav button.active::before{
+  content:'';
+  position:absolute;
+  left:-10px;
+  top:8px;
+  bottom:8px;
+  width:4px;
+  border-radius:999px;
+  background:#e8b84b;
+}
+
+.page-header h1{
+  background:linear-gradient(135deg,#1d3f39,#c85f3c);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.stats{
+  gap:16px;
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  overflow:visible;
+}
+
+.stat{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow-xs);
+  transition:.25s ease;
+}
+
+.stat:hover,
+.panel:hover,
+.card:hover,
+.staff-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-lg);
+}
+
+.revenue{
+  border:none !important;
+}
+
+.panel{
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.panel-head{
+  background:linear-gradient(to bottom,#ffffff,#fbfbfa);
+}
+
+.search{
+  width:340px;
+  border-radius:12px;
+}
+
+.new-booking,
+.primary-btn{
+  border-radius:14px;
+}
+
+.badge{
+  border-radius:999px;
+  padding:6px 12px;
+}
+
+.table{
+  overflow:hidden;
+}
+
+.table thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+
+.table tbody tr{
+  transition:.2s ease;
+}
+
+.table tbody tr:hover{
+  transform:scale(1.005);
+  box-shadow:inset 4px 0 0 var(--clay);
+}
+
+.action-btn{
+  border-radius:10px !important;
+}
+
+.action-grid{
+  gap:14px;
+}
+
+.action{
+  border-radius:16px;
+  min-height:90px;
+}
+
+.action svg{
+  width:22px;
+  height:22px;
+}
+
+.card,
+.staff-card,
+.report-card{
+  border-radius:18px;
+}
+
+.staff-card .avatar{
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.notice{
+  border-radius:12px;
+  padding:16px;
+}
+
+.notice:hover{
+  background:#fafaf8;
+}
+
+.slot{
+  border-radius:12px;
+  margin-bottom:8px;
+}
+
+.slot:hover{
+  background:#f5f7f6;
+}
+
+::-webkit-scrollbar{
+  width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#c4cdc8;
+  border-radius:999px;
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── Sidebar ───────────────────────────────── -->
+<aside class="side">
+  <div class="identity">
+    <div class="monogram">A</div>
+    <div><b>Atelier</b><small>Salon operations</small></div>
+  </div>
+
+  <div class="location">
+    <div class="pin">
+      <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.4"/></svg>
+    </div>
+    <div><strong>Blush &amp; Bloom</strong><span>Indrapuri · Bhopal</span></div>
+    <div class="switch">⌄</div>
+  </div>
+
+  <div class="nav-group">
+    <label>Today</label>
+    <nav class="nav">
+      <button class="active" data-page="overview" data-name="Today's desk">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Overview
+      </button>
+      <button data-page="appointments" data-name="Appointments">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>
+        Appointments<span class="count">32</span>
+      </button>
+      <button data-page="walkins" data-name="Walk-ins">
+        <svg viewBox="0 0 24 24"><path d="M4 12h14M14 6l6 6-6 6"/></svg>
+        Walk-ins
+      </button>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <label>Manage</label>
+    <nav class="nav">
+      <button data-page="customers" data-name="Customers">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21c.5-4 3-6 6-6s5.5 2 6 6M16 11c2.3.2 4 1.7 5 4"/></svg>
+        Customers
+      </button>
+      <button data-page="services" data-name="Services">
+        <svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg>
+        Services
+      </button>
+      <button data-page="team" data-name="Team">
+        <svg viewBox="0 0 24 24"><path d="M7 21v-2a5 5 0 0 1 10 0v2M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>
+        Team
+      </button>
+      <button data-page="retail" data-name="Retail & stock">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16v14H4zM8 7V4h8v3M4 12h16"/></svg>
+        Retail &amp; stock
+      </button>
+      <button data-page="payments" data-name="Payments">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 10h18M7 15h3"/></svg>
+        Payments
+      </button>
+    </nav>
+  </div>
+
+  <div class="nav-group">
+    <label>Insights</label>
+    <nav class="nav">
+      <button data-page="reports" data-name="Reports">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        Reports
+      </button>
+      <button data-page="settings" data-name="Settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.2 2.2-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-3.2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-2.2-2.2.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H5v-3.2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2.2-2.2.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V4h3.2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 2.2 2.2-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2V14h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        Settings
+      </button>
+    </nav>
+  </div>
+
+  <div class="side-bottom">
+    <div class="support">
+      <b>Need support?</b>
+      <a href="#" onclick="flash('Support chat opened'); return false">Speak with Atelier →</a>
+    </div>
+    <div class="profile">
+      <div class="avatar">AS</div>
+      <div><strong>Ananya Shah</strong><span>Branch manager</span></div>
+      <div class="dots">···</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Main ──────────────────────────────────── -->
+<main class="main">
+  <header class="top">
+    <div class="breadcrumbs"><b>Blush &amp; Bloom</b> &nbsp;/&nbsp; Indrapuri branch</div>
+    <div class="topright">
+      <input class="search" placeholder="Search clients, bookings, invoices…" oninput="handleGlobalSearch(this.value)">
+      <button class="bell" aria-label="Notifications" onclick="showNotifications()">
+        <svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+      </button>
+      <button class="date-btn">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>
+        Wed, 22 Jul
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- DYNAMIC PAGE CONTENT STARTS HERE -->
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="page active">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Wednesday, 22 July 2026</div>
+          <h1 id="page-title">The desk is looking good.</h1>
+          <p id="page-subtitle">32 appointments scheduled &nbsp;·&nbsp; 11 team members on the floor</p>
+        </div>
+        <button class="new-booking" onclick="openNewBookingModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>New appointment</span>
+        </button>
+      </section>
+
+      <!-- Stats -->
+      <section class="stats">
+        <article class="stat revenue">
+          <div class="revenue-arrow">
+            <svg viewBox="0 0 24 24"><path d="M5 19 19 5M9 5h10v10"/></svg>
+          </div>
+          <div class="stat-label">Collected today</div>
+          <div class="number">₹48,650</div>
+          <div class="meta"><span class="positive">↑ 12.5%</span> from Tuesday</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Appointments</div>
+          <div class="number">32 <span style="font:500 14px Inter;color:#b0bdb7">/ 41</span></div>
+          <div class="meta">9 slots still open</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Walk-ins</div>
+          <div class="number">06</div>
+          <div class="meta"><span class="positive">↑ 2</span> more than usual</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Outstanding</div>
+          <div class="number">₹6,240</div>
+          <div class="meta">Across 4 open invoices</div>
+        </article>
+      </section>
+
+      <!-- Panel grid -->
+      <section class="grid">
+        <!-- Schedule -->
+        <article class="panel">
+          <header class="panel-head">
+            <div>
+              <div class="panel-title">The next few hours</div>
+              <div class="panel-sub">Front desk schedule · Wednesday</div>
+            </div>
+            <button class="text-action" onclick="navigateTo('appointments')">Open calendar</button>
+          </header>
+          <div class="schedule">
+            <div class="slot">
+              <time>10:30<br><small>AM</small></time>
+              <div class="guest">
+                <div class="face one">PS</div>
+                <div><b>Priya Sharma</b><span>Hair spa · Neha · Chair 03</span></div>
+              </div>
+              <span class="badge confirmed">Confirmed</span>
+            </div>
+            <div class="slot">
+              <time>11:00<br><small>AM</small></time>
+              <div class="guest">
+                <div class="face two">MR</div>
+                <div><b>Meera Rao</b><span>Bridal consultation · Aditi · Room 01</span></div>
+              </div>
+              <span class="badge confirmed">Confirmed</span>
+            </div>
+            <div class="slot">
+              <time>11:30<br><small>AM</small></time>
+              <div class="guest">
+                <div class="face three">AK</div>
+                <div><b>Aarav Khanna</b><span>Haircut &amp; beard · Rohan · Chair 01</span></div>
+              </div>
+              <span class="badge arrived">Arrived</span>
+            </div>
+            <div class="slot">
+              <time>12:00<br><small>PM</small></time>
+              <div class="guest">
+                <div class="face four">SN</div>
+                <div><b>Sana Nair</b><span>Hydra facial · Simran · Room 02</span></div>
+              </div>
+              <span class="badge in-service">In service</span>
+            </div>
+            <button class="timeline-footer" onclick="navigateTo('appointments')">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>
+              See 28 more bookings today
+            </button>
+          </div>
+        </article>
+
+        <!-- Performance -->
+        <article class="panel performance">
+          <header class="panel-head">
+            <div>
+              <div class="panel-title">This week's pace</div>
+              <div class="panel-sub">Gross collection, Mon – Sun</div>
+            </div>
+            <button class="text-action" onclick="navigateTo('reports')">Report</button>
+          </header>
+          <div class="performance-body">
+            <div class="value-line">
+              <b>₹2,84,400</b>
+              <span class="up">↑ 18.2%</span>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 460 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stop-color="#295049" stop-opacity=".18"/>
+                    <stop offset="100%" stop-color="#295049" stop-opacity=".02"/>
+                  </linearGradient>
+                </defs>
+                <path class="area" d="M0,91 L76,70 L153,56 L230,76 L307,42 L384,25 L460,59 L460,120 L0,120Z"/>
+                <path class="line" d="M0,91 L76,70 L153,56 L230,76 L307,42 L384,25 L460,59"/>
+                <circle class="point" cx="384" cy="25" r="4.5"/>
+              </svg>
+            </div>
+            <div class="chart-labels">
+              <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+            </div>
+          </div>
+          <div class="legend">
+            <span><i></i> Collected</span>
+            <span><i class="target"></i> Target: ₹2.4L</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- Attention section -->
+      <section class="attention">
+        <div class="attention-wrap">
+          <article class="panel">
+            <header class="panel-head">
+              <div>
+                <div class="panel-title">A little attention needed</div>
+                <div class="panel-sub">Things that can affect today's operations</div>
+              </div>
+              <button class="text-action" onclick="navigateTo('retail')">View all</button>
+            </header>
+            <div class="attention-list">
+              <div class="notice">
+                <div class="notice-icon">
+                  <svg viewBox="0 0 24 24"><path d="M4 7h16v14H4zM8 7V4h8v3M4 12h16"/></svg>
+                </div>
+                <div>
+                  <b>3 retail products running low</b>
+                  <span>Hair colour and two consumables need a reorder</span>
+                </div>
+                <button class="notice-action" onclick="navigateTo('retail')">Review</button>
+              </div>
+              <div class="notice">
+                <div class="notice-icon">
+                  <svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.4 8.2 8 9 4.6-.8 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+                <div>
+                  <b>Five memberships expire this week</b>
+                  <span>Invite them to renew before their next visit</span>
+                </div>
+                <button class="notice-action" onclick="navigateTo('customers')">View</button>
+              </div>
+              <div class="notice">
+                <div class="notice-icon">
+                  <svg viewBox="0 0 24 24"><path d="M12 8v4l2.5 2.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"/></svg>
+                </div>
+                <div>
+                  <b>Two bookings await confirmation</b>
+                  <span>Both clients are scheduled for tomorrow morning</span>
+                </div>
+                <button class="notice-action" onclick="navigateTo('appointments')">Confirm</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="actions">
+              <div class="panel-title">Make something happen</div>
+              <div class="panel-sub">Common front-desk actions</div>
+              <div class="action-grid">
+                <button class="action" onclick="navigateTo('walkins')">
+                  <svg viewBox="0 0 24 24"><path d="M4 12h14M14 6l6 6-6 6"/></svg>
+                  Register walk-in
+                </button>
+                <button class="action" onclick="openAddClientModal()">
+                  <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21c.5-4 3-6 6-6s5.5 2 6 6"/></svg>
+                  Add new client
+                </button>
+                <button class="action" onclick="openCreateInvoiceModal()">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 10h18M7 15h3"/></svg>
+                  Create invoice
+                </button>
+                <button class="action" onclick="navigateTo('team')">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
+                  Check availability
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div id="appointments" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Wednesday, 22 July 2026</div>
+          <h1>Appointments</h1>
+          <p>32 scheduled today • 41 capacity</p>
+        </div>
+        <button class="new-booking" onclick="openNewBookingModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>New appointment</span>
+        </button>
+      </section>
+
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterAppointments('all', this)">All</button>
+        <button class="filter-btn" onclick="filterAppointments('confirmed', this)">Confirmed</button>
+        <button class="filter-btn" onclick="filterAppointments('arrived', this)">Arrived</button>
+        <button class="filter-btn" onclick="filterAppointments('inservice', this)">In Service</button>
+        <input type="text" class="filter-input" placeholder="Search client or service..." oninput="filterAppointmentsTable(this.value)">
+      </div>
+
+      <div class="panel">
+        <table class="table" id="appointments-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Client</th>
+              <th>Service</th>
+              <th>Stylist</th>
+              <th>Chair / Room</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-status="confirmed">
+              <td><b>10:30 AM</b></td>
+              <td class="name">Priya Sharma</td>
+              <td>Hair Spa (90 min)</td>
+              <td>Neha Kapoor</td>
+              <td>Chair 03</td>
+              <td><span class="badge confirmed">Confirmed</span></td>
+              <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'arrived')">Check-in</button></td>
+            </tr>
+            <tr data-status="confirmed">
+              <td><b>11:00 AM</b></td>
+              <td class="name">Meera Rao</td>
+              <td>Bridal Consultation</td>
+              <td>Aditi Malhotra</td>
+              <td>Room 01</td>
+              <td><span class="badge confirmed">Confirmed</span></td>
+              <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'arrived')">Check-in</button></td>
+            </tr>
+            <tr data-status="arrived">
+              <td><b>11:30 AM</b></td>
+              <td class="name">Aarav Khanna</td>
+              <td>Haircut + Beard</td>
+              <td>Rohan Mehra</td>
+              <td>Chair 01</td>
+              <td><span class="badge arrived">Arrived</span></td>
+              <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'inservice')">Start</button></td>
+            </tr>
+            <tr data-status="inservice">
+              <td><b>12:00 PM</b></td>
+              <td class="name">Sana Nair</td>
+              <td>Hydra Facial</td>
+              <td>Simran Kaur</td>
+              <td>Room 02</td>
+              <td><span class="badge in-service">In service</span></td>
+              <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'completed')">Complete</button></td>
+            </tr>
+            <tr data-status="confirmed">
+              <td><b>12:45 PM</b></td>
+              <td class="name">Kavya Patel</td>
+              <td>Manicure + Pedicure</td>
+              <td>Neha Kapoor</td>
+              <td>Chair 04</td>
+              <td><span class="badge confirmed">Confirmed</span></td>
+              <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'arrived')">Check-in</button></td>
+            </tr>
+            <tr data-status="arrived">
+              <td><b>01:15 PM</b></td>
+              <td class="name">Riya Sen</td>
+              <td>Balayage</td>
+              <td>Aditi Malhotra</td>
+              <td>Room 03</td>
+              <td><span class="badge arrived">Arrived</span></td>
+              <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'inservice')">Start</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WALK-INS -->
+    <div id="walkins" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Today • Walk-in Queue</div>
+          <h1>Walk-ins</h1>
+          <p>6 waiting • Average wait: 14 min</p>
+        </div>
+        <button class="new-booking" onclick="registerWalkin()">
+          <svg viewBox="0 0 24 24"><path d="M4 12h14M14 6l6 6-6 6"/></svg>
+          <span>Register walk-in</span>
+        </button>
+      </section>
+
+      <div class="panel">
+        <header class="panel-head">
+          <div>
+            <div class="panel-title">Current queue</div>
+            <div class="panel-sub">First come, first served</div>
+          </div>
+          <button class="text-action" onclick="clearQueue()">Clear queue</button>
+        </header>
+        
+        <div style="padding: 8px 0 18px;">
+          <div class="slot" style="margin:0 -24px 0 -24px; padding:14px 24px; border-bottom:1px solid var(--line)">
+            <div>
+              <b style="font-size:13px">Aanya Mehra</b><br>
+              <span style="font-size:12px; color:#9ba5a0">Haircut</span>
+            </div>
+            <div style="margin-left:auto; text-align:right; font-size:12px">
+              <div><b>Waiting:</b> 8 min</div>
+              <span class="badge arrived">In queue</span>
+            </div>
+            <div>
+              <button class="action-btn" onclick="assignWalkin(this)">Assign</button>
+            </div>
+          </div>
+
+          <div class="slot" style="margin:0 -24px; padding:14px 24px; border-bottom:1px solid var(--line)">
+            <div>
+              <b style="font-size:13px">Kabir Singh</b><br>
+              <span style="font-size:12px; color:#9ba5a0">Haircut + Beard</span>
+            </div>
+            <div style="margin-left:auto; text-align:right; font-size:12px">
+              <div><b>Waiting:</b> 21 min</div>
+              <span class="badge arrived">In queue</span>
+            </div>
+            <div>
+              <button class="action-btn" onclick="assignWalkin(this)">Assign</button>
+            </div>
+          </div>
+
+          <div class="slot" style="margin:0 -24px; padding:14px 24px; border-bottom:1px solid var(--line)">
+            <div>
+              <b style="font-size:13px">Ishita Verma</b><br>
+              <span style="font-size:12px; color:#9ba5a0">Express Facial</span>
+            </div>
+            <div style="margin-left:auto; text-align:right; font-size:12px">
+              <div><b>Waiting:</b> 27 min</div>
+              <span class="badge arrived">In queue</span>
+            </div>
+            <div>
+              <button class="action-btn" onclick="assignWalkin(this)">Assign</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="customers" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Client Directory</div>
+          <h1>Customers</h1>
+          <p>1,284 clients • 312 active this month</p>
+        </div>
+        <button class="new-booking" onclick="openAddClientModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add client</span>
+        </button>
+      </section>
+
+      <div class="filters">
+        <input type="text" class="filter-input" placeholder="Search clients..." oninput="filterCustomers(this.value)">
+        <button class="filter-btn" onclick="filterCustomers('vip')">VIP</button>
+        <button class="filter-btn" onclick="filterCustomers('new')">New</button>
+      </div>
+
+      <div class="panel">
+        <table class="table" id="customers-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Last Visit</th>
+              <th>Total Visits</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">Priya Sharma</td>
+              <td>+91 98765 43210</td>
+              <td>18 Jul 2026</td>
+              <td>48</td>
+              <td><span class="badge confirmed">VIP</span></td>
+              <td><button class="action-btn" onclick="viewClient(this)">View</button></td>
+            </tr>
+            <tr>
+              <td class="name">Meera Rao</td>
+              <td>+91 99887 76543</td>
+              <td>14 Jul 2026</td>
+              <td>22</td>
+              <td><span class="badge confirmed">VIP</span></td>
+              <td><button class="action-btn" onclick="viewClient(this)">View</button></td>
+            </tr>
+            <tr>
+              <td class="name">Aarav Khanna</td>
+              <td>+91 97654 32109</td>
+              <td>22 Jul 2026</td>
+              <td>9</td>
+              <td><span class="badge arrived">Active</span></td>
+              <td><button class="action-btn" onclick="viewClient(this)">View</button></td>
+            </tr>
+            <tr>
+              <td class="name">Sana Nair</td>
+              <td>+91 98234 56789</td>
+              <td>20 Jul 2026</td>
+              <td>31</td>
+              <td><span class="badge confirmed">VIP</span></td>
+              <td><button class="action-btn" onclick="viewClient(this)">View</button></td>
+            </tr>
+            <tr>
+              <td class="name">Kavya Patel</td>
+              <td>+91 90123 45678</td>
+              <td>11 Jul 2026</td>
+              <td>14</td>
+              <td><span class="badge arrived">Active</span></td>
+              <td><button class="action-btn" onclick="viewClient(this)">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div id="services" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Service Catalogue</div>
+          <h1>Services</h1>
+          <p>42 active services • 8 categories</p>
+        </div>
+        <button class="new-booking" onclick="openAddServiceModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add service</span>
+        </button>
+      </section>
+
+      <div class="cards-grid">
+        <div class="card">
+          <h4>Hair Spa</h4>
+          <div class="meta">Deep conditioning • 90 min</div>
+          <div class="price">₹2,400</div>
+          <div class="pill">Hair</div>
+        </div>
+        <div class="card">
+          <h4>Balayage</h4>
+          <div class="meta">Hand-painted highlights • 180 min</div>
+          <div class="price">₹6,800</div>
+          <div class="pill">Hair</div>
+        </div>
+        <div class="card">
+          <h4>Hydra Facial</h4>
+          <div class="meta">Deep hydration • 60 min</div>
+          <div class="price">₹3,200</div>
+          <div class="pill">Skin</div>
+        </div>
+        <div class="card">
+          <h4>Bridal Makeup</h4>
+          <div class="meta">Full bridal package • 120 min</div>
+          <div class="price">₹9,500</div>
+          <div class="pill">Bridal</div>
+        </div>
+        <div class="card">
+          <h4>Manicure + Pedicure</h4>
+          <div class="meta">Classic polish • 75 min</div>
+          <div class="price">₹1,850</div>
+          <div class="pill">Nails</div>
+        </div>
+        <div class="card">
+          <h4>Haircut + Beard</h4>
+          <div class="meta">Men's grooming • 45 min</div>
+          <div class="price">₹1,400</div>
+          <div class="pill">Men</div>
+        </div>
+        <div class="card">
+          <h4>Keratin Treatment</h4>
+          <div class="meta">Smoothing • 150 min</div>
+          <div class="price">₹8,900</div>
+          <div class="pill">Hair</div>
+        </div>
+        <div class="card">
+          <h4>Express Facial</h4>
+          <div class="meta">Glow treatment • 30 min</div>
+          <div class="price">₹1,650</div>
+          <div class="pill">Skin</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div id="team" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Staff Management</div>
+          <h1>Team</h1>
+          <p>11 on duty today • 14 total staff</p>
+        </div>
+        <button class="new-booking" onclick="openAddStaffModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add team member</span>
+        </button>
+      </section>
+
+      <div class="team-grid">
+        <div class="staff-card">
+          <div class="avatar" style="background:#8d6355">NK</div>
+          <div class="info">
+            <div class="name">Neha Kapoor</div>
+            <div class="role">Senior Stylist • Hair</div>
+            <div class="status"><span class="status-dot status-online"></span> Available • 4 appointments today</div>
+          </div>
+        </div>
+        <div class="staff-card">
+          <div class="avatar" style="background:#4a647a">AM</div>
+          <div class="info">
+            <div class="name">Aditi Malhotra</div>
+            <div class="role">Senior Stylist • Skin &amp; Bridal</div>
+            <div class="status"><span class="status-dot status-busy"></span> In session • 2:30 PM free</div>
+          </div>
+        </div>
+        <div class="staff-card">
+          <div class="avatar" style="background:#a86878">RM</div>
+          <div class="info">
+            <div class="name">Rohan Mehra</div>
+            <div class="role">Stylist • Men’s Grooming</div>
+            <div class="status"><span class="status-dot status-online"></span> Available • 6 appointments today</div>
+          </div>
+        </div>
+        <div class="staff-card">
+          <div class="avatar" style="background:#7a6850">SK</div>
+          <div class="info">
+            <div class="name">Simran Kaur</div>
+            <div class="role">Senior Therapist • Skin</div>
+            <div class="status"><span class="status-dot status-online"></span> Available • 3 appointments today</div>
+          </div>
+        </div>
+        <div class="staff-card">
+          <div class="avatar" style="background:#6b8e7f">AS</div>
+          <div class="info">
+            <div class="name">Ananya Shah</div>
+            <div class="role">Branch Manager</div>
+            <div class="status"><span class="status-dot status-online"></span> On floor</div>
+          </div>
+        </div>
+        <div class="staff-card">
+          <div class="avatar" style="background:#a07b5c">PR</div>
+          <div class="info">
+            <div class="name">Priya Rao</div>
+            <div class="role">Junior Stylist</div>
+            <div class="status"><span class="status-dot status-busy"></span> Busy until 3:00 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RETAIL & STOCK -->
+    <div id="retail" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Inventory</div>
+          <h1>Retail &amp; Stock</h1>
+          <p>₹1,84,900 inventory value • 3 items low</p>
+        </div>
+        <button class="new-booking" onclick="openAddStockModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add product</span>
+        </button>
+      </section>
+
+      <div class="panel">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>In Stock</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">L'Oréal Hair Colour (Brown)</td>
+              <td>Hair Colour</td>
+              <td>7</td>
+              <td>₹1,290</td>
+              <td><span class="badge confirmed">OK</span></td>
+              <td><button class="action-btn" onclick="restockItem(this)">Restock</button></td>
+            </tr>
+            <tr>
+              <td class="name">Moroccanoil Treatment</td>
+              <td>Hair Care</td>
+              <td>4</td>
+              <td>₹2,950</td>
+              <td><span class="badge confirmed">OK</span></td>
+              <td><button class="action-btn" onclick="restockItem(this)">Restock</button></td>
+            </tr>
+            <tr>
+              <td class="name">Olaplex No. 3</td>
+              <td>Hair Care</td>
+              <td>2</td>
+              <td>₹3,450</td>
+              <td><span class="badge arrived" style="background:#f3e0d8;color:#a04028">Low</span></td>
+              <td><button class="action-btn" onclick="restockItem(this)">Restock</button></td>
+            </tr>
+            <tr>
+              <td class="name">CeraVe Moisturizer</td>
+              <td>Skin</td>
+              <td>19</td>
+              <td>₹1,050</td>
+              <td><span class="badge confirmed">OK</span></td>
+              <td><button class="action-btn" onclick="restockItem(this)">Restock</button></td>
+            </tr>
+            <tr>
+              <td class="name">Schwarzkopf Shampoo</td>
+              <td>Hair Care</td>
+              <td>1</td>
+              <td>₹890</td>
+              <td><span class="badge arrived" style="background:#f3e0d8;color:#a04028">Low</span></td>
+              <td><button class="action-btn" onclick="restockItem(this)">Restock</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div id="payments" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Financials</div>
+          <h1>Payments</h1>
+          <p>₹48,650 collected today • ₹1,24,800 this week</p>
+        </div>
+        <button class="new-booking" onclick="openCreateInvoiceModal()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Create invoice</span>
+        </button>
+      </section>
+
+      <div class="panel">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Client</th>
+              <th>Invoice #</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10:42 AM</td>
+              <td class="name">Aarav Khanna</td>
+              <td>#INV-48291</td>
+              <td><b>₹1,400</b></td>
+              <td>UPI</td>
+              <td><span class="badge confirmed">Paid</span></td>
+            </tr>
+            <tr>
+              <td>11:15 AM</td>
+              <td class="name">Priya Sharma</td>
+              <td>#INV-48287</td>
+              <td><b>₹2,400</b></td>
+              <td>Card</td>
+              <td><span class="badge confirmed">Paid</span></td>
+            </tr>
+            <tr>
+              <td>11:50 AM</td>
+              <td class="name">Sana Nair</td>
+              <td>#INV-48283</td>
+              <td><b>₹3,200</b></td>
+              <td>Cash</td>
+              <td><span class="badge confirmed">Paid</span></td>
+            </tr>
+            <tr>
+              <td>12:22 PM</td>
+              <td class="name">Meera Rao</td>
+              <td>#INV-48276</td>
+              <td><b>₹9,500</b></td>
+              <td>Card</td>
+              <td><span class="badge confirmed">Paid</span></td>
+            </tr>
+            <tr>
+              <td>09:55 AM</td>
+              <td class="name">Riya Sen</td>
+              <td>#INV-48271</td>
+              <td><b>₹6,800</b></td>
+              <td>UPI</td>
+              <td><span class="badge confirmed">Paid</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="reports" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Analytics</div>
+          <h1>Reports</h1>
+          <p>Week of 20–26 July 2026</p>
+        </div>
+        <button class="text-action" style="margin-top:8px" onclick="flash('Exporting full report…')">Export CSV</button>
+      </section>
+
+      <div class="report-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Revenue</div><div class="panel-sub">This week</div></div>
+          </div>
+          <div style="padding:20px 24px">
+            <div style="font: 600 32px 'DM Serif Display', serif;">₹2,84,400</div>
+            <div style="margin-top:4px"><span class="positive">↑ 18%</span> vs last week</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Top Services</div><div class="panel-sub">By revenue</div></div>
+          </div>
+          <div style="padding: 18px 24px; font-size:13px">
+            <div style="margin-bottom:8px">1. Balayage — ₹68,200</div>
+            <div style="margin-bottom:8px">2. Hair Spa — ₹42,400</div>
+            <div style="margin-bottom:8px">3. Bridal Makeup — ₹38,000</div>
+            <div>4. Hydra Facial — ₹29,100</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Appointments</div><div class="panel-sub">Completed</div></div>
+          </div>
+          <div style="padding:20px 24px">
+            <div style="font: 600 32px 'DM Serif Display', serif;">184</div>
+            <div style="margin-top:4px">89% completion rate</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Top Stylists</div><div class="panel-sub">This week</div></div>
+          </div>
+          <div style="padding:18px 24px; font-size:13px">
+            <div>Neha Kapoor — ₹71,800</div>
+            <div style="margin: 7px 0">Aditi Malhotra — ₹62,400</div>
+            <div>Rohan Mehra — ₹48,700</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top: 20px">
+        <header class="panel-head">
+          <div class="panel-title">Weekly Revenue Trend</div>
+        </header>
+        <div style="padding: 24px 24px 16px;">
+          <div class="chart" style="height: 170px;">
+            <svg viewBox="0 0 620 170" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="rgrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#295049" stop-opacity=".2"/>
+                  <stop offset="100%" stop-color="#295049" stop-opacity=".02"/>
+                </linearGradient>
+              </defs>
+              <path fill="url(#rgrad)" d="M0 120 L90 94 L180 112 L270 72 L360 101 L450 59 L540 83 L620 49 L620 170 L0 170Z"></path>
+              <path fill="none" stroke="#295049" stroke-width="3" d="M0 120 L90 94 L180 112 L270 72 L360 101 L450 59 L540 83 L620 49"></path>
+            </svg>
+          </div>
+          <div class="chart-labels" style="margin-top: 12px">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="settings" class="page">
+      <section class="page-header">
+        <div>
+          <div class="eyebrow">Administration</div>
+          <h1>Settings</h1>
+          <p>Blush &amp; Bloom • Indrapuri Branch</p>
+        </div>
+      </section>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div class="panel">
+          <header class="panel-head">
+            <div class="panel-title">Branch settings</div>
+          </header>
+          <div class="modal-body" style="padding-top:4px">
+            <label>Branch Name</label>
+            <input type="text" value="Blush &amp; Bloom - Indrapuri">
+            
+            <label>Address</label>
+            <input type="text" value="Plot 14, Indrapuri, Bhopal, MP 462022">
+            
+            <label>Phone</label>
+            <input type="text" value="+91 755 298 4400">
+            
+            <label>Opening Hours</label>
+            <input type="text" value="10:00 AM – 8:00 PM (Tue–Sun)">
+            
+            <button class="primary-btn" style="width:100%; justify-content:center; margin-top:8px" onclick="flash('Branch settings saved')">Save changes</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <header class="panel-head">
+            <div class="panel-title">Staff &amp; Access</div>
+          </header>
+          <div style="padding: 20px 24px; font-size:13px">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:13px">
+              <div>
+                <div><b>Ananya Shah</b></div>
+                <div style="color:#66726d">Branch manager</div>
+              </div>
+              <span class="badge confirmed">Admin</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:13px">
+              <div>
+                <div><b>Neha Kapoor</b></div>
+                <div style="color:#66726d">Senior Stylist</div>
+              </div>
+              <span class="badge arrived">Manager</span>
+            </div>
+            
+            <button class="text-action" style="margin-top:12px; width:100%" onclick="flash('Invite link copied')">Invite team member</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+        <header class="panel-head">
+          <div class="panel-title">Preferences</div>
+        </header>
+        <div class="modal-body">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px">
+            <input type="checkbox" checked style="width:16px;height:16px"> 
+            <span>Send SMS reminders to clients 24 hrs before appointment</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px">
+            <input type="checkbox" checked style="width:16px;height:16px"> 
+            <span>Auto-confirm walk-in appointments</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px">
+            <input type="checkbox" style="width:16px;height:16px"> 
+            <span>Enable loyalty points for retail purchases</span>
+          </div>
+          <button class="primary-btn" style="margin-top:18px; width:fit-content" onclick="flash('Preferences saved')">Save preferences</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<!-- Modals -->
+<div class="modal" id="newBookingModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>New Appointment</h3>
+      <button onclick="closeModal('newBookingModal')" style="background:none;border:none;font-size:22px;line-height:1;color:#9ba5a0">×</button>
+    </div>
+    <div class="modal-body">
+      <label>Client</label>
+      <input type="text" placeholder="Search or type client name" value="Priya Sharma">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label>Service</label>
+          <select>
+            <option>Hair Spa (₹2,400)</option>
+            <option>Balayage (₹6,800)</option>
+            <option>Haircut + Beard (₹1,400)</option>
+            <option>Hydra Facial (₹3,200)</option>
+          </select>
+        </div>
+        <div>
+          <label>Stylist</label>
+          <select>
+            <option>Neha Kapoor</option>
+            <option>Aditi Malhotra</option>
+            <option>Rohan Mehra</option>
+          </select>
+        </div>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label>Date</label>
+          <input type="date" value="2026-07-22">
+        </div>
+        <div>
+          <label>Time</label>
+          <input type="time" value="14:30">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('newBookingModal')" style="background:#fff;border:1px solid var(--line);color:var(--ink)">Cancel</button>
+      <button class="primary-btn" onclick="createBooking()">Create Appointment</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="addClientModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Add New Client</h3>
+      <button onclick="closeModal('addClientModal')" style="background:none;border:none;font-size:22px;line-height:1;color:#9ba5a0">×</button>
+    </div>
+    <div class="modal-body">
+      <label>Full Name</label>
+      <input type="text" placeholder="Full name" id="clientName" value="">
+      
+      <label>Phone Number</label>
+      <input type="tel" placeholder="+91 98765 43210" id="clientPhone" value="">
+      
+      <label>Email</label>
+      <input type="email" placeholder="email@example.com" id="clientEmail" value="">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label>Birthday</label>
+          <input type="date" id="clientBirthday">
+        </div>
+        <div>
+          <label>Notes</label>
+          <input type="text" placeholder="Allergies, preferences..." id="clientNotes">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('addClientModal')" style="background:#fff;border:1px solid var(--line);color:var(--ink)">Cancel</button>
+      <button class="primary-btn" onclick="addClient()">Add Client</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="createInvoiceModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Create Invoice</h3>
+      <button onclick="closeModal('createInvoiceModal')" style="background:none;border:none;font-size:22px;line-height:1;color:#9ba5a0">×</button>
+    </div>
+    <div class="modal-body">
+      <label>Client</label>
+      <input type="text" value="Aarav Khanna">
+      
+      <label>Services / Products</label>
+      <textarea rows="2" style="resize:vertical">Haircut + Beard — ₹1,400</textarea>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div>
+          <label>Subtotal</label>
+          <input type="text" value="₹1,400">
+        </div>
+        <div>
+          <label>Total</label>
+          <input type="text" value="₹1,400">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('createInvoiceModal')" style="background:#fff;border:1px solid var(--line);color:var(--ink)">Cancel</button>
+      <button class="primary-btn" onclick="createInvoice()">Create &amp; Pay</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="addServiceModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Add Service</h3>
+      <button onclick="closeModal('addServiceModal')" style="background:none;border:none;font-size:22px;line-height:1;color:#9ba5a0">×</button>
+    </div>
+    <div class="modal-body">
+      <label>Service Name</label>
+      <input type="text" placeholder="Service name" value="Keratin Blowout">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label>Category</label>
+          <select><option>Hair</option><option>Skin</option><option>Nails</option><option>Bridal</option></select>
+        </div>
+        <div>
+          <label>Duration</label>
+          <input type="text" value="120 min">
+        </div>
+      </div>
+      
+      <label>Price</label>
+      <input type="text" value="₹4,900">
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('addServiceModal')" style="background:#fff;border:1px solid var(--line);color:var(--ink)">Cancel</button>
+      <button class="primary-btn" onclick="addService()">Add Service</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Global navigation
+function navigateTo(page) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  
+  // Show target
+  const target = document.getElementById(page);
+  if (target) target.classList.add('active');
+  
+  // Update nav active state
+  document.querySelectorAll('.nav button').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.page === page) btn.classList.add('active');
+  });
+  
+  // Update header title for overview only if needed
+  const titleEl = document.getElementById('page-title');
+  if (page === 'overview' && titleEl) {
+    titleEl.textContent = "The desk is looking good.";
+  }
+  
+  flash(`Viewing ${page.charAt(0).toUpperCase() + page.slice(1)}`);
+}
+
+// Sidebar nav handlers
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const page = btn.dataset.page;
+    if (page) navigateTo(page);
+  });
+});
+
+// Flash toast
+function flash(t) {
+  const e = document.getElementById('toast');
+  e.textContent = t;
+  e.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => e.classList.remove('show'), 2400);
+}
+
+// Global search
+function handleGlobalSearch(val) {
+  if (!val || val.length < 2) return;
+  
+  const pages = ['appointments', 'customers', 'retail'];
+  for (let page of pages) {
+    const el = document.getElementById(page);
+    if (el && el.classList.contains('active')) {
+      if (page === 'appointments') filterAppointmentsTable(val);
+      if (page === 'customers') filterCustomers(val);
+      return;
+    }
+  }
+  
+  // If not on those pages, navigate to appointments
+  navigateTo('appointments');
+  setTimeout(() => filterAppointmentsTable(val), 120);
+}
+
+// Filter appointments
+function filterAppointments(type, el) {
+  document.querySelectorAll('#appointments .filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  
+  const rows = document.querySelectorAll('#appointments-table tbody tr');
+  rows.forEach(row => {
+    if (type === 'all') {
+      row.style.display = '';
+    } else {
+      const status = row.dataset.status;
+      if ((type === 'confirmed' && status === 'confirmed') ||
+          (type === 'arrived' && status === 'arrived') ||
+          (type === 'inservice' && status === 'inservice')) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    }
+  });
+}
+
+function filterAppointmentsTable(search) {
+  const rows = document.querySelectorAll('#appointments-table tbody tr');
+  const q = search.toLowerCase();
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+function updateAppointmentStatus(btn, newStatus) {
+  const row = btn.closest('tr');
+  const badge = row.querySelector('.badge');
+  
+  if (newStatus === 'arrived') {
+    badge.className = 'badge arrived';
+    badge.textContent = 'Arrived';
+    row.dataset.status = 'arrived';
+    btn.textContent = 'Start';
+    btn.onclick = () => updateAppointmentStatus(btn, 'inservice');
+  } else if (newStatus === 'inservice') {
+    badge.className = 'badge in-service';
+    badge.textContent = 'In service';
+    row.dataset.status = 'inservice';
+    btn.textContent = 'Complete';
+    btn.onclick = () => updateAppointmentStatus(btn, 'completed');
+  } else if (newStatus === 'completed') {
+    badge.className = 'badge confirmed';
+    badge.textContent = 'Completed';
+    btn.outerHTML = '<span style="font-size:11px;color:#9ba5a0">Done</span>';
+    flash('Appointment completed');
+  }
+}
+
+// Walk-ins
+function registerWalkin() {
+  const name = prompt("Client name for walk-in?", "Guest " + Math.floor(Math.random()*90)+10);
+  if (!name) return;
+  
+  const container = document.querySelector('#walkins .panel');
+  
+  const newItem = document.createElement('div');
+  newItem.className = 'slot';
+  newItem.style.cssText = 'margin:0 -24px; padding:14px 24px; border-bottom:1px solid var(--line)';
+  newItem.innerHTML = `
+    <div>
+      <b style="font-size:13px">${name}</b><br>
+      <span style="font-size:12px; color:#9ba5a0">Walk-in</span>
+    </div>
+    <div style="margin-left:auto; text-align:right; font-size:12px">
+      <div><b>Waiting:</b> just now</div>
+      <span class="badge arrived">In queue</span>
+    </div>
+    <div>
+      <button class="action-btn" onclick="assignWalkin(this)">Assign</button>
+    </div>
+  `;
+  
+  const firstSlot = container.querySelector('.slot');
+  if (firstSlot) firstSlot.parentNode.insertBefore(newItem, firstSlot);
+  else container.appendChild(newItem);
+  
+  flash(`Walk-in registered for ${name}`);
+}
+
+function assignWalkin(btn) {
+  const slot = btn.closest('.slot');
+  const name = slot.querySelector('b').textContent;
+  
+  slot.style.transition = 'all .2s';
+  slot.style.opacity = '0.3';
+  
+  setTimeout(() => {
+    slot.remove();
+    flash(`Assigned ${name} to a stylist`);
+    
+    // Also add to appointments if on that page
+    const apptTable = document.getElementById('appointments-table');
+    if (apptTable) {
+      const newRow = document.createElement('tr');
+      newRow.dataset.status = 'arrived';
+      newRow.innerHTML = `
+        <td><b>${new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})}</b></td>
+        <td class="name">${name}</td>
+        <td>Walk-in (TBD)</td>
+        <td>Available</td>
+        <td>Chair 05</td>
+        <td><span class="badge arrived">Arrived</span></td>
+        <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'inservice')">Start</button></td>
+      `;
+      apptTable.querySelector('tbody').appendChild(newRow);
+    }
+  }, 240);
+}
+
+function clearQueue() {
+  if (confirm('Clear all walk-ins?')) {
+    const slots = document.querySelectorAll('#walkins .slot');
+    slots.forEach(s => s.remove());
+    flash('Walk-in queue cleared');
+  }
+}
+
+// Customers
+function filterCustomers(query) {
+  const rows = document.querySelectorAll('#customers-table tbody tr');
+  const q = (typeof query === 'string') ? query.toLowerCase() : '';
+  
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    if (!q) {
+      row.style.display = '';
+    } else if (q === 'vip') {
+      row.style.display = row.textContent.includes('VIP') ? '' : 'none';
+    } else if (q === 'new') {
+      row.style.display = row.textContent.includes('9') ? '' : 'none'; // simple heuristic
+    } else {
+      row.style.display = text.includes(q) ? '' : 'none';
+    }
+  });
+}
+
+function viewClient(el) {
+  const row = el.closest('tr');
+  const name = row.querySelector('.name').textContent;
+  
+  const modal = document.createElement('div');
+  modal.className = 'modal show';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>${name}</h3>
+        <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:22px;line-height:1;color:#9ba5a0">×</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Phone:</strong> ${row.children[1].textContent}</p>
+        <p><strong>Last visit:</strong> ${row.children[2].textContent}</p>
+        <p><strong>Total visits:</strong> ${row.children[3].textContent}</p>
+        
+        <div style="margin:18px 0 8px"><strong>Recent services</strong></div>
+        <div style="font-size:13px;line-height:1.65">
+          • Hair Spa — 18 Jul<br>
+          • Balayage — 2 Jun<br>
+          • Haircut — 14 May
+        </div>
+        
+        <div style="margin-top: 18px">
+          <button class="primary-btn" style="width:100%" onclick="navigateTo('appointments'); this.closest('.modal').remove()">Book new appointment</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+// Services
+function openAddServiceModal() {
+  document.getElementById('addServiceModal').classList.add('show');
+}
+
+function addService() {
+  closeModal('addServiceModal');
+  flash('New service added successfully');
+  
+  // Add to grid dynamically
+  const grid = document.querySelector('#services .cards-grid');
+  if (grid) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h4>Keratin Blowout</h4>
+      <div class="meta">Smoothing treatment • 120 min</div>
+      <div class="price">₹4,900</div>
+      <div class="pill">Hair</div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+// Team
+function openAddStaffModal() {
+  const name = prompt('New team member name?');
+  if (!name) return;
+  
+  const grid = document.querySelector('#team .team-grid');
+  const card = document.createElement('div');
+  card.className = 'staff-card';
+  card.innerHTML = `
+    <div class="avatar" style="background:#6b8e7f">${name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase()}</div>
+    <div class="info">
+      <div class="name">${name}</div>
+      <div class="role">Stylist</div>
+      <div class="status"><span class="status-dot status-online"></span> Available</div>
+    </div>
+  `;
+  grid.appendChild(card);
+  flash('Team member added');
+}
+
+// Retail
+function restockItem(btn) {
+  const row = btn.closest('tr');
+  const stockCell = row.children[2];
+  let stock = parseInt(stockCell.textContent);
+  stock += 10;
+  stockCell.textContent = stock;
+  
+  const status = row.querySelector('.badge');
+  if (status) {
+    status.className = 'badge confirmed';
+    status.textContent = 'OK';
+  }
+  flash('Stock updated');
+}
+
+function openAddStockModal() {
+  const name = prompt('Product name?');
+  if (!name) return;
+  
+  const table = document.querySelector('#retail table tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td class="name">${name}</td>
+    <td>Hair Care</td>
+    <td>12</td>
+    <td>₹1,590</td>
+    <td><span class="badge confirmed">OK</span></td>
+    <td><button class="action-btn" onclick="restockItem(this)">Restock</button></td>
+  `;
+  table.appendChild(row);
+  flash('Product added to inventory');
+}
+
+// Payments
+function createInvoice() {
+  closeModal('createInvoiceModal');
+  flash('Invoice created and payment processed');
+  
+  // Add to payments page
+  const tbody = document.querySelector('#payments table tbody');
+  if (tbody) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})}</td>
+      <td class="name">Aarav Khanna</td>
+      <td>#INV-${Math.floor(Math.random()*90000)+40000}</td>
+      <td><b>₹1,400</b></td>
+      <td>UPI</td>
+      <td><span class="badge confirmed">Paid</span></td>
+    `;
+    tbody.prepend(row);
+  }
+}
+
+// Modals
+function openNewBookingModal() {
+  document.getElementById('newBookingModal').classList.add('show');
+}
+
+function openAddClientModal() {
+  document.getElementById('addClientModal').classList.add('show');
+}
+
+function openCreateInvoiceModal() {
+  document.getElementById('createInvoiceModal').classList.add('show');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function createBooking() {
+  closeModal('newBookingModal');
+  flash('Appointment booked successfully!');
+  
+  // Optionally switch to appointments
+  setTimeout(() => {
+    navigateTo('appointments');
+    
+    // Add a row dynamically
+    const tbody = document.querySelector('#appointments-table tbody');
+    if (tbody) {
+      const row = document.createElement('tr');
+      row.dataset.status = 'confirmed';
+      row.innerHTML = `
+        <td><b>02:30 PM</b></td>
+        <td class="name">Priya Sharma</td>
+        <td>Hair Spa (90 min)</td>
+        <td>Neha Kapoor</td>
+        <td>Chair 03</td>
+        <td><span class="badge confirmed">Confirmed</span></td>
+        <td><button class="action-btn" onclick="updateAppointmentStatus(this, 'arrived')">Check-in</button></td>
+      `;
+      tbody.appendChild(row);
+    }
+  }, 1100);
+}
+
+function addClient() {
+  const name = document.getElementById('clientName').value || 'New Client';
+  closeModal('addClientModal');
+  
+  // Add to customers table
+  const tbody = document.querySelector('#customers-table tbody');
+  if (tbody) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="name">${name}</td>
+      <td>${document.getElementById('clientPhone').value || '+91 98765 43210'}</td>
+      <td>Today</td>
+      <td>1</td>
+      <td><span class="badge arrived">Active</span></td>
+      <td><button class="action-btn" onclick="viewClient(this)">View</button></td>
+    `;
+    tbody.prepend(row);
+  }
+  
+  flash(`Client ${name} added`);
+}
+
+// Notifications demo
+function showNotifications() {
+  const notif = document.createElement('div');
+  notif.style.cssText = 'position:fixed;right:24px;top:88px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);width:280px;padding:16px 18px;z-index:999;font-size:13px';
+  notif.innerHTML = `
+    <div style="font-weight:600;margin-bottom:6px">Notifications</div>
+    <div style="padding:9px 0;border-bottom:1px solid #f1f1ed">Meera Rao’s booking confirmed</div>
+    <div style="padding:9px 0;border-bottom:1px solid #f1f1ed">Low stock alert: Olaplex</div>
+    <div style="padding:9px 0">Priya Sharma checked in</div>
+  `;
+  document.body.appendChild(notif);
+  
+  setTimeout(() => {
+    notif.style.transition = 'all .2s';
+    notif.style.opacity = '0';
+    setTimeout(() => notif.remove(), 180);
+  }, 3600);
+}
+
+// Initialize everything
+function init() {
+  // Default active nav
+  const overviewBtn = document.querySelector('.nav button[data-page="overview"]');
+  if (overviewBtn) overviewBtn.classList.add('active');
+  
+  // Make sure overview is shown
+  document.getElementById('overview').classList.add('active');
+  
+  // Keyboard shortcut hint
+  document.addEventListener('keydown', function(e) {
+    if (e.key === "/" && document.activeElement.tagName === "BODY") {
+      e.preventDefault();
+      const search = document.querySelector('.search');
+      if (search) search.focus();
+    }
+  });
+  
+  // Demo: random flash once (only on first load)
+  setTimeout(() => {
+    if (document.getElementById('overview').classList.contains('active')) {
+      // no auto flash on initial load
+    }
+  }, 5000);
+  
+  // Bonus: clicking on date updates
+  const dateBtn = document.querySelector('.date-btn');
+  if (dateBtn) {
+    dateBtn.onclick = () => {
+      flash('Calendar picker opened');
+    };
+  }
+  
+  console.log('%c[Atelier] All pages initialized. Full salon admin UI ready.', 'color:#9ba5a0');
+}
+
+window.onload = init;
+
+// Bonus: Allow direct page access via URL hash if needed
+window.addEventListener('hashchange', () => {
+  const hash = location.hash.replace('#', '');
+  if (hash && document.getElementById(hash)) {
+    navigateTo(hash);
+  }
+});
+</script>
+
+<style id="remove-page-hover-effects">
+/* Keep sidebar hover effects intact */
+
+/* Dashboard cards */
+.panel:hover,
+.card:hover,
+.staff-card:hover,
+.stat:hover,
+.report-card:hover{
+  transform:none !important;
+  box-shadow:inherit !important;
+}
+
+/* Schedule */
+.slot:hover{
+  background:transparent !important;
+  transform:none !important;
+}
+
+/* Notices */
+.notice:hover{
+  background:transparent !important;
+}
+
+/* Tables */
+.table tbody tr:hover{
+  transform:none !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+
+/* Action cards */
+.action:hover{
+  transform:none !important;
+  box-shadow:none !important;
+}
+
+/* Buttons except sidebar */
+.new-booking:hover,
+.primary-btn:hover,
+.action-btn:hover,
+.notice-action:hover,
+.text-action:hover,
+.date-btn:hover,
+.bell:hover{
+  transform:none !important;
+}
+</style>
+
+</body>
+</html>

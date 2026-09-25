@@ -1,0 +1,252 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("IDENTITY_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+enum AuthPrincipalType {
+  USER
+  TENANT
+}
+
+enum TenantCredentialStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  LOCKED
+  DISABLED
+}
+
+enum UserType {
+  PLATFORM
+  TENANT
+  CUSTOMER
+}
+
+enum UserStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  LOCKED
+}
+
+enum ScopeType {
+  PLATFORM
+  TENANT
+  FRANCHISE
+  BRANCH
+  SELF
+}
+
+enum MfaType {
+  TOTP
+  RECOVERY_CODE
+  HARDWARE_KEY
+}
+
+enum RoleType {
+  SYSTEM
+  CUSTOM
+}
+
+enum SessionStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+model User {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userType            UserType              @default(TENANT) @map("user_type")
+  tenantId            String?               @map("tenant_id") @db.Uuid
+  fullName            String                @map("full_name")
+  email               String                @unique
+  mobilePhone         String?               @map("mobile_phone")
+  passwordHash        String                @map("password_hash")
+  status              UserStatus            @default(ACTIVE)
+  isMfaRequired       Boolean               @default(false) @map("is_mfa_required")
+  isMfaEnabled        Boolean               @default(false) @map("is_mfa_enabled")
+  failedLoginAttempts Int                   @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime?             @map("locked_until")
+  lastLoginAt         DateTime?             @map("last_login_at")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
+
+  roles               UserRole[]
+  scopes              UserScopeAssignment[]
+  sessions            Session[]
+  mfaMethods          MfaMethod[]
+
+  @@index([email])
+  @@index([tenantId])
+  @@index([status])
+  @@map("users")
+}
+
+model TenantCredential {
+  id                  String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId            String                 @map("tenant_id") @db.Uuid
+  loginEmail          String                 @unique @map("login_email")
+  normalizedEmail     String                 @unique @map("normalized_email")
+  mobilePhone         String?                @map("mobile_phone")
+  passwordHash        String                 @map("password_hash")
+  status              TenantCredentialStatus @default(ACTIVE)
+  isMfaRequired       Boolean                @default(false) @map("is_mfa_required")
+  isMfaEnabled        Boolean                @default(false) @map("is_mfa_enabled")
+  failedLoginAttempts Int                    @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime?              @map("locked_until")
+  lastLoginAt         DateTime?              @map("last_login_at")
+  createdAt           DateTime               @default(now()) @map("created_at")
+  updatedAt           DateTime               @updatedAt @map("updated_at")
+
+  sessions            Session[]
+
+  @@index([tenantId])
+  @@index([normalizedEmail])
+  @@index([status])
+  @@map("tenant_credentials")
+}
+
+model Role {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  code           String           @unique
+  description    String?
+  roleType       RoleType         @default(SYSTEM) @map("role_type")
+  tenantId       String?          @map("tenant_id") @db.Uuid
+  isSystem       Boolean          @default(false) @map("is_system")
+  showOnFrontend Boolean          @default(true) @map("show_on_frontend")
+  allowedPanels  String[]         @default([]) @map("allowed_panels")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@index([tenantId])
+  @@index([roleType])
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  code        String           @unique
+  module      String
+  description String?
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  userId     String   @map("user_id") @db.Uuid
+  roleId     String   @map("role_id") @db.Uuid
+  assignedAt DateTime @default(now()) @map("assigned_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id") @db.Uuid
+  permissionId String     @map("permission_id") @db.Uuid
+
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserScopeAssignment {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  scopeType   ScopeType @map("scope_type")
+  tenantId    String?   @map("tenant_id") @db.Uuid
+  franchiseId String?   @map("franchise_id") @db.Uuid
+  branchId    String?   @map("branch_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([branchId])
+  @@map("user_scope_assignments")
+}
+
+model Session {
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  principalType      AuthPrincipalType  @default(USER) @map("principal_type")
+  userId             String?            @map("user_id") @db.Uuid
+  tenantCredentialId String?            @map("tenant_credential_id") @db.Uuid
+  tokenFamily        String             @map("token_family") @db.Uuid
+  status             SessionStatus      @default(ACTIVE)
+  ipAddress          String?            @map("ip_address")
+  userAgent          String?            @map("user_agent")
+  expiresAt          DateTime           @map("expires_at")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  revokedAt          DateTime?          @map("revoked_at")
+
+  user               User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenantCredential   TenantCredential?  @relation(fields: [tenantCredentialId], references: [id], onDelete: Cascade)
+  tokens             RefreshToken[]
+
+  @@index([userId])
+  @@index([tenantCredentialId])
+  @@index([tokenFamily])
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId String   @map("session_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash")
+  isUsed    Boolean  @default(false) @map("is_used")
+  isRevoked Boolean  @default(false) @map("is_revoked")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("refresh_tokens")
+}
+
+model MfaMethod {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  mfaType         MfaType  @default(TOTP) @map("mfa_type")
+  secretEncrypted String   @map("secret_encrypted")
+  isVerified      Boolean  @default(false) @map("is_verified")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("mfa_methods")
+}
+
+model LoginAttempt {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String
+  ipAddress     String?  @map("ip_address")
+  userAgent     String?  @map("user_agent")
+  isSuccess     Boolean  @map("is_success")
+  failureReason String?  @map("failure_reason")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("login_attempts")
+}

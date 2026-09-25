@@ -1,0 +1,24 @@
+import { Router } from 'express';
+import { internalAuthMiddleware } from '../../middleware/internal-auth.middleware';
+import { internalController } from '../controllers/internal.controller';
+
+const router: Router = Router();
+
+router.use(internalAuthMiddleware);
+
+router.get('/context', (req, res, next) => internalController.getAuthContext(req, res, next));
+router.post('/tenant-credentials', (req, res, next) =>
+  internalController.createTenantCredential(req, res, next),
+);
+router.post('/tenant-credentials/reset-password', (req, res, next) =>
+  internalController.resetTenantCredentialPassword(req, res, next),
+);
+router.post('/staff-users', (req, res, next) =>
+  internalController.createStaffUser(req, res, next),
+);
+router.post('/staff-users/assign-branch', (req, res, next) =>
+  internalController.assignStaffBranchScope(req, res, next),
+);
+
+export { router as internalRoutes };
+

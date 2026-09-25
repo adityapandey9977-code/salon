@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Brand Owner Franchise PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid #efe6ff;
+      vertical-align: top;
+      color: #332d41;
+    }
+
+    tr:nth-child(even) td {
+      background: #fdfcff;
+    }
+
+    .req-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: #f3ecff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 8.5px;
+      font-weight: 700;
+      background: #e6f9f0;
+      color: #0d8a50;
+      border: 1px solid #b3edd0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .card {
+      background: #faf8ff;
+      border: 1px solid #eee5ff;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card strong {
+      color: #2D1552;
+      display: block;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .card p {
+      font-size: 10px;
+      margin: 0;
+      color: #5c556b;
+    }
+
+    ul {
+      margin: 0 0 10px 0;
+      padding-left: 18px;
+      color: #4b4458;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header Badge -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+
+  <h1>Brand Owner / Head Office → Franchise Management Module</h1>
+  <p><strong>System Walkthrough, Architectural Specification &amp; Implementation Traceability Matrix</strong></p>
+
+  <!-- Executive Summary Box -->
+  <div class="callout-box">
+    <strong>Executive Architectural Summary:</strong>
+    The Brand Owner Franchise Module provides multi-city oversight across 12 registered franchise partners, 18
+    operational salons, statutory legal agreements, and 10% gross turnover royalty accruals (₹8.65L).
+    In strict compliance with SaaS architectural boundaries, day-to-day operational execution resides in the separate
+    <em>Franchise / Partner Panel</em>, while ledger accounting and payment transactions link directly to the
+    <em>Finance Panel</em>.
+  </div>
+
+  <h2>1. Official PRD Traceability Matrix</h2>
+  <p>Mapping all official product requirements to their concrete implementation within the codebase:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 14%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 32%;">Product Requirement Description</th>
+        <th style="width: 32%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="req-code">SALO-PRD-071</span></td>
+        <td><strong>Franchise Executive Dashboard</strong></td>
+        <td>Centralized KPIs for partners, outlets, revenue, royalty, and pending approvals.</td>
+        <td><code>FranchiseOverviewTab.tsx</code>: 8 KPI cards, territory distribution bars, partner ranking, and alerts
+          escalation desk.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-072</span></td>
+        <td><strong>Franchise Partner Register</strong></td>
+        <td>Master ledger of franchise entities, contact persons, territory, and outlet custody.</td>
+        <td><code>FranchisePartnersTab.tsx</code>: Searchable multi-column table with status badges and quick action
+          controls.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-073</span></td>
+        <td><strong>Partner Registration Modal</strong></td>
+        <td>Frontend modal form for basic information, business parameters, and royalty rates.</td>
+        <td><code>FranchisePartnersTab.tsx</code>: Portaled modal (<code>z-[9999]</code>) with dual-section form and
+          live preview summary.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-074</span></td>
+        <td><strong>Partner Profile Dossier</strong></td>
+        <td>Detailed inspection modal with summary KPIs, leadership contact, and outlets sub-table.</td>
+        <td><code>FranchisePartnersTab.tsx</code>: Profile modal with 5 summary cards, registered address, and branch
+          custody ledger.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-075</span></td>
+        <td><strong>Franchise Outlets Directory</strong></td>
+        <td>Centralized multi-branch listing with managers, open dates, and gross GMV turnover.</td>
+        <td><code>FranchiseLocationsTab.tsx</code>: Outlets table with branch managers, operational status, and
+          settlement states.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-076</span></td>
+        <td><strong>Franchise Location Dossier</strong></td>
+        <td>Detailed outlet profile with footfall velocity, top service ritual, and ticket size.</td>
+        <td><code>FranchiseLocationsTab.tsx</code>: Outlet dossier modal with stylist crew metrics and Finance Panel
+          settlement handoff.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-077</span></td>
+        <td><strong>Agreements &amp; Governance</strong></td>
+        <td>Contractual terms, legal models (FOFO/FOCO), start/end tenures, and renewal dates.</td>
+        <td><code>AgreementsComplianceTab.tsx</code>: Contracts master ledger with renewal triggers and multi-stage
+          lifecycle timelines.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-078</span></td>
+        <td><strong>Statutory Compliance Matrix</strong></td>
+        <td>Live monitoring of GST certificates, Trade Licenses, Fire NOCs, and Insurance.</td>
+        <td><code>AgreementsComplianceTab.tsx</code>: Sub-view tracking document references, expiry countdowns, and
+          renewal notices.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-079</span></td>
+        <td><strong>Royalty &amp; Commission Ledger</strong></td>
+        <td>Monitoring interface for 10% royalty accruals, marketing fund levies, and status.</td>
+        <td><code>CommissionsRoyaltiesTab.tsx</code>: Master billing ledger with 5 KPI cards and finance reference IDs.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-080</span></td>
+        <td><strong>Royalty Calculation Breakdown</strong></td>
+        <td>Detailed mathematical computation showing services GMV, retail GMV, and net fee.</td>
+        <td><code>CommissionsRoyaltiesTab.tsx</code>: Calculation breakdown modal with direct handoff button to Finance
+          Panel.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-081</span></td>
+        <td><strong>Franchise Intelligence Reports</strong></td>
+        <td>Multi-category reports (Partner, Location, Agreement, Royalty) with exports.</td>
+        <td><code>FranchiseReportsTab.tsx</code>: Template switcher, live preview canvas, and multi-format CSV, Excel,
+          and PDF exports.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-082</span></td>
+        <td><strong>Governance Escalation Alerts</strong></td>
+        <td>Real-time notifications for expiring agreements, pending approvals, and overdue fees.</td>
+        <td><code>FranchiseOverviewTab.tsx</code>: Alert cards with severity levels (Low, Medium, High, Critical) and
+          1-click tab routing.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <p>A detailed rationale explaining the commercial need and architectural choices for each capability:</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <strong>1. Why Centralized Overview with 8 Core KPIs?</strong>
+      <p>Brand Owners managing 18 franchise outlets across 6 cities need immediate visibility into network velocity,
+        active entity health, and brand royalty accrual without logging into individual partner portals.</p>
+    </div>
+    <div class="card">
+      <strong>2. Why Dual-Section Partner Registration Form?</strong>
+      <p>Separating partner basic identity (contact lead, email, phone) from commercial terms (authorized outlets,
+        royalty model, agreement dates) ensures clean enterprise entity creation and contract compliance.</p>
+    </div>
+    <div class="card">
+      <strong>3. Why Independent Franchise Locations Directory?</strong>
+      <p>Multi-unit partners (e.g. Apex Wellness LLP) operate 3 distinct outlets. Having a dedicated location registry
+        allows individual branch footfall, manager tracking, and revenue benchmarking.</p>
+    </div>
+    <div class="card">
+      <strong>4. Why Dedicated Statutory Compliance Matrix?</strong>
+      <p>Operating a salon brand requires stringent adherence to municipal trade licenses, Fire NOCs, and public
+        liability policies. Lapses present existential brand risk; automated tracking prevents compliance default.</p>
+    </div>
+    <div class="card">
+      <strong>5. Why Read-Oriented Royalty Ledger with Finance Links?</strong>
+      <p>Prevents redundant dual-accounting systems. Head Office monitors brand fee computations in Franchise, while
+        actual bank disbursements and GST filing remain in the specialized Finance Panel.</p>
+    </div>
+    <div class="card">
+      <strong>6. Why 4 Distinct Report Categories with Live Canvas?</strong>
+      <p>Executive stakeholders need tailored views: legal teams require Agreement Audits, operations require Location
+        Growth, and CFOs require Partner-wise Royalty statements in CSV/Excel/PDF.</p>
+    </div>
+  </div>
+
+  <h2>3. UI Architecture &amp; Page Navigation Flow</h2>
+  <p>The Franchise module is structured under a unified responsive master container with persistent sub-navigation:</p>
+
+  <ul>
+    <li><strong>Franchise Overview (<code>/franchise?tab=overview</code>):</strong> 8 KPI metric cards, regional revenue
+      split, top partner leaderboard, and governance alert cards.</li>
+    <li><strong>Franchise Partners (<code>/franchise?tab=partners</code>):</strong> Entity registry, search &amp; region
+      filters, Create Partner modal, and Partner Profile Dossier.</li>
+    <li><strong>Franchise Locations (<code>/franchise?tab=locations</code>):</strong> Multi-branch directory, branch
+      manager contacts, and Outlet Dossier with service performance.</li>
+    <li><strong>Agreements &amp; Compliance (<code>/franchise?tab=agreements</code>):</strong> Sub-tab toggle between
+      Legal Contracts Ledger and Statutory Compliance Matrix.</li>
+    <li><strong>Commissions &amp; Royalties (<code>/franchise?tab=royalties</code>):</strong> 5 financial KPIs, billing
+      voucher ledger, and math computation dossier modal.</li>
+    <li><strong>Franchise Reports (<code>/franchise?tab=reports</code>):</strong> Category selector (Partner, Location,
+      Agreement, Commission), parameter customizers, and live table preview.</li>
+  </ul>
+
+  <!-- Standard Footer -->
+  <div
+    style="margin-top: 24px; padding-top: 10px; border-top: 1px solid #eee5ff; display: flex; justify-content: space-between; font-size: 9px; color: #887d99;">
+    <span> Salon SaaS · Enterprise Brand Owner Panel</span>
+    <span>CONFIDENTIAL &amp; PROPRIETARY · GENERATED AUGUST 2026</span>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { ReportController } from '../controllers/report.controller';
+
+export const reportRouter: Router = Router();
+
+reportRouter.get('/reports/executive-summary', ReportController.getExecutiveSummary);
+reportRouter.get('/reports/operations', ReportController.getOperations);
+reportRouter.get('/reports/revenue', ReportController.getRevenue);
+reportRouter.get('/reports/staff', ReportController.getStaff);
+reportRouter.get('/reports/branch-eod', ReportController.getBranchEod);
+reportRouter.get('/reports/stylist-productivity', ReportController.getStylistProductivity);
+reportRouter.post('/reports/export', ReportController.exportReport);
+reportRouter.post('/reports/branch-export', ReportController.exportBranchReport);

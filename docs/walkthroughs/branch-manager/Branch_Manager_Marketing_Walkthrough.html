@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Brand Owner Marketing PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 7px 10px;
+      border: 1px solid #ede8f5;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background: #fcfbfe;
+    }
+
+    .tag-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      background: #f3f0f7;
+      color: #4338ca;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    ul {
+      margin: 4px 0 10px 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+      color: #4b4458;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #e9e4f0;
+      font-size: 9px;
+      color: #8c829e;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+  <h1>Brand Owner &amp; Head Office Marketing Architecture</h1>
+  <p><strong>Module:</strong> Brand Owner / Head Office &rarr; Marketing &bull; <strong>Version:</strong> 2.0 &bull;
+    <strong>Scope:</strong> Multi-Branch Campaigns, Offers, Loyalty Tiers &amp; Reports</p>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="callout-box">
+    <strong>Executive Summary &amp; Architectural Alignment:</strong>
+    The Salon SaaS platform provides a clean, centralized <strong>Brand Owner Marketing Desk</strong> designed to
+    orchestrate promotional campaigns, manage voucher rules, monitor customer acquisition velocity, and govern the
+    tiered loyalty points program. In strict accordance with PRD boundaries, this section focuses on brand-level
+    promotional governance and revenue attribution across salon branches without turning into a heavy standalone ad
+    agency platform.
+  </div>
+
+  <!-- SECTION 1: PRD TRACEABILITY MATRIX -->
+  <h2>1. PRD Traceability Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 33%;">Product Requirement Description</th>
+        <th style="width: 30%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-01</span></td>
+        <td><strong>Marketing Overview Dashboard &amp; KPIs</strong></td>
+        <td>7 core KPI cards (Active Campaigns, Active Offers, Reach 48.5K, Redemptions 3,420, New Clients 680,
+          Returning Clients 2,740, Loyalty 5,120), campaign revenue attribution, and offer distribution.</td>
+        <td>Implemented in <code>MarketingOverviewTab.tsx</code> with trend chips, visual conversion breakdowns, and top
+          campaign ranking.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-02</span></td>
+        <td><strong>Branch-Wise Marketing Matrix</strong></td>
+        <td>Multi-branch performance matrix comparing campaigns, promotions, redemptions, new vs returning mix, loyalty
+          base, and turnover.</td>
+        <td>Implemented in <code>MarketingOverviewTab.tsx</code> (Section 12 PRD) with multi-column sorting and
+          conversion rate metrics.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-03</span></td>
+        <td><strong>Campaigns Master Ledger &amp; Workflow</strong></td>
+        <td>Centralized campaign table with 5 lifecycle states (Draft, Scheduled, Active, Completed, Paused), reach,
+          redemptions, revenue, and quick actions.</td>
+        <td>Implemented in <code>CampaignsTab.tsx</code> with search, status filtering, duplicate actions, and
+          activation toggles.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-04</span></td>
+        <td><strong>Create &amp; Edit Campaign Specification</strong></td>
+        <td>Comprehensive specification form covering campaign identity, classification, date windows, client segment
+          targeting, branch applicability, and summary review.</td>
+        <td>Implemented in <code>CampaignsTab.tsx</code> with modal drawer, frontend validation, and live summary
+          preview box.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-05</span></td>
+        <td><strong>Campaign Dossier &amp; Performance Inspection</strong></td>
+        <td>Detailed campaign inspection modal showcasing reach, engagement open rate, redemption count, attributed
+          revenue, and ROI multiplier.</td>
+        <td>Implemented in <code>CampaignsTab.tsx</code> (Campaign Dossier modal) with participating branch pills and
+          service tags.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-06</span></td>
+        <td><strong>Promotions &amp; Special Offers Register</strong></td>
+        <td>Centralized offer ledger supporting percentage discounts, flat cash vouchers, complimentary upgrades, and
+          BOGO bundles with coupon codes.</td>
+        <td>Implemented in <code>PromotionsOffersTab.tsx</code> with usage tracking (e.g. 1,420 / 2,000 uses) and
+          approval sign-off indicators.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-07</span></td>
+        <td><strong>Offer Configuration &amp; Branch Breakdown</strong></td>
+        <td>Create/edit offer drawer with redemption limits, minimum booking rules, and Offer Details modal showing
+          branch-wise utilization tables.</td>
+        <td>Implemented in <code>PromotionsOffersTab.tsx</code> with branch-by-branch redemption and turnover
+          distribution.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-08</span></td>
+        <td><strong>Brand Loyalty Engine &amp; Member Directory</strong></td>
+        <td>Brand-level loyalty management with 5 KPI cards (Members 5,120, Active 4,680, Issued 12.4L, Redeemed 8.9L,
+          Revenue ₹18.4L) and member directory.</td>
+        <td>Implemented in <code>LoyaltyTab.tsx</code> with tier badges, points balance, and lifetime spend history.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-09</span></td>
+        <td><strong>Loyalty Tiers Configuration Matrix</strong></td>
+        <td>4-tier structure (Silver, Gold, Platinum, Diamond Elite) with qualification rules (spend/visits), points
+          multipliers (1x to 3x), and privileges.</td>
+        <td>Implemented in <code>LoyaltyTab.tsx</code> (Tiers Configuration sub-tab) with enrolled member counts and
+          revenue contribution.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-10</span></td>
+        <td><strong>Member Loyalty Ledger &amp; Points Timeline</strong></td>
+        <td>Loyalty member dossier modal featuring live points balance, lifetime accrued, burned, and chronological
+          transaction ledger with invoice refs.</td>
+        <td>Implemented in <code>LoyaltyTab.tsx</code> with points delta chips (+450 / -800) and running balance
+          calculations.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-MKT-11</span></td>
+        <td><strong>Marketing Reports Generator &amp; Exports</strong></td>
+        <td>4 statutory report categories (Campaigns, Promotions, Client Acquisition, Loyalty), live preview canvas, and
+          multi-format exports (CSV/Excel/PDF).</td>
+        <td>Implemented in <code>MarketingReportsTab.tsx</code> with clean numerical column alignment and parameters
+          filter headers.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- SECTION 2: BUSINESS RATIONALE -->
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+
+  <h3>1. Why Centralized Campaign &amp; Promotion Governance is Necessary</h3>
+  <p>In multi-outlet salon brands, rogue branch discounts severely erode gross margins. By centralizing <strong>Coupon
+      Codes (e.g. GLOW20, WELCOME500)</strong> and <strong>Marketing Campaigns</strong> at the Head Office level, brand
+    owners ensure that discount limits (e.g., max 2,000 uses) and minimum bill thresholds (e.g., Min Spend ₹3,500) are
+    strictly validated at the POS across all outlets.</p>
+
+  <h3>2. Why Multi-Tiered Loyalty Programs Drive High Customer Lifetime Value (LTV)</h3>
+  <p>Loyal salon clients account for <strong>64.5% of total brand revenue (₹18.4L)</strong>. The 4-tier loyalty
+    architecture (Silver &rarr; Gold &rarr; Platinum &rarr; Diamond Elite) creates a gamified incentive for clients to
+    increase visit frequency and basket size to earn up to 3x points multipliers and complimentary spa upgrades.</p>
+
+  <h3>3. Why Branch-Wise Marketing Performance Comparison is Crucial</h3>
+  <p>Not all promotional themes resonate equally across urban clusters. The <strong>Branch-Wise Performance
+      Matrix</strong> reveals that while Indore Central yields high conversion on Keratin Hair Spa campaigns (₹9.8L),
+    boutique outlets in Bhopal and Ujjain see greater lift from First-Visit Welcome Vouchers, allowing brand leadership
+    to tailor marketing spend with precision.</p>
+
+  <h3>4. Why Marketing Attribution Reports are Built In</h3>
+  <p>Salon marketing budgets must prove measurable return on investment. The <strong>Attributed Revenue Engine (ROI
+      4.8x–6.1x)</strong> ties every invoice generated at checkout directly back to the active campaign or redeemed
+    coupon code, providing leadership with irrefutable proof of marketing effectiveness.</p>
+
+  <!-- SECTION 3: UI ARCHITECTURE & PAGE FLOW -->
+  <h2>3. UI Architecture &amp; Page Flow</h2>
+  <ul>
+    <li><strong>Master Controller (<code>MarketingMasterPage.tsx</code>):</strong> Hosts 5 sub-navigation tabs,
+      breadcrumbs, and reactive URL query param synchronization (<code>?tab=...</code>).</li>
+    <li><strong>Overview Tab (<code>MarketingOverviewTab.tsx</code>):</strong> 7 KPI metric cards, top campaign
+      performance cards, offer type breakdown bars, new vs. returning client split, and branch comparison table.</li>
+    <li><strong>Campaigns Tab (<code>CampaignsTab.tsx</code>):</strong> Master campaign register with lifecycle states,
+      Create/Edit Campaign modal with live preview, and Campaign Details inspection modal.</li>
+    <li><strong>Promotions &amp; Offers (<code>PromotionsOffersTab.tsx</code>):</strong> Special offers register with
+      coupon code tags, usage pacing, Create/Edit Offer modal, and branch utilization breakdown.</li>
+    <li><strong>Loyalty Tab (<code>LoyaltyTab.tsx</code>):</strong> 5 Loyalty KPIs, enrolled member directory, 4-tier
+      configuration matrix, and Member Loyalty Dossier modal with points timeline.</li>
+    <li><strong>Marketing Reports (<code>MarketingReportsTab.tsx</code>):</strong> 4 report categories, live preview
+      canvas with right-aligned numeric metrics, and CSV/Excel/PDF export triggers.</li>
+  </ul>
+
+  <div class="footer">
+    <span> Salon SaaS · Enterprise Marketing &amp; Growth Management</span>
+    <span>Page 2 of 2</span>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,250 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: salon-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/01-init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: salon-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: salon-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  identity-service:
+    build:
+      context: .
+      dockerfile: apps/services/identity-service/Dockerfile
+    container_name: salon-identity-service
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      IDENTITY_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/identity_db?schema=public&connection_limit=10&pool_timeout=10
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: default_jwt_access_secret_32_chars_min
+      JWT_REFRESH_SECRET: default_jwt_refresh_secret_32_chars_min
+      JWT_ACCESS_TTL: 15m
+      JWT_REFRESH_TTL: 7d
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+      USER_PROFILE_CACHE_TTL: 300
+      USER_PERMISSION_CACHE_TTL: 60
+      USER_ROLE_CACHE_TTL: 60
+      USER_SCOPE_CACHE_TTL: 60
+      SESSION_CACHE_TTL: 60
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  people-service:
+    build:
+      context: .
+      dockerfile: apps/services/people-service/Dockerfile
+    container_name: salon-people-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      PEOPLE_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/people_db?schema=public&connection_limit=10&pool_timeout=10
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_ACCESS_SECRET: default_jwt_access_secret_32_chars_min
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+      ORGANIZATION_SERVICE_URL: http://organization-service:3002
+      IDENTITY_SERVICE_URL: http://identity-service:3001
+      COMMERCE_SERVICE_URL: http://commerce-service:4005
+      STAFF_CACHE_TTL: 3600
+      STAFF_BRANCH_CACHE_TTL: 1800
+      STAFF_SKILL_CACHE_TTL: 3600
+      ROSTER_CACHE_TTL: 900
+      SHIFT_CACHE_TTL: 3600
+      HR_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  customer-service:
+    build:
+      context: .
+      dockerfile: apps/services/customer-service/Dockerfile
+    container_name: salon-customer-service
+    restart: unless-stopped
+    ports:
+      - "4004:4004"
+    environment:
+      NODE_ENV: production
+      PORT: 4004
+      CUSTOMER_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/customer_db?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_SECRET: default_jwt_access_secret_32_chars_min
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  commerce-service:
+    build:
+      context: .
+      dockerfile: apps/services/commerce-service/Dockerfile
+    container_name: salon-commerce-service
+    restart: unless-stopped
+    ports:
+      - "4005:4005"
+    environment:
+      NODE_ENV: production
+      PORT: 4005
+      COMMERCE_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/commerce_db?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_SECRET: default_jwt_access_secret_32_chars_min
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+      PAYMENT_SERVICE_URL: http://payment-service:4007
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: apps/services/booking-service/Dockerfile
+    container_name: salon-booking-service
+    restart: unless-stopped
+    ports:
+      - "4006:4006"
+    environment:
+      NODE_ENV: production
+      PORT: 4006
+      BOOKING_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/booking_db?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_SECRET: default_jwt_access_secret_32_chars_min
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+      CUSTOMER_SERVICE_URL: http://customer-service:4004
+      COMMERCE_SERVICE_URL: http://commerce-service:4005
+      PEOPLE_SERVICE_URL: http://people-service:3003
+      ORGANIZATION_SERVICE_URL: http://organization-service:3002
+      PAYMENT_SERVICE_URL: http://payment-service:4007
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: apps/services/payment-service/Dockerfile
+    container_name: salon-payment-service
+    restart: unless-stopped
+    ports:
+      - "4007:4007"
+    environment:
+      NODE_ENV: production
+      PORT: 4007
+      PAYMENT_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/payment_db?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      JWT_SECRET: default_jwt_access_secret_32_chars_min
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+    container_name: salon-api-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: default_jwt_access_secret_32_chars_min
+      SERVICE_INTERNAL_SECRET: default_internal_secret_32_chars_minimum
+      IDENTITY_SERVICE_URL: http://identity-service:3001
+      ORGANIZATION_SERVICE_URL: http://organization-service:3002
+      PEOPLE_SERVICE_URL: http://people-service:3003
+      CUSTOMER_SERVICE_URL: http://customer-service:4004
+      COMMERCE_SERVICE_URL: http://commerce-service:4005
+      BOOKING_SERVICE_URL: http://booking-service:4006
+      PAYMENT_SERVICE_URL: http://payment-service:4007
+    depends_on:
+      - identity-service
+      - people-service
+      - customer-service
+      - commerce-service
+      - booking-service
+      - payment-service
+      - redis
+
+volumes:
+  postgres-data:
+  redis-data:
+  rabbitmq-data:

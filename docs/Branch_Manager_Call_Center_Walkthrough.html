@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title> Salon SaaS - Call Center & Telephony Concierge PRD Traceability Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #2D2638;
+      background: #FFFFFF;
+      font-size: 9.5pt;
+      line-height: 1.5;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 7.5pt;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      background: #F4EEFF;
+      color: #5A2EA6;
+      border: 1px solid #D8C2FF;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20pt;
+      font-weight: 700;
+      color: #20132E;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 9.5pt;
+      color: #6B5E78;
+      margin-bottom: 16px;
+    }
+
+    .callout-box {
+      background: #FAF8FD;
+      border-left: 4px solid #5A2EA6;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #3B1C6E;
+      font-size: 10pt;
+      margin-bottom: 4px;
+    }
+
+    .callout-body {
+      font-size: 8.5pt;
+      color: #4A3E5C;
+      line-height: 1.45;
+    }
+
+    h2 {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #20132E;
+      border-bottom: 1.5px solid #EADBFF;
+      padding-bottom: 4px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    p,
+    li {
+      font-size: 9pt;
+      color: #3D334C;
+      line-height: 1.5;
+    }
+
+    ul {
+      margin-left: 18px;
+      margin-bottom: 14px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 8pt;
+    }
+
+    th {
+      background: #F6F0FF;
+      color: #431E7A;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid #E1D3F8;
+      padding: 8px 9px;
+      text-align: left;
+    }
+
+    td {
+      border: 1px solid #ECE3FA;
+      padding: 7px 9px;
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    tr:nth-child(even) td {
+      background: #FDFBFF;
+    }
+
+    .badge-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: #F2EBFC;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .file-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7pt;
+      color: #6C558F;
+      word-break: break-all;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header-badge">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+  <h1>Call Center &amp; Central Concierge Panel Walkthrough</h1>
+  <div class="subtitle">Complete PRD Requirements Traceability, 7-Pillar Telephony Architecture &amp; Implementation
+    Walkthrough</div>
+
+  <!-- EXECUTIVE SUMMARY CALLOUT -->
+  <div class="callout-box">
+    <div class="callout-title">Executive Summary &amp; Central Concierge Authority</div>
+    <div class="callout-body">
+      The <strong>Call Center &amp; Central Concierge Desk</strong> operates as an <strong>Admin / Head Office level
+        multi-branch command center</strong>. Rather than individual salon branch floor staff answering phone inquiries
+      during peak rush hours, central concierge agents handle inbound calls via WebRTC/SIP cloud telephony
+      (Exotel/Twilio), perform instant CTI Caller ID lookups for VIP dossiers and allergy warnings, dispatch
+      conflict-free bookings across all 5 branches (Mumbai, Delhi, Bangalore, Hyderabad, Bhiwandi), manage 5-stage
+      customer grievances, and drive automated lapsed client rebooking campaigns.
+    </div>
+  </div>
+
+  <!-- SECTION 1: PRD TRACEABILITY MATRIX -->
+  <h2>1. Official PRD Requirements Traceability Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 17%;">PRD Requirement ID</th>
+        <th style="width: 23%;">Feature Name</th>
+        <th style="width: 32%;">Product Requirement Description</th>
+        <th style="width: 28%;">Implementation Details In Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-001</span></td>
+        <td><strong>CTI Telephony Screen-Pop &amp; Agent State</strong></td>
+        <td>Persistent CTI bar with real-time agent presence (Available, On Call, Wrap-Up, Break, Offline), SIP
+          extension tracking, and instant caller ID screen-pop trigger.</td>
+        <td>
+          Implemented in <span class="file-path">CallCenterCTIBar.tsx</span> &amp; <span
+            class="file-path">CallCenterBranchContext.tsx</span>. Supports 1-click VIP call simulation.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-002</span></td>
+        <td><strong>Inbound Caller 360° CRM Dossier</strong></td>
+        <td>Instant pop-up modal on incoming call showing VIP Tier, Prepaid Wallet balance, Home Branch, Preferred
+          Stylist, Lifetime Spend, and Critical Scalp Allergies.</td>
+        <td>
+          Built in <span class="file-path">InboundCallerScreenPopModal.tsx</span>. Features direct booking dispatch,
+          WhatsApp price card trigger, and grievance ticket escalation.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-003</span></td>
+        <td><strong>Cross-Branch Booking Dispatch Engine</strong></td>
+        <td>Unified multi-branch appointment calendar dispatch across all 5 outlets with specialist availability,
+          conflict-free chair slots, and advance payment link generation.</td>
+        <td>
+          Implemented in <span class="file-path">AppointmentsPage.tsx</span>. Includes active client waitlist fill desk
+          and instant WhatsApp confirmation triggers.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-004</span></td>
+        <td><strong>Appointment Confirmations &amp; No-Show Guard</strong></td>
+        <td>24-hour next-day appointment confirmation queue with 1-click status actions (Confirm, Reschedule, Cancel,
+          No-Show Warning) and WhatsApp reminder dispatch.</td>
+        <td>
+          Built in <span class="file-path">ConfirmationsPage.tsx</span>. Filters pending vs confirmed rosters with
+          multi-branch scope support.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-005</span></td>
+        <td><strong>Telephony Call Logs &amp; Audio Recordings</strong></td>
+        <td>Central cloud telephony audit ledger with S3 audio playback player, call duration (AHT), gateway session ID,
+          and mandatory call intent disposition codes.</td>
+        <td>
+          Implemented in <span class="file-path">CallLogsPage.tsx</span>. Supports in-browser playback, disposition
+          filtering, and modal call transcripts.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-006</span></td>
+        <td><strong>Customer Grievance &amp; SLA Redressal</strong></td>
+        <td>5-stage customer ticket resolution workflow (Open $\rightarrow$ Investigation $\rightarrow$ Escalated
+          $\rightarrow$ Resolved $\rightarrow$ Closed) with goodwill wallet credit compensation.</td>
+        <td>
+          Implemented in <span class="file-path">SupportTicketsPage.tsx</span>. Features digital salon wallet goodwill
+          payout modal.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-007</span></td>
+        <td><strong>Lost Client Recovery &amp; Retention Campaigns</strong></td>
+        <td>Automated churn detection for guests inactive &gt;45 days with personalized promo voucher codes (e.g.
+          REVIVE20) and 1-click predictive dialer.</td>
+        <td>
+          Built in <span class="file-path">LostClientRecoveryPage.tsx</span>. Tracks recovered client counts and
+          generated win-back revenue.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CC-008</span></td>
+        <td><strong>Concierge Package &amp; Membership Sales</strong></td>
+        <td>Multi-location beauty bundle packages, annual VIP club memberships, and gift vouchers with instant
+          Razorpay/UPI payment link dispatch.</td>
+        <td>
+          Implemented in <span class="file-path">SalesPackagesPage.tsx</span>. Supports cross-branch redemption rules.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 2: BUSINESS RATIONALE -->
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <div class="callout-box">
+    <div class="callout-title">Operational Excellence in Luxury Salon Chains</div>
+    <div class="callout-body">
+      Field-by-field and module-by-module explanation of the business impact delivered by the Central Concierge
+      architecture:
+    </div>
+  </div>
+
+  <ul>
+    <li>
+      <strong>Why Central Concierge Authority?</strong> In high-end salon chains, front-desk receptionists are
+      frequently overwhelmed by walk-in welcomes, retail checkouts, and credit card POS settlements. Centralizing
+      telephony guarantees that 100% of inbound booking calls are answered professionally within 2 rings with zero
+      missed revenue.
+    </li>
+    <li>
+      <strong>Why CTI Screen-Pop with Chemical Allergy Alerts?</strong> Scalp contraindications (e.g., Ammonia
+      sensitivity, nut-oil allergies) are major liability risks. Displaying allergy warnings instantly when the guest
+      dials in ensures agents book the correct organic services and assign certified colorists.
+    </li>
+    <li>
+      <strong>Why Cross-Branch Capacity Balancing?</strong> When a guest's primary salon (e.g. Bandra West) has no open
+      chairs at 4 PM on Saturday, the agent can immediately cross-book them at a nearby sister salon (e.g. Juhu or
+      Worli) rather than losing the booking to a competitor.
+    </li>
+    <li>
+      <strong>Why Goodwill Wallet Compensation in Grievance Redressal?</strong> Customer retention is 5x cheaper than
+      acquisition. Empowering call center managers to instantly credit ₹500–₹1,500 into the guest's salon wallet
+      directly recovers dissatisfied clients before negative online reviews are posted.
+    </li>
+    <li>
+      <strong>Why Automated Lapsed Client Recovery?</strong> Guests who have not visited in 45–90 days represent
+      untapped pipeline. Triggering personalized promotional vouchers (`REVIVE20`) drives consistent month-on-month
+      win-back revenue.
+    </li>
+  </ul>
+
+  <!-- SECTION 3: UI ARCHITECTURE & PAGE FLOW -->
+  <h2>3. UI Architecture &amp; Page Flow</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Component / Page</th>
+        <th style="width: 35%;">UI Flow &amp; Interactive Behavior</th>
+        <th style="width: 40%;">State &amp; Context Binding</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Call Center Sidebar</strong></td>
+        <td>Multi-branch scope popover switcher, seamless curved active tabs (<span
+            class="badge-code">sidebar-active-cutout</span>), clean uppercase headers, and bottom-sticking agent
+          profile.</td>
+        <td>Bound to <span class="file-path">CallCenterBranchContext.tsx</span> with dynamic branch switching across 5
+          salon outlets.</td>
+      </tr>
+      <tr>
+        <td><strong>Persistent CTI Bar</strong></td>
+        <td>Top toolbar with presence toggle (Available, On Call, Wrap-Up, Break), handled metrics ticker, and "Simulate
+          Inbound VIP Call" trigger button.</td>
+        <td>Controls <span class="file-path">activeCall</span> state in context, opening the 360° screen-pop modal.</td>
+      </tr>
+      <tr>
+        <td><strong>Dashboard Command Center</strong></td>
+        <td>5 dynamic KPI cards, live incoming lead queue table, agent daily target progress meter, and urgent call
+          reminders.</td>
+        <td>Filters all lead tables and reminder queues strictly by selected branch.</td>
+      </tr>
+      <tr>
+        <td><strong>Grievance Redressal Desk</strong></td>
+        <td>5-stage visual SLA pipeline, ticket creation modal, priority tags, and digital wallet compensation credit
+          modal.</td>
+        <td>Updates ticket lifecycle from Open to Resolved with goodwill credit balance updates.</td>
+      </tr>
+      <tr>
+        <td><strong>Telephony Call Audio Logs</strong></td>
+        <td>Universal audit ledger with in-browser audio player, call duration, gateway SID, and call intent disposition
+          breakdown.</td>
+        <td>Plays simulated S3 audio recordings with full call transcript modal inspection.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SIGN OFF -->
+  <div
+    style="margin-top: 24px; padding-top: 12px; border-top: 1px solid #E1D3F8; font-size: 8pt; color: #7B6B90; display: flex; justify-content: space-between;">
+    <span> Salon SaaS · Enterprise Call Center &amp; Concierge System</span>
+    <span>Document Ref: DIGI-DOC-CC-2026-V3</span>
+  </div>
+
+</body>
+
+</html>

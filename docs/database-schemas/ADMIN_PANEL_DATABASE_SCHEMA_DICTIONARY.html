@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Admin Panel Module Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · ADMIN PANEL DATA DICTIONARY</span>
+    <h1>Admin Panel Module Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 2.5.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Admin Panel (`/admin/*`) &nbsp;|&nbsp;
+      <strong>Target Modules:</strong> Locations, Catalogue & BOM, Multi-Branch Inventory, Procurement & POs, Transfers,
+      Stocktake Audits, Clients CRM, Staff & Commissions, Finance & GST, Franchise Governance
+    </div>
+
+    <div class="callout">
+      <strong>Mapping Standard:</strong> Every UI field, table column, modal form, filter dropdown, and action button in
+      the Admin Panel web interface maps directly to relational database tables with strict foreign-key integrity.
+    </div>
+
+    <h2>1. Locations & Multi-Branch Desk (`/admin/locations`)</h2>
+    <h3>Table: <code>branches</code> (Branches Registry)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Table Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Business Purpose & Mapping</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Branch ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Unique Branch Code (e.g. <code>BR-001</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Branch Name</strong></td>
+          <td><code>name</code></td>
+          <td>VARCHAR(150)</td>
+          <td>NOT NULL</td>
+          <td>Registered Name (e.g. "Atelier Indrapuri Flagship")</td>
+        </tr>
+        <tr>
+          <td><strong>Branch Code</strong></td>
+          <td><code>code</code></td>
+          <td>VARCHAR(30)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>System Prefix Code (e.g. <code>ATL-IND-01</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Location Type</strong></td>
+          <td><code>type</code></td>
+          <td>VARCHAR(30)</td>
+          <td>NOT NULL</td>
+          <td><code>Flagship</code>, <code>Lounge</code>, <code>Express</code>, <code>Franchise</code></td>
+        </tr>
+        <tr>
+          <td><strong>Franchise Partner Assignment</strong></td>
+          <td><code>franchise_partner_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>NULL, FK &rarr; franchise_partners(id)</td>
+          <td>Linked master franchise partner if Franchise-owned</td>
+        </tr>
+        <tr>
+          <td><strong>City / Region</strong></td>
+          <td><code>city</code></td>
+          <td>VARCHAR(80)</td>
+          <td>NOT NULL</td>
+          <td>City Name (e.g. "Bhopal", "Indore", "Pune")</td>
+        </tr>
+        <tr>
+          <td><strong>Street Address</strong></td>
+          <td><code>address_street</code></td>
+          <td>TEXT</td>
+          <td>NOT NULL</td>
+          <td>Physical premises address</td>
+        </tr>
+        <tr>
+          <td><strong>Branch General Manager</strong></td>
+          <td><code>manager_name</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td>Assigned General Manager</td>
+        </tr>
+        <tr>
+          <td><strong>Contact Phone Number</strong></td>
+          <td><code>contact_phone</code></td>
+          <td>VARCHAR(20)</td>
+          <td>NOT NULL</td>
+          <td>Client reception phone number</td>
+        </tr>
+        <tr>
+          <td><strong>Working Hours Window</strong></td>
+          <td><code>working_hours_display</code></td>
+          <td>VARCHAR(80)</td>
+          <td>DEFAULT '09:00 AM - 09:00 PM'</td>
+          <td>Operating shift display string</td>
+        </tr>
+        <tr>
+          <td><strong>Branch Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(20)</td>
+          <td>DEFAULT 'Active'</td>
+          <td><code>Active</code>, <code>Inactive</code>, <code>Under Renovation</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Catalogue, Services & Recipe BOM (`/admin/catalogue`)</h2>
+    <h3>Table: <code>services</code> & <code>service_recipes</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Table Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Business Mapping</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Service SKU ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Service SKU ID (e.g. <code>SRV-MAJ-613</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Service Title</strong></td>
+          <td><code>name</code></td>
+          <td>VARCHAR(150)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "Global Hair Colour - Majirel"</td>
+        </tr>
+        <tr>
+          <td><strong>Category</strong></td>
+          <td><code>category_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; service_categories(id)</td>
+          <td>Hair, Skin, Aesthetics, Spa</td>
+        </tr>
+        <tr>
+          <td><strong>Gender Applicability</strong></td>
+          <td><code>gender_target</code></td>
+          <td>VARCHAR(20)</td>
+          <td>DEFAULT 'Unisex'</td>
+          <td><code>Female</code>, <code>Male</code>, <code>Unisex</code></td>
+        </tr>
+        <tr>
+          <td><strong>Execution Duration</strong></td>
+          <td><code>base_duration_mins</code></td>
+          <td>INTEGER</td>
+          <td>NOT NULL</td>
+          <td>Minutes on styling chair</td>
+        </tr>
+        <tr>
+          <td><strong>Buffer Time</strong></td>
+          <td><code>buffer_time_mins</code></td>
+          <td>INTEGER</td>
+          <td>DEFAULT 10</td>
+          <td>Cleaning/Prep buffer</td>
+        </tr>
+        <tr>
+          <td><strong>Base Price (Excl. Tax)</strong></td>
+          <td><code>base_price</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Base Selling Price (₹)</td>
+        </tr>
+        <tr>
+          <td><strong>GST Tax Rate</strong></td>
+          <td><code>gst_rate_pct</code></td>
+          <td>DECIMAL(5, 2)</td>
+          <td>DEFAULT 18.00</td>
+          <td>18% standard GST</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Inventory & Procurement Master Desk (`/admin/inventory`)</h2>
+    <h3>Table: <code>products_master_skus</code> (Master SKU Directory)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Table Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Master SKU ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Master SKU (e.g. <code>SKU-MAJ-613</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Barcode / SKU Code</strong></td>
+          <td><code>sku_code</code></td>
+          <td>VARCHAR(50)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Barcode scanned at POS/GRN</td>
+        </tr>
+        <tr>
+          <td><strong>Product Full Name</strong></td>
+          <td><code>name</code></td>
+          <td>VARCHAR(180)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "L'Oréal Majirel Colour Tube - 6.13"</td>
+        </tr>
+        <tr>
+          <td><strong>Item Classification</strong></td>
+          <td><code>item_type</code></td>
+          <td>VARCHAR(30)</td>
+          <td>NOT NULL</td>
+          <td><code>Consumable (Backwash)</code>, <code>Retail (Resale)</code></td>
+        </tr>
+        <tr>
+          <td><strong>Packaging Unit</strong></td>
+          <td><code>measurement_unit</code></td>
+          <td>VARCHAR(30)</td>
+          <td>NOT NULL</td>
+          <td><code>ml</code>, <code>gm</code>, <code>Tubes</code>, <code>Bottles</code>, <code>pcs</code></td>
+        </tr>
+        <tr>
+          <td><strong>GST HSN Code</strong></td>
+          <td><code>hsn_code</code></td>
+          <td>VARCHAR(20)</td>
+          <td>NOT NULL</td>
+          <td>8-digit GST HSN (e.g. <code>33051090</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Maximum Retail Price (MRP)</strong></td>
+          <td><code>mrp_selling_price</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Client retail selling price</td>
+        </tr>
+        <tr>
+          <td><strong>Base Purchase Cost</strong></td>
+          <td><code>default_purchase_cost</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Inward FIFO baseline cost</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Table: <code>suppliers</code>, <code>purchase_orders</code> & <code>purchase_returns_debit_notes</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Vendor Trading Name</strong></td>
+          <td><code>name</code></td>
+          <td>VARCHAR(180)</td>
+          <td>NOT NULL</td>
+          <td>Legal Entity (e.g. "L'Oréal India")</td>
+        </tr>
+        <tr>
+          <td><strong>Vendor GSTIN</strong></td>
+          <td><code>gstin</code></td>
+          <td>VARCHAR(15)</td>
+          <td>NOT NULL</td>
+          <td>15-character GSTIN</td>
+        </tr>
+        <tr>
+          <td><strong>Credit Terms</strong></td>
+          <td><code>payment_terms</code></td>
+          <td>VARCHAR(100)</td>
+          <td>DEFAULT 'Net 30 Days'</td>
+          <td>Settlement agreement</td>
+        </tr>
+        <tr>
+          <td><strong>PO Total Payable</strong></td>
+          <td><code>total_payable_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>PO Gross Value (Incl. 18% GST)</td>
+        </tr>
+        <tr>
+          <td><strong>PO Approval Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Pending Approval'</td>
+          <td><code>Pending Approval</code>, <code>Approved</code>, <code>Fully Received</code></td>
+        </tr>
+        <tr>
+          <td><strong>Debit Note Reference</strong></td>
+          <td><code>credit_note_ref</code></td>
+          <td>VARCHAR(50)</td>
+          <td>NOT NULL</td>
+          <td>Reference (e.g. <code>DN-2026-0881</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Return Reason</strong></td>
+          <td><code>reason</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td><code>Damaged in Transit</code>, <code>Near Expiry Spoilage</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Table: <code>stock_transfers</code> & <code>stocktake_sessions</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Source Branch</strong></td>
+          <td><code>source_branch_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; branches(id)</td>
+          <td>Dispatch origin branch</td>
+        </tr>
+        <tr>
+          <td><strong>Destination Branch</strong></td>
+          <td><code>destination_branch_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; branches(id)</td>
+          <td>Receiving branch</td>
+        </tr>
+        <tr>
+          <td><strong>Box Seal Code</strong></td>
+          <td><code>seal_number</code></td>
+          <td>VARCHAR(60)</td>
+          <td>NOT NULL</td>
+          <td>Tamper-evident seal number</td>
+        </tr>
+        <tr>
+          <td><strong>Audit Methodology</strong></td>
+          <td><code>counting_methodology</code></td>
+          <td>VARCHAR(40)</td>
+          <td>DEFAULT 'Blind Count'</td>
+          <td><code>Blind Count</code> vs <code>Visible Book Count</code></td>
+        </tr>
+        <tr>
+          <td><strong>POS Freeze Status</strong></td>
+          <td><code>is_pos_frozen</code></td>
+          <td>BOOLEAN</td>
+          <td>DEFAULT TRUE</td>
+          <td>Lockdown POS during stocktake</td>
+        </tr>
+        <tr>
+          <td><strong>Net Variance (Units)</strong></td>
+          <td><code>variance_quantity</code></td>
+          <td>INTEGER</td>
+          <td>DEFAULT 0</td>
+          <td>Difference (Actual - Expected)</td>
+        </tr>
+        <tr>
+          <td><strong>Net Variance Value</strong></td>
+          <td><code>variance_value</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Net financial discrepancy loss/gain (₹)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Client CRM & POS Invoicing (`/admin/clients`, `/admin/finance`)</h2>
+    <h3>Table: <code>clients</code> & <code>invoices</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Client Mobile Number</strong></td>
+          <td><code>mobile_phone</code></td>
+          <td>VARCHAR(20)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Primary key for POS search lookup</td>
+        </tr>
+        <tr>
+          <td><strong>Client Full Name</strong></td>
+          <td><code>first_name</code>, <code>last_name</code></td>
+          <td>VARCHAR(80)</td>
+          <td>NOT NULL</td>
+          <td>Customer Given Name & Surname</td>
+        </tr>
+        <tr>
+          <td><strong>VIP Tier Badge</strong></td>
+          <td><code>vip_tier</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Regular'</td>
+          <td><code>Bronze</code>, <code>Silver</code>, <code>Gold</code>, <code>Diamond VIP</code></td>
+        </tr>
+        <tr>
+          <td><strong>Prepaid Wallet Balance</strong></td>
+          <td><code>wallet_balance</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Account advance deposit (₹)</td>
+        </tr>
+        <tr>
+          <td><strong>GST Tax Invoice #</strong></td>
+          <td><code>invoice_number</code></td>
+          <td>VARCHAR(50)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Official GST Tax Invoice (e.g. <code>INV-ATL-26-0881</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>CGST / SGST / IGST</strong></td>
+          <td><code>cgst_amount</code>, <code>sgst_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>State & Central GST (9% + 9%)</td>
+        </tr>
+        <tr>
+          <td><strong>Gross Invoice Total</strong></td>
+          <td><code>total_payable_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Final Bill Total (₹)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Admin Panel Relational Entity Mapping Specification.
+    </div>
+  </div>
+</body>
+
+</html>

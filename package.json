@@ -1,0 +1,47 @@
+{
+  "name": "salon-spa-saas",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --concurrency=20",
+    "dev:services": "turbo run dev --concurrency=20 --filter=@salon-spa-saas/api-gateway --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "db:push": "turbo run db:push --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "db:push:services": "turbo run db:push --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "db:migrate": "turbo run db:migrate --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "db:migrate:services": "turbo run db:migrate --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "db:migrate:all": "turbo run db:migrate --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "dev:web": "pnpm --filter @salon-spa-saas/web dev",
+    "seed:identity": "pnpm --filter @salon-spa-saas/identity-service prisma:seed",
+    "seed:organization": "pnpm --filter @salon-spa-saas/organization-service prisma:seed",
+    "seed:people": "pnpm --filter @salon-spa-saas/people-service prisma:seed",
+    "db:migrate:identity": "pnpm --filter @salon-spa-saas/identity-service prisma:migrate",
+    "db:migrate:organization": "pnpm --filter @salon-spa-saas/organization-service prisma:migrate",
+    "db:migrate:people": "pnpm --filter @salon-spa-saas/people-service prisma:migrate",
+    "db:summary": "node scripts/db-summary.mjs",
+    "db:studio": "node scripts/db-studio.mjs",
+    "db:push:script": "node scripts/db-push.mjs",
+    "db:migrate:script": "node scripts/db-migrate.mjs",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "prisma:generate": "turbo run prisma:generate --concurrency=1",
+    "prisma:push": "turbo run db:push --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "prisma:migrate": "turbo run db:migrate --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0",
+    "turbo": "^2.1.0",
+    "typescript": "^5.5.0"
+  },
+  "packageManager": "pnpm@9.9.0",
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx,json,css}": [
+      "biome check --apply"
+    ]
+  }
+}

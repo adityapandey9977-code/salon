@@ -1,0 +1,213 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("COMMUNICATION_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+// ==========================================
+// Enums
+// ==========================================
+
+enum Channel {
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  QUEUED
+  SENT
+  DELIVERED
+  FAILED
+  RESOLVED
+}
+
+enum DeliveryAttemptStatus {
+  SUCCESS
+  FAILED
+  RETRYING
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  RUNNING
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum CallDisposition {
+  BOOKED
+  FOLLOW_UP
+  NO_ANSWER
+  BUSY
+  NOT_INTERESTED
+  CALLBACK_REQUESTED
+  LEAD_CREATED
+  OTHER
+}
+
+// ==========================================
+// Notification Templates & Render Engine
+// ==========================================
+
+model NotificationTemplate {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String?        @map("tenant_id") @db.Uuid // Null for platform global templates
+  code            String         @map("code")
+  channel         Channel
+  name            String
+  subjectTemplate String?        @map("subject_template")
+  bodyTemplate    String         @map("body_template")
+  language        String         @default("en")
+  isActive        Boolean        @default(true) @map("is_active")
+  version         Int            @default(1)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  notifications   Notification[]
+
+  @@unique([code, channel, language])
+  @@index([tenantId])
+  @@map("notification_templates")
+}
+
+// ==========================================
+// Notification Messages & Delivery Attempts
+// ==========================================
+
+model Notification {
+  id               String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String                        @map("tenant_id") @db.Uuid
+  recipientType    String                        @default("CUSTOMER") @map("recipient_type") // CUSTOMER, STAFF, OWNER
+  recipientId      String                        @map("recipient_id") // UUID or phone/email
+  channel          Channel
+  templateId       String?                       @map("template_id") @db.Uuid
+  subject          String?
+  bodyRendered     String                        @map("body_rendered")
+  status           NotificationStatus            @default(PENDING)
+  scheduledAt      DateTime?                     @map("scheduled_at")
+  sentAt           DateTime?                     @map("sent_at")
+  deliveredAt      DateTime?                     @map("delivered_at")
+  failedAt         DateTime?                     @map("failed_at")
+  metadataJson     Json?                         @map("metadata_json")
+  createdAt        DateTime                      @default(now()) @map("created_at")
+  updatedAt        DateTime                      @updatedAt @map("updated_at")
+
+  template         NotificationTemplate?         @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  deliveryAttempts NotificationDeliveryAttempt[]
+
+  @@index([tenantId, status])
+  @@index([tenantId, recipientId])
+  @@map("notifications")
+}
+
+model NotificationDeliveryAttempt {
+  id                     String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String                @map("tenant_id") @db.Uuid
+  notificationId         String                @map("notification_id") @db.Uuid
+  provider               String // TWILIO, SENDGRID, WHATSAPP_CLOUD, FIREBASE, SIMULATED
+  attemptNumber          Int                   @default(1) @map("attempt_number")
+  providerMessageId      String?               @map("provider_message_id")
+  status                 DeliveryAttemptStatus
+  errorCode              String?               @map("error_code")
+  errorMessageSanitized  String?               @map("error_message_sanitized")
+  attemptedAt            DateTime              @default(now()) @map("attempted_at")
+
+  notification           Notification          @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, notificationId])
+  @@map("notification_delivery_attempts")
+}
+
+// ==========================================
+// Marketing Campaigns & Audience Targeting
+// ==========================================
+
+model Campaign {
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId           String              @map("tenant_id") @db.Uuid
+  name               String
+  type               String              @default("PROMOTIONAL") // PROMOTIONAL, WINBACK, FESTIVE
+  channel            Channel             @default(WHATSAPP)
+  status             CampaignStatus      @default(DRAFT)
+  segmentReferenceId String?             @map("segment_reference_id") @db.Uuid
+  messageContent     String?             @map("message_content")
+  scheduledAt        DateTime?           @map("scheduled_at")
+  createdByUserId    String?             @map("created_by_user_id") @db.Uuid
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+
+  recipients         CampaignRecipient[]
+
+  @@index([tenantId, status])
+  @@map("campaigns")
+}
+
+model CampaignRecipient {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  campaignId    String    @map("campaign_id") @db.Uuid
+  customerId    String    @map("customer_id") @db.Uuid // Ref to customer-service
+  status        String    @default("PENDING") // PENDING, SENT, DELIVERED, FAILED, CONVERTED
+  lastAttemptAt DateTime? @map("last_attempt_at")
+  convertedAt   DateTime? @map("converted_at")
+
+  campaign      Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, customerId])
+  @@index([tenantId, campaignId])
+  @@map("campaign_recipients")
+}
+
+// ==========================================
+// Call Center & Telephony Integration
+// ==========================================
+
+model CallCenterAgentProfile {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  identityUserId  String   @unique @map("identity_user_id") @db.Uuid
+  employeeId      String?  @map("employee_id") @db.Uuid
+  providerAgentId String?  @map("provider_agent_id")
+  status          String   @default("AVAILABLE") // AVAILABLE, ON_CALL, WRAP_UP, OFFLINE
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([tenantId])
+  @@map("call_center_agent_profiles")
+}
+
+model TelephonyCallLog {
+  id                  String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId            String           @map("tenant_id") @db.Uuid
+  provider            String           @default("TWILIO")
+  providerCallId      String?          @map("provider_call_id")
+  direction           String           @default("INBOUND") // INBOUND, OUTBOUND
+  fromNumber          String           @map("from_number")
+  toNumber            String           @map("to_number")
+  customerId          String?          @map("customer_id") @db.Uuid
+  leadId              String?          @map("lead_id") @db.Uuid
+  appointmentId       String?          @map("appointment_id") @db.Uuid
+  agentIdentityUserId String?          @map("agent_identity_user_id") @db.Uuid
+  startedAt           DateTime         @default(now()) @map("started_at")
+  answeredAt          DateTime?        @map("answered_at")
+  endedAt             DateTime?        @map("ended_at")
+  durationSeconds     Int?             @default(0) @map("duration_seconds")
+  disposition         CallDisposition?
+  recordingObjectKey  String?          @map("recording_object_key")
+  status              String           @default("COMPLETED")
+  createdAt           DateTime         @default(now()) @map("created_at")
+
+  @@index([tenantId, fromNumber])
+  @@index([tenantId, agentIdentityUserId])
+  @@map("telephony_call_logs")
+}

@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import "../../../../packages/ui/src/styles/global.css";
+@source "../../../../packages/ui/src";
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+}
+
+/* Custom Sleek Brand Scrollbar Style */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(90, 46, 166, 0.25);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(90, 46, 166, 0.6);
+}
+
+/* Completely remove scrollbar side arrow buttons and corners everywhere */
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:single-button,
+::-webkit-scrollbar-button:horizontal:decrement,
+::-webkit-scrollbar-button:horizontal:increment,
+::-webkit-scrollbar-button:vertical:decrement,
+::-webkit-scrollbar-button:vertical:increment,
+::-webkit-scrollbar-button:start,
+::-webkit-scrollbar-button:end,
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Firefox & Modern Browser standard thin scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(90, 46, 166, 0.3) transparent;
+}
+
+/* Complete scrollbar invisibility exclusively for all sidebars across all panels (Franchise, Inventory, Finance, Call Center, Branch Manager, Admin, Super Admin, Stylist, Client, etc.) */
+aside,
+aside *,
+[data-sidebar],
+[data-sidebar] *,
+.sidebar,
+.sidebar * {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+aside::-webkit-scrollbar,
+aside *::-webkit-scrollbar,
+[data-sidebar]::-webkit-scrollbar,
+[data-sidebar] *::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.sidebar *::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+/* Universal No-Scrollbar Utility:
+   Hides the scrollbar completely across Chrome, Safari, Edge, and Firefox while keeping full scrollability */
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+.no-scrollbar::-webkit-scrollbar-button,
+.hide-scrollbar::-webkit-scrollbar-button,
+.scrollbar-none::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+}
+
+.no-scrollbar,
+.hide-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+@supports (-moz-appearance: none) {
+  .no-scrollbar,
+  .hide-scrollbar,
+  .scrollbar-none {
+    scrollbar-width: none !important;
+  }
+}
+
+/* Horizontal scrollable containers */
+.overflow-x-auto {
+  overflow-x: auto !important;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.overflow-x-auto>* {
+  flex-shrink: 0;
+}
+
+/* Visible elegant purple scrollbar for tab navigation */
+.tab-scroll,
+.tab-scroller {
+  overflow-x: auto !important;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin !important;
+  scrollbar-color: #9d71e8 rgba(90, 46, 166, 0.08) !important;
+  padding-bottom: 4px;
+}
+
+.tab-scroll::-webkit-scrollbar,
+.tab-scroller::-webkit-scrollbar {
+  display: block !important;
+  height: 6px !important;
+  width: 6px !important;
+  -webkit-appearance: none !important;
+}
+
+.tab-scroll::-webkit-scrollbar-track,
+.tab-scroller::-webkit-scrollbar-track {
+  background: rgba(90, 46, 166, 0.08) !important;
+  border-radius: 9999px !important;
+}
+
+.tab-scroll::-webkit-scrollbar-thumb,
+.tab-scroller::-webkit-scrollbar-thumb {
+  background: #9d71e8 !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.tab-scroll::-webkit-scrollbar-thumb:hover,
+.tab-scroller::-webkit-scrollbar-thumb:hover {
+  background: #5A2EA6 !important;
+}

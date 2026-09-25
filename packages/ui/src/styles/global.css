@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #fbf8fc;
+  --color-white: #ffffff;
+  --color-ink: #3b2647;
+  --color-soft: #7b6385;
+  --color-muted: #9a82a6;
+  --color-line: #f0e6f5;
+  --color-pine: #eae0f2;
+  --color-pine-2: #dfd0e8;
+  --color-pine-3: #d1bddf;
+  --color-clay: #cca080;
+  --color-clay-s: #f8f4fc;
+  --color-sage: #8b70a7;
+  --color-gold: #cca080;
+
+  --shadow-xs: 0 1px 2px rgba(59, 38, 71, 0.03);
+  --shadow-sm: 0 1px 3px rgba(59, 38, 71, 0.04), 0 4px 12px rgba(59, 38, 71, 0.02);
+  --shadow-md: 0 2px 8px rgba(59, 38, 71, 0.05), 0 8px 24px rgba(59, 38, 71, 0.03);
+  --shadow-lg: 0 16px 36px rgba(59, 38, 71, 0.06);
+
+  --radius-md: 16px;
+
+  --font-serif: "DM Serif Display", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply text-[#3b2647] font-sans font-medium antialiased;
+    background: #eae0f2;
+    margin: 0;
+  }
+}
+
+@layer utilities {
+  .sidebar-active-cutout {
+    position: relative;
+    background-color: var(--color-paper) !important;
+    color: var(--color-sage) !important;
+    border-radius: 9999px 0 0 9999px !important;
+    margin-right: -10px !important;
+    padding-right: 18px !important;
+    z-index: 10;
+  }
+
+  .sidebar-active-cutout::before,
+  .sidebar-active-cutout::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .sidebar-active-cutout::before {
+    top: -20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 10px 10px 0 10px var(--color-paper);
+  }
+
+  .sidebar-active-cutout::after {
+    bottom: -20px;
+    border-top-right-radius: 20px;
+    box-shadow: 10px -10px 0 10px var(--color-paper);
+  }
+}
+
+/* Universal Modern Thin Scrollbars for all elements & containers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(90, 46, 166, 0.25);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(90, 46, 166, 0.6);
+}
+
+/* Completely remove scrollbar side arrow buttons and corners everywhere */
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:single-button,
+::-webkit-scrollbar-button:horizontal:decrement,
+::-webkit-scrollbar-button:horizontal:increment,
+::-webkit-scrollbar-button:vertical:decrement,
+::-webkit-scrollbar-button:vertical:increment,
+::-webkit-scrollbar-button:start,
+::-webkit-scrollbar-button:end,
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Firefox & Modern Browser standard thin scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(90, 46, 166, 0.3) transparent;
+}
+
+/* Custom Thin Scrollbars for content */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(90, 46, 166, 0.3);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(90, 46, 166, 0.7);
+}
+
+/* Complete scrollbar invisibility exclusively for all sidebars across all panels (Franchise, Inventory, Finance, Call Center, Branch Manager, Admin, Super Admin, Stylist, Client, etc.) */
+aside,
+aside *,
+[data-sidebar],
+[data-sidebar] *,
+.sidebar,
+.sidebar * {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+aside::-webkit-scrollbar,
+aside *::-webkit-scrollbar,
+[data-sidebar]::-webkit-scrollbar,
+[data-sidebar] *::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.sidebar *::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+/* Universal No-Scrollbar Utility:
+   Hides the scrollbar completely across Chrome, Safari, Edge, and Firefox while keeping full scrollability */
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+.no-scrollbar::-webkit-scrollbar-button,
+.hide-scrollbar::-webkit-scrollbar-button,
+.scrollbar-none::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+}
+
+.no-scrollbar,
+.hide-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+@supports (-moz-appearance: none) {
+  .no-scrollbar,
+  .hide-scrollbar,
+  .scrollbar-none {
+    scrollbar-width: none !important;
+  }
+}
+
+/* Horizontal scrollable containers across all modules */
+.overflow-x-auto {
+  overflow-x: auto !important;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent flex child items (tabs, pills, action buttons) from squishing */
+.overflow-x-auto>* {
+  flex-shrink: 0;
+}

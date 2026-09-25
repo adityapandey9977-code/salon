@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Finance & HR Panel Module Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · FINANCE & HR DATA DICTIONARY</span>
+    <h1>Finance & HR Panel Module Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 2.8.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Finance & Human Resources Workspace (`/finance-hr/*` & `/admin/finance`, `/admin/staff`)
+      &nbsp;|&nbsp;
+      <strong>Key Domains:</strong> General Ledger, GST Tax Returns (GSTR-1/3B), Accounts Payable, Employee KYC Vault,
+      Monthly Payroll Runs, Stylist Commission Engine, PF/ESI/TDS/PT Deductions
+    </div>
+
+    <div class="callout">
+      <strong>Finance & Payroll Precision Architecture:</strong> Double-entry journal vouchers with balanced debits and
+      credits, statutory tax ledgers for GSTR-1/3B filings, and automated payroll runs combining basic pay, stylist
+      commissions, and Indian statutory deductions (PF 12%, ESI 0.75%, TDS, PT).
+    </div>
+
+    <h2>1. General Ledger, Chart of Accounts & Financial Journals</h2>
+    <h3>Table: <code>chart_of_accounts</code> & <code>journal_vouchers</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Account Code</strong></td>
+          <td><code>account_code</code></td>
+          <td>VARCHAR(30)</td>
+          <td>PRIMARY KEY</td>
+          <td>Account Code (e.g. <code>1001-CASH</code>, <code>4001-REV-SRV</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Account Title</strong></td>
+          <td><code>account_name</code></td>
+          <td>VARCHAR(150)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "Salon Services Revenue", "Vendor Cost of Goods"</td>
+        </tr>
+        <tr>
+          <td><strong>Account Category</strong></td>
+          <td><code>account_category</code></td>
+          <td>VARCHAR(40)</td>
+          <td>NOT NULL</td>
+          <td><code>Asset</code>, <code>Liability</code>, <code>Equity</code>, <code>Revenue</code>,
+            <code>Expense</code></td>
+        </tr>
+        <tr>
+          <td><strong>Voucher Number</strong></td>
+          <td><code>voucher_number</code></td>
+          <td>VARCHAR(40)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Journal Voucher Reference (e.g. <code>JV-2026-0881</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Total Debits & Credits</strong></td>
+          <td><code>total_debit</code>, <code>total_credit</code></td>
+          <td>DECIMAL(14, 2)</td>
+          <td>NOT NULL</td>
+          <td>Double-Entry Balance Verification</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. GST Invoicing, Tax Ledgers & Statutory Compliance</h2>
+    <h3>Table: <code>gst_tax_ledgers</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>HSN / SAC Code</strong></td>
+          <td><code>hsn_sac_code</code></td>
+          <td>VARCHAR(20)</td>
+          <td>NOT NULL</td>
+          <td><code>999721</code> (Services) or <code>33051090</code> (Goods)</td>
+        </tr>
+        <tr>
+          <td><strong>Taxable Base Value</strong></td>
+          <td><code>taxable_value</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Net base amount (Excl. Tax)</td>
+        </tr>
+        <tr>
+          <td><strong>CGST / SGST (9% + 9%)</strong></td>
+          <td><code>cgst_amount</code>, <code>sgst_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Central & State GST components</td>
+        </tr>
+        <tr>
+          <td><strong>Input Tax Credit (ITC)</strong></td>
+          <td><code>itc_claimed_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>GST credit eligible from vendor purchases</td>
+        </tr>
+        <tr>
+          <td><strong>Net GST Payable</strong></td>
+          <td><code>net_tax_payable</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td><code>(CGST + SGST + IGST) - ITC</code></td>
+          <td>Net GST tax due to Government</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Employee Master, KYC & Monthly Payroll Engine</h2>
+    <h3>Table: <code>employees</code> & <code>payroll_runs</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Employee Code</strong></td>
+          <td><code>employee_code</code></td>
+          <td>VARCHAR(40)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Staff ID (e.g. <code>ATL-EMP-104</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Legal Full Name</strong></td>
+          <td><code>full_name</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td>Staff Member Legal Name</td>
+        </tr>
+        <tr>
+          <td><strong>PAN & Aadhaar Masked</strong></td>
+          <td><code>pan_number</code>, <code>aadhaar_masked</code></td>
+          <td>VARCHAR(20)</td>
+          <td>NOT NULL</td>
+          <td>KYC Identification</td>
+        </tr>
+        <tr>
+          <td><strong>Bank Account & IFSC</strong></td>
+          <td><code>bank_account_number</code>, <code>bank_ifsc_code</code></td>
+          <td>VARCHAR(40)</td>
+          <td>NOT NULL</td>
+          <td>Direct Salary Deposit Details</td>
+        </tr>
+        <tr>
+          <td><strong>UAN & ESI IP #</strong></td>
+          <td><code>uan_number</code>, <code>esi_insurance_number</code></td>
+          <td>VARCHAR(20)</td>
+          <td>NULL</td>
+          <td>Statutory Provident Fund & ESI IP</td>
+        </tr>
+        <tr>
+          <td><strong>Payroll Month</strong></td>
+          <td><code>payroll_month</code></td>
+          <td>VARCHAR(10)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "AUG-2026"</td>
+        </tr>
+        <tr>
+          <td><strong>Net Payout Total (₹)</strong></td>
+          <td><code>net_payout_total</code></td>
+          <td>DECIMAL(14, 2)</td>
+          <td>NOT NULL</td>
+          <td>Net bank salary disbursal amount</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Table: <code>salary_slips</code> (Detailed Pay Slip Line Items)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Pay Slip Item</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Category</th>
+          <th>Calculation / Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Basic Salary</strong></td>
+          <td><code>basic_salary_earned</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Earnings</td>
+          <td>Base Salary pro-rated for payable days</td>
+        </tr>
+        <tr>
+          <td><strong>HRA Allowance</strong></td>
+          <td><code>house_rent_allowance</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Earnings</td>
+          <td>House Rent Allowance (40% of Basic)</td>
+        </tr>
+        <tr>
+          <td><strong>Service Commission</strong></td>
+          <td><code>service_commission_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Earnings</td>
+          <td>From Stylist Commission Ledger</td>
+        </tr>
+        <tr>
+          <td><strong>Retail Commission</strong></td>
+          <td><code>retail_commission_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Earnings</td>
+          <td>From Retail Product Upsells</td>
+        </tr>
+        <tr>
+          <td><strong>Employee PF (12%)</strong></td>
+          <td><code>pf_employee_deduction</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Deduction</td>
+          <td>12% of Basic Salary</td>
+        </tr>
+        <tr>
+          <td><strong>Employee ESI (0.75%)</strong></td>
+          <td><code>esi_employee_deduction</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Deduction</td>
+          <td>0.75% of Gross Earnings</td>
+        </tr>
+        <tr>
+          <td><strong>Professional Tax (PT)</strong></td>
+          <td><code>professional_tax</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Deduction</td>
+          <td>State PT Deduction (₹200/mo)</td>
+        </tr>
+        <tr>
+          <td><strong>Income Tax (TDS)</strong></td>
+          <td><code>tds_income_tax</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Deduction</td>
+          <td>Monthly TDS withholding</td>
+        </tr>
+        <tr>
+          <td><strong>Net Salary Disbursed</strong></td>
+          <td><code>net_salary_payable</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Net Payout</td>
+          <td><code>Gross Earnings - Total Deductions</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Finance & HR Workspace Database Specification.
+    </div>
+  </div>
+</body>
+
+</html>

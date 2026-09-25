@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Brand Owner Brand Settings PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid #efe6ff;
+      vertical-align: top;
+      color: #332d41;
+    }
+
+    tr:nth-child(even) td {
+      background: #fdfcff;
+    }
+
+    .req-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: #f3ecff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 8.5px;
+      font-weight: 700;
+      background: #e6f9f0;
+      color: #0d8a50;
+      border: 1px solid #b3edd0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .card {
+      background: #faf8ff;
+      border: 1px solid #eee5ff;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card strong {
+      color: #2D1552;
+      display: block;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .card p {
+      font-size: 10px;
+      margin: 0;
+      color: #5c556b;
+    }
+
+    ul {
+      margin: 0 0 10px 0;
+      padding-left: 18px;
+      color: #4b4458;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header Badge -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+
+  <h1>Brand Owner / Head Office → Brand Settings &amp; Governance Module</h1>
+  <p><strong>System Walkthrough, Architectural Specification &amp; Implementation Traceability Matrix</strong></p>
+
+  <!-- Executive Summary Box -->
+  <div class="callout-box">
+    <strong>Executive Architectural Summary:</strong>
+    The Brand Settings module delivers centralized enterprise configuration and governance for the Brand Owner / Head
+    Office across corporate identities, multi-location localization defaults, pricing models, GST &amp; SAC tax
+    configurations, cashier discount thresholds, business policies, weekly working hours, 9 system roles × 13 modules
+    RBAC matrix, and non-destructive workflow controls.
+    It strictly adheres to architectural boundaries, maintaining complete separation from Platform Super Admin (SaaS
+    billing/infrastructure) and local Branch Manager operations.
+  </div>
+
+  <h2>1. Official PRD Traceability Matrix</h2>
+  <p>Mapping all official product requirements to their concrete implementation within the codebase:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 14%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 32%;">Product Requirement Description</th>
+        <th style="width: 32%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="req-code">SALO-PRD-094</span></td>
+        <td><strong>Master Brand Profile &amp; Identity</strong></td>
+        <td>Legal business identity, contact leads, visual theme tokens, and GST/PAN registrations.</td>
+        <td><code>BrandProfileTab.tsx</code>: Corporate entity form, color token pickers, GST verification status, and
+          validation.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-095</span></td>
+        <td><strong>Locations &amp; Localization Defaults</strong></td>
+        <td>Default time zone, currency, Indian number formatting, date format, and branch scope matrix.</td>
+        <td><code>LocationsDefaultsTab.tsx</code>: Brand defaults editor, 6-branch scope table, and portaled branch
+          override modal.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-096</span></td>
+        <td><strong>Pricing Architecture &amp; Tiers</strong></td>
+        <td>Brand-wide master catalog vs tiered branch-specific pricing and manager overrides.</td>
+        <td><code>PricingTaxTab.tsx</code>: Pricing strategy selector, branch deviation ledger, and difference variance
+          audits.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-097</span></td>
+        <td><strong>Tax &amp; SAC Code Configuration</strong></td>
+        <td>Tax inclusive/exclusive presentation, GST 18% slab rules, and official CBIC SAC codes.</td>
+        <td><code>PricingTaxTab.tsx</code>: Checkout tax mode toggle, statutory SAC mapping (999721 Hair, 999722 Beauty,
+          999723 Spa).</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-098</span></td>
+        <td><strong>Cashier Discount Controls</strong></td>
+        <td>Max self-authorized cashier discount (10%) and mandatory manager PIN threshold (&gt;15%).</td>
+        <td><code>PricingTaxTab.tsx</code>: Discount policy parameters, manager authorization triggers, and margin
+          protection rules.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-099</span></td>
+        <td><strong>Operational Business Policies</strong></td>
+        <td>8 PRD policies: Pricing, Discounts, Refunds, Packages, Memberships, Consent, No-shows, Cancellations.</td>
+        <td><code>PoliciesTab.tsx</code>: Policies register, scope tags (Brand-wide vs Selected Branches), and status
+          toggles.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-100</span></td>
+        <td><strong>Policy Version History Dossier</strong></td>
+        <td>Inspection dossier displaying operating provisions and complete historical audit timeline.</td>
+        <td><code>PoliciesTab.tsx</code>: Portaled dossier modal with multi-version audit table and effective date
+          tracking.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-101</span></td>
+        <td><strong>Weekly Working Hours &amp; Shifts</strong></td>
+        <td>7-day operating hours, midday lunch break windows, and network-wide schedule sync.</td>
+        <td><code>WorkingHoursHolidaysTab.tsx</code>: Day-by-day open/closed toggles, time inputs, and network sync
+          button.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-102</span></td>
+        <td><strong>Holiday Calendar Management</strong></td>
+        <td>National gazetted holidays, festive half-days, and branch blackout date controls.</td>
+        <td><code>WorkingHoursHolidaysTab.tsx</code>: Holiday calendar table, status tracking, and Add Holiday portaled
+          modal.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-103</span></td>
+        <td><strong>Role &amp; Permission Matrix</strong></td>
+        <td>9 System Roles × 13 Modules × 6 Permission Types (View, Create, Edit, Delete, Approve, Export).</td>
+        <td><code>RolesPermissionsTab.tsx</code>: Interactive RBAC matrix with instant toggle buttons and role switcher.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-104</span></td>
+        <td><strong>Role Details &amp; Duplication</strong></td>
+        <td>Role profile inspection dossier, user assignment counts, and 1-click clone action.</td>
+        <td><code>RolesPermissionsTab.tsx</code>: Role dossier modal with module pills and duplicate role cloning
+          engine.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-105</span></td>
+        <td><strong>Brand Controls &amp; Soft-Hiding</strong></td>
+        <td>Centralized module toggles (Appointments, Packages, Loyalty, Franchise, Home Services).</td>
+        <td><code>BrandControlsTab.tsx</code>: Non-destructive workflow hiding mechanism preserving historical database
+          records.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-106</span></td>
+        <td><strong>Configuration Audit Trail</strong></td>
+        <td>Immutable log auditing material changes to pricing, discounts, permissions, and policies.</td>
+        <td><code>AuditHistoryTab.tsx</code>: Read-only audit ledger tracking author, timestamp, IP address, and delta
+          values.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <p>A detailed rationale explaining the commercial need and architectural choices for each capability:</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <strong>1. Why Centralized Brand Defaults?</strong>
+      <p>Multi-unit salon enterprises operating across Indore, Bhopal, Ujjain, and Gwalior require consistent
+        localization (Asia/Kolkata IST, Indian Lakhs/Crores, DD/MM/YYYY) without manual re-entry at each salon branch.
+      </p>
+    </div>
+    <div class="card">
+      <strong>2. Why Dual Pricing Strategies &amp; Deviation Matrix?</strong>
+      <p>High-rent Flagship lounges (Vijay Nagar) command premium pricing (+15%), while Tier-2 express studios offer
+        value rates. The deviation matrix allows leadership to audit checkout pricing variances in real time.</p>
+    </div>
+    <div class="card">
+      <strong>3. Why Cashier Discount Thresholds &amp; Manager OTP?</strong>
+      <p>Uncontrolled discounts are the #1 source of salon margin leakage. Restricting cashiers to 10% and requiring
+        manager authorization for &gt;15% prevents unapproved concessions at checkout.</p>
+    </div>
+    <div class="card">
+      <strong>4. Why 8 Explicit PRD Business Policies with Version Timelines?</strong>
+      <p>Transparent policies for client consent (patch testing), chemical re-dos, package expirations, and no-shows
+        prevent client disputes and ensure regulatory legal compliance across all franchises.</p>
+    </div>
+    <div class="card">
+      <strong>5. Why 9 Roles × 13 Modules Granular RBAC Matrix?</strong>
+      <p>Front desk receptionists should book appointments and take payments but must not view payroll, edit base
+        pricing, or export sensitive client phone rosters.</p>
+    </div>
+    <div class="card">
+      <strong>6. Why Non-Destructive Workflow Hiding?</strong>
+      <p>When a tenant disables a module (e.g. Home Services or Loyalty), the PRD prohibits deleting historical invoices
+        or records. The soft-hiding toggle hides UI surfaces while preserving historical financial integrity.</p>
+    </div>
+  </div>
+
+  <h2>3. UI Architecture &amp; Page Navigation Flow</h2>
+  <p>The Brand Settings module is structured under a unified responsive master container with persistent sub-navigation:
+  </p>
+
+  <ul>
+    <li><strong>Brand Profile (<code>/brand-settings?tab=profile</code>):</strong> Master corporate entity details,
+      visual color tokens, and statutory tax registrations.</li>
+    <li><strong>Locations &amp; Defaults (<code>/brand-settings?tab=locations</code>):</strong> Regional localization
+      settings and multi-branch configuration override modal.</li>
+    <li><strong>Pricing &amp; Tax (<code>/brand-settings?tab=pricing</code>):</strong> Pricing architecture, GST 18%
+      rules, statutory SAC mapping, and cashier discount limits.</li>
+    <li><strong>Policies (<code>/brand-settings?tab=policies</code>):</strong> 8 business policies register and policy
+      dossier modal with full version history timeline.</li>
+    <li><strong>Working Hours &amp; Holidays (<code>/brand-settings?tab=hours</code>):</strong> 7-day shift editor,
+      lunch break windows, and holiday calendar scheduler.</li>
+    <li><strong>Roles &amp; Permissions (<code>/brand-settings?tab=roles</code>):</strong> 9 system roles selector, 13
+      modules × 6 permissions interactive matrix, and role clone tool.</li>
+    <li><strong>Brand Controls (<code>/brand-settings?tab=controls</code>):</strong> Module toggles with non-destructive
+      workflow soft-hiding mechanisms.</li>
+    <li><strong>Change History (<code>/brand-settings?tab=audit</code>):</strong> Immutable configuration change log
+      auditing pricing, tax, and permission updates.</li>
+  </ul>
+
+  <!-- Standard Footer -->
+  <div
+    style="margin-top: 24px; padding-top: 10px; border-top: 1px solid #eee5ff; display: flex; justify-content: space-between; font-size: 9px; color: #887d99;">
+    <span> Salon SaaS · Enterprise Brand Owner Panel</span>
+    <span>CONFIDENTIAL &amp; PROPRIETARY · GENERATED AUGUST 2026</span>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+FROM node:22-alpine AS builder
+WORKDIR /app
+RUN npm install -g pnpm
+COPY package.json pnpm-workspace.yaml turbo.json ./
+COPY apps/admin-web/package.json ./apps/admin-web/
+COPY packages/ ./packages/
+RUN pnpm install --frozen-lockfile
+COPY . .
+RUN pnpm --filter=@salon-spa-saas/admin-web build
+
+FROM nginx:alpine AS runner
+COPY --from=builder /app/apps/admin-web/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

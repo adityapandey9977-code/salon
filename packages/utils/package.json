@@ -1,0 +1,14 @@
+{
+  "name": "@salon-spa-saas/utils",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "biome check src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": { "date-fns": "^4.1.0" },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

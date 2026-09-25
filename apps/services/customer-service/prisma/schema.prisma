@@ -1,0 +1,255 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("CUSTOMER_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNSPECIFIED
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  DORMANT
+  BLOCKED
+  ARCHIVED
+}
+
+enum CustomerSource {
+  WALK_IN
+  ONLINE
+  CALL_CENTER
+  REFERRAL
+  SOCIAL
+  CAMPAIGN
+  OTHER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  BOOKING_PENDING
+  CONVERTED
+  LOST
+}
+
+enum CautionSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model Customer {
+  id                      String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId                String             @map("tenant_id") @db.Uuid
+  customerCode            String             @map("customer_code")
+  firstName               String             @map("first_name")
+  lastName                String?            @map("last_name")
+  displayName             String             @map("display_name")
+  email                   String?
+  normalizedEmail         String?            @map("normalized_email")
+  mobilePhone             String             @map("mobile_phone")
+  normalizedMobile        String             @map("normalized_mobile")
+  alternatePhone          String?            @map("alternate_phone")
+  gender                  Gender             @default(UNSPECIFIED)
+  dateOfBirth             DateTime?          @map("date_of_birth") @db.Date
+  status                  CustomerStatus     @default(ACTIVE)
+  preferredBranchId       String?            @map("preferred_branch_id") @db.Uuid
+  franchiseId             String?            @map("franchise_id") @db.Uuid // Logical cross-service reference to organization-service franchise
+  source                  CustomerSource     @default(WALK_IN)
+  notes                   String?
+  avatarUrl               String?            @map("avatar_url")
+  segment                 String?            @default("New Client") @map("segment")
+  totalVisits             Int                @default(0) @map("total_visits")
+  totalSpent              Decimal            @default(0.0) @map("total_spent") @db.Decimal(12, 2)
+  lastVisitAt             DateTime?          @map("last_visit_at")
+  firstVisitAt            DateTime?          @map("first_visit_at")
+  createdAt               DateTime           @default(now()) @map("created_at")
+  updatedAt               DateTime           @updatedAt @map("updated_at")
+  deletedAt               DateTime?          @map("deleted_at")
+  deletedByIdentityUserId String?            @map("deleted_by_identity_user_id") @db.Uuid
+  deleteReason            String?            @map("delete_reason")
+
+  addresses               CustomerAddress[]
+  notesList               CustomerNote[]
+  cautions                CustomerCaution[]
+  preferences             CustomerPreference?
+  tagMappings             CustomerTagMapping[]
+  segmentMemberships      CustomerSegmentMember[]
+
+  @@unique([tenantId, customerCode])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([tenantId, normalizedMobile])
+  @@index([tenantId, normalizedEmail])
+  @@index([tenantId, preferredBranchId])
+  @@index([tenantId, franchiseId])
+  @@index([franchiseId])
+  @@map("customers")
+}
+
+model CustomerAddress {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  customerId   String   @map("customer_id") @db.Uuid
+  type         String   @default("HOME")
+  addressLine1 String   @map("address_line1")
+  addressLine2 String?  @map("address_line2")
+  city         String
+  state        String
+  postalCode   String   @map("postal_code")
+  country      String   @default("IN")
+  isDefault    Boolean  @default(true) @map("is_default")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, customerId])
+  @@map("customer_addresses")
+}
+
+model CustomerPreference {
+  id                            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId                      String   @map("tenant_id") @db.Uuid
+  customerId                    String   @unique @map("customer_id") @db.Uuid
+  preferredBranchId             String?  @map("preferred_branch_id") @db.Uuid
+  preferredStaffId              String?  @map("preferred_staff_id") @db.Uuid
+  preferredCommunicationChannel String   @default("WHATSAPP") @map("preferred_communication_channel")
+  language                      String   @default("en")
+  appointmentReminderEnabled    Boolean  @default(true) @map("appointment_reminder_enabled")
+  marketingConsent              Boolean  @default(true) @map("marketing_consent")
+  createdAt                     DateTime @default(now()) @map("created_at")
+  updatedAt                     DateTime @updatedAt @map("updated_at")
+
+  customer                      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("customer_preferences")
+}
+
+model CustomerCaution {
+  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId    String          @map("tenant_id") @db.Uuid
+  customerId  String          @map("customer_id") @db.Uuid
+  type        String          @default("ALLERGY")
+  title       String
+  description String?
+  severity    CautionSeverity @default(MEDIUM)
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  customer    Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, customerId])
+  @@map("customer_cautions")
+}
+
+model CustomerNote {
+  id                     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String   @map("tenant_id") @db.Uuid
+  customerId             String   @map("customer_id") @db.Uuid
+  noteType               String   @default("GENERAL") @map("note_type")
+  content                String
+  isPinned               Boolean  @default(false) @map("is_pinned")
+  createdByPrincipalType String   @default("USER") @map("created_by_principal_type")
+  createdByUserId        String?  @map("created_by_user_id") @db.Uuid
+  createdAt              DateTime @default(now()) @map("created_at")
+
+  customer               Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, customerId])
+  @@map("customer_notes")
+}
+
+model Lead {
+  id                     String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String         @map("tenant_id") @db.Uuid
+  firstName              String         @map("first_name")
+  lastName               String?        @map("last_name")
+  mobilePhone            String         @map("mobile_phone")
+  normalizedMobile       String         @map("normalized_mobile")
+  email                  String?
+  normalizedEmail        String?        @map("normalized_email")
+  source                 CustomerSource @default(WALK_IN)
+  status                 LeadStatus     @default(NEW)
+  preferredBranchId      String?        @map("preferred_branch_id") @db.Uuid
+  interestedServiceId    String?        @map("interested_service_id") @db.Uuid
+  assignedIdentityUserId String?        @map("assigned_identity_user_id") @db.Uuid
+  inquiryNotes           String?        @map("inquiry_notes")
+  convertedCustomerId    String?        @map("converted_customer_id") @db.Uuid
+  convertedAt            DateTime?      @map("converted_at")
+  createdAt              DateTime       @default(now()) @map("created_at")
+  updatedAt              DateTime       @updatedAt @map("updated_at")
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([tenantId, normalizedMobile])
+  @@map("leads")
+}
+
+model CustomerSegment {
+  id           String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId     String                  @map("tenant_id") @db.Uuid
+  name         String
+  description  String?
+  segmentType  String                  @default("STATIC") @map("segment_type")
+  isDynamic    Boolean                 @default(false) @map("is_dynamic")
+  criteriaJson Json?                   @map("criteria_json")
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
+
+  members      CustomerSegmentMember[]
+
+  @@unique([tenantId, name])
+  @@map("customer_segments")
+}
+
+model CustomerSegmentMember {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId   String          @map("tenant_id") @db.Uuid
+  segmentId  String          @map("segment_id") @db.Uuid
+  customerId String          @map("customer_id") @db.Uuid
+  addedAt    DateTime        @default(now()) @map("added_at")
+
+  segment    CustomerSegment @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  customer   Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([segmentId, customerId])
+  @@index([tenantId, customerId])
+  @@map("customer_segment_members")
+}
+
+model CustomerTag {
+  id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId    String               @map("tenant_id") @db.Uuid
+  name        String
+  colorHex    String               @default("#6B7280") @map("color_hex")
+  createdAt   DateTime             @default(now()) @map("created_at")
+
+  tagMappings CustomerTagMapping[]
+
+  @@unique([tenantId, name])
+  @@map("customer_tags")
+}
+
+model CustomerTagMapping {
+  customerId String      @map("customer_id") @db.Uuid
+  tagId      String      @map("tag_id") @db.Uuid
+
+  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tag        CustomerTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([customerId, tagId])
+  @@map("customer_tag_mappings")
+}

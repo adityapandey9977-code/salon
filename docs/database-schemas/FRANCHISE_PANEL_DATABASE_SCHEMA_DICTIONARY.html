@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Franchise Panel Module Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · FRANCHISE PANEL DATA DICTIONARY</span>
+    <h1>Franchise Panel Module Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 2.7.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Franchise Partner Workspace (`/franchise-portal/*` & `/admin/franchise`) &nbsp;|&nbsp;
+      <strong>Key Domains:</strong> Territory Multi-Outlets Directory, Royalty Accruals & GST Settlements, Central HQ
+      Supply Ordering, SOP Compliance Audits & Contracts Vault
+    </div>
+
+    <div class="callout">
+      <strong>Franchise Scoping Architecture:</strong> Every regional query, multi-outlet P&L consolidation, royalty
+      calculation, and supply requisition is bound to the licensee's ID
+      (<code>WHERE franchise_partner_id = :partner_id</code>).
+    </div>
+
+    <h2>1. Franchise Partner Identity & Master Agreements</h2>
+    <h3>Table: <code>franchise_partners</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Partner Licensee ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Partner ID (e.g. <code>FP-001</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Franchise Legal Entity</strong></td>
+          <td><code>name</code></td>
+          <td>VARCHAR(180)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "Apex Wellness & Spa LLP"</td>
+        </tr>
+        <tr>
+          <td><strong>Partner License Code</strong></td>
+          <td><code>code</code></td>
+          <td>VARCHAR(30)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>License Code (e.g. <code>FP-IND-01</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Managing Director</strong></td>
+          <td><code>contact_person</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td>Managing Principal</td>
+        </tr>
+        <tr>
+          <td><strong>GSTIN Registration</strong></td>
+          <td><code>gstin</code></td>
+          <td>VARCHAR(15)</td>
+          <td>NOT NULL</td>
+          <td>15-character Legal GSTIN</td>
+        </tr>
+        <tr>
+          <td><strong>Territory Region</strong></td>
+          <td><code>region</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td>Exclusive Territory (e.g. "Indore & Malwa")</td>
+        </tr>
+        <tr>
+          <td><strong>Agreement Validity Dates</strong></td>
+          <td><code>agreement_start_date</code>, <code>agreement_end_date</code></td>
+          <td>DATE</td>
+          <td>NOT NULL</td>
+          <td>Contract Effective & Renewal Dates</td>
+        </tr>
+        <tr>
+          <td><strong>Royalty Terms</strong></td>
+          <td><code>royalty_structure</code></td>
+          <td>VARCHAR(100)</td>
+          <td>DEFAULT '10% Gross Services + 5% Retail'</td>
+          <td>Agreed Royalty Formula</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Commercial Royalty Accruals & Settlement Invoices</h2>
+    <h3>Table: <code>franchise_royalty_settlements</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Calculation & Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Settlement Month</strong></td>
+          <td><code>settlement_month</code></td>
+          <td>VARCHAR(10)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "AUG-2026"</td>
+        </tr>
+        <tr>
+          <td><strong>Gross Service Sales</strong></td>
+          <td><code>gross_service_sales</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Total billed services across all franchise outlets</td>
+        </tr>
+        <tr>
+          <td><strong>Calculated Service Royalty (10%)</strong></td>
+          <td><code>service_royalty_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>10% of gross</td>
+          <td><code>gross_service_sales * 0.10</code></td>
+        </tr>
+        <tr>
+          <td><strong>Gross Retail Sales</strong></td>
+          <td><code>gross_retail_sales</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Total retail products sold</td>
+        </tr>
+        <tr>
+          <td><strong>Calculated Retail Markup (5%)</strong></td>
+          <td><code>retail_royalty_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>5% markup</td>
+          <td><code>gross_retail_sales * 0.05</code></td>
+        </tr>
+        <tr>
+          <td><strong>GST on Royalty (18%)</strong></td>
+          <td><code>gst_tax_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>18% GST</td>
+          <td><code>subtotal_royalty * 0.18</code></td>
+        </tr>
+        <tr>
+          <td><strong>Total Payable to HQ</strong></td>
+          <td><code>total_payable_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Total royalty liability invoice</td>
+        </tr>
+        <tr>
+          <td><strong>Settlement Status</strong></td>
+          <td><code>payment_status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Pending Review'</td>
+          <td><code>Up to Date</code>, <code>Pending Review</code>, <code>Overdue</code>, <code>Paid</code></td>
+        </tr>
+        <tr>
+          <td><strong>Bank UTR Reference</strong></td>
+          <td><code>bank_transaction_ref</code></td>
+          <td>VARCHAR(100)</td>
+          <td>NULL</td>
+          <td>NEFT/RTGS UTR Reference Code</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Central HQ Supply Orders & Quality Audits</h2>
+    <h3>Table: <code>franchise_supply_orders</code> & <code>franchise_compliance_audits</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Supply Order ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>B2B Order ID (e.g. <code>FSO-2026-112</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Receiving Branch</strong></td>
+          <td><code>delivery_branch_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; branches(id)</td>
+          <td>Destination Franchise Outlet</td>
+        </tr>
+        <tr>
+          <td><strong>Order Value (₹)</strong></td>
+          <td><code>total_order_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Wholesale Supply Invoice Amount</td>
+        </tr>
+        <tr>
+          <td><strong>Dispatch AWB Tracking</strong></td>
+          <td><code>dispatch_tracking_number</code></td>
+          <td>VARCHAR(80)</td>
+          <td>NULL</td>
+          <td>Logistics Courier AWB Tracking</td>
+        </tr>
+        <tr>
+          <td><strong>Audit Score %</strong></td>
+          <td><code>overall_score_pct</code></td>
+          <td>DECIMAL(5, 2)</td>
+          <td>NOT NULL</td>
+          <td>Weighted Brand SOP & Hygiene Score</td>
+        </tr>
+        <tr>
+          <td><strong>Compliance Grade</strong></td>
+          <td><code>compliance_grade</code></td>
+          <td>VARCHAR(10)</td>
+          <td>NOT NULL</td>
+          <td><code>A+ (Excellent)</code>, <code>A (Compliant)</code>, <code>B (Action Req)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Franchise Partner Portal Database Specification.
+    </div>
+  </div>
+</body>
+
+</html>

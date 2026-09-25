@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Branch Manager Panel Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · BRANCH MANAGER DATA DICTIONARY</span>
+    <h1>Branch Manager Panel Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 2.6.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Branch Manager Workspace (`/branch-manager/*`) &nbsp;|&nbsp;
+      <strong>Operational Modules:</strong> Live Chair Matrix, Appointment Diary, POS Billing & Split Tenders, Recipe
+      Consumable Auto-Deduction, Local Shelf Stock & GRN Inwarding, Daily Staff Rosters & EOD Cash Till Reconciliation
+    </div>
+
+    <div class="callout">
+      <strong>Branch Scoping Architecture:</strong> Every operation, query, station assignment, stock deduction, and
+      cash drawer balance is strictly scoped to the manager's assigned branch
+      (<code>WHERE branch_id = :current_branch_id</code>).
+    </div>
+
+    <h2>1. Appointment Diary, Calendar & Chair Matrix</h2>
+    <h3>Table: <code>appointments</code> & <code>appointment_line_items</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Booking Reference</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Booking ID (e.g. <code>APT-2026-901</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Branch Scope</strong></td>
+          <td><code>branch_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>NOT NULL, FK &rarr; branches(id)</td>
+          <td>Manager's salon branch</td>
+        </tr>
+        <tr>
+          <td><strong>Client Customer</strong></td>
+          <td><code>client_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>NOT NULL, FK &rarr; clients(id)</td>
+          <td>Selected Client</td>
+        </tr>
+        <tr>
+          <td><strong>Assigned Stylist</strong></td>
+          <td><code>staff_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>NOT NULL, FK &rarr; staff_profiles(id)</td>
+          <td>Performing Specialist</td>
+        </tr>
+        <tr>
+          <td><strong>Station / Chair Number</strong></td>
+          <td><code>station_chair_number</code></td>
+          <td>VARCHAR(30)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "Chair 04", "Suite 02"</td>
+        </tr>
+        <tr>
+          <td><strong>Start & End Timestamps</strong></td>
+          <td><code>scheduled_start_time</code>, <code>scheduled_end_time</code></td>
+          <td>TIMESTAMPTZ</td>
+          <td>NOT NULL</td>
+          <td>Service appointment slot</td>
+        </tr>
+        <tr>
+          <td><strong>Appointment Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Confirmed'</td>
+          <td><code>Confirmed</code>, <code>Arrived</code>, <code>In Service</code>, <code>Completed</code>,
+            <code>Cancelled</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Point of Sale (POS), Split Tenders & Recipe Consumable Auto-Deduction</h2>
+    <h3>Table: <code>invoices</code> & <code>invoice_payments</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>GST Invoice #</strong></td>
+          <td><code>invoice_number</code></td>
+          <td>VARCHAR(50)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Tax Invoice (e.g. <code>INV-ATL-26-0881</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Taxable Base Amount</strong></td>
+          <td><code>subtotal_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Services & retail products total</td>
+        </tr>
+        <tr>
+          <td><strong>GST (CGST 9% + SGST 9%)</strong></td>
+          <td><code>cgst_amount</code>, <code>sgst_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Indian GST breakdown</td>
+        </tr>
+        <tr>
+          <td><strong>Stylist Tip Gratuity</strong></td>
+          <td><code>tip_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Tip attributed to stylist</td>
+        </tr>
+        <tr>
+          <td><strong>Gross Total Payable</strong></td>
+          <td><code>total_payable_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Net checkout total (₹)</td>
+        </tr>
+        <tr>
+          <td><strong>Tender Modes</strong></td>
+          <td><code>payment_mode</code></td>
+          <td>VARCHAR(30)</td>
+          <td>NOT NULL</td>
+          <td><code>Cash</code>, <code>Card</code>, <code>UPI / QR</code>, <code>Wallet</code>, <code>Voucher</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Table: <code>stock_consumption_logs</code> (Automatic Backwash Ingredient Deduction)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Auto-Triggered Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>invoice_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; invoices(id)</td>
+          <td>Triggering completed invoice</td>
+        </tr>
+        <tr>
+          <td><code>service_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; services(id)</td>
+          <td>Executed service</td>
+        </tr>
+        <tr>
+          <td><code>product_sku_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; products_master_skus(id)</td>
+          <td>Consumed backwash product SKU</td>
+        </tr>
+        <tr>
+          <td><code>batch_number</code></td>
+          <td>VARCHAR(60)</td>
+          <td>NOT NULL</td>
+          <td>Lot number deducted via FIFO queue</td>
+        </tr>
+        <tr>
+          <td><code>standard_recipe_qty</code></td>
+          <td>DECIMAL(10, 3)</td>
+          <td>NOT NULL</td>
+          <td>Theoretical BOM standard (e.g. 45.000 ml)</td>
+        </tr>
+        <tr>
+          <td><code>actual_dispensed_qty</code></td>
+          <td>DECIMAL(10, 3)</td>
+          <td>NOT NULL</td>
+          <td>Actual dispensed quantity (e.g. 48.000 ml)</td>
+        </tr>
+        <tr>
+          <td><code>variance_qty</code></td>
+          <td>DECIMAL(10, 3)</td>
+          <td>GENERATED ALWAYS AS (actual_dispensed_qty - standard_recipe_qty)</td>
+          <td>Wastage / over-consumption variance</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Local Shelf Stock & Goods Receipt (GRN)</h2>
+    <h3>Table: <code>branch_stock_ledgers</code> & <code>stock_transfers</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>On-Hand Physical Units</strong></td>
+          <td><code>on_hand_quantity</code></td>
+          <td>DECIMAL(10, 3)</td>
+          <td>DEFAULT 0</td>
+          <td>Units on shelf/backwash</td>
+        </tr>
+        <tr>
+          <td><strong>Available Stock Units</strong></td>
+          <td><code>available_quantity</code></td>
+          <td>DECIMAL(10, 3)</td>
+          <td>GENERATED ALWAYS AS (on_hand_quantity - allocated_reserved_qty)</td>
+          <td>Net available for service/retail</td>
+        </tr>
+        <tr>
+          <td><strong>Safety Stock Alert Level</strong></td>
+          <td><code>safety_stock_threshold</code></td>
+          <td>INTEGER</td>
+          <td>DEFAULT 5</td>
+          <td>Branch reorder trigger point</td>
+        </tr>
+        <tr>
+          <td><strong>GRN Received Units</strong></td>
+          <td><code>received_quantity</code></td>
+          <td>INTEGER</td>
+          <td>NOT NULL</td>
+          <td>Counted units upon unboxing</td>
+        </tr>
+        <tr>
+          <td><strong>Tamper Seal Verified</strong></td>
+          <td><code>is_seal_intact</code></td>
+          <td>BOOLEAN</td>
+          <td>DEFAULT TRUE</td>
+          <td>Dual-custody box seal verification</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Staff Roster & Daily Stylist Commissions</h2>
+    <h3>Table: <code>staff_attendance_logs</code> & <code>staff_commission_ledger</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Staff Member</strong></td>
+          <td><code>staff_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; staff_profiles(id)</td>
+          <td>Stylist / Aesthetician</td>
+        </tr>
+        <tr>
+          <td><strong>Clock-In & Clock-Out</strong></td>
+          <td><code>clock_in_time</code>, <code>clock_out_time</code></td>
+          <td>TIMESTAMPTZ</td>
+          <td>NOT NULL</td>
+          <td>Daily floor shift attendance</td>
+        </tr>
+        <tr>
+          <td><strong>Attendance Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(20)</td>
+          <td>DEFAULT 'Present'</td>
+          <td><code>Present</code>, <code>Late Check-In</code>, <code>Half Day</code></td>
+        </tr>
+        <tr>
+          <td><strong>Daily Commission Earned</strong></td>
+          <td><code>commission_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL DEFAULT 0.00</td>
+          <td>Computed stylist commission (₹)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>5. Daily Cash Drawer & End-of-Day (EOD) Till Reconciliation</h2>
+    <h3>Table: <code>cash_drawer_sessions</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Settlement Report Field</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Calculation</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Session ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Till Session ID (e.g. <code>TILL-20260825-01</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Opening Cash Float</strong></td>
+          <td><code>opening_cash_float</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL DEFAULT 5000.00</td>
+          <td>Starting cash in register</td>
+        </tr>
+        <tr>
+          <td><strong>Cash Sales Total</strong></td>
+          <td><code>total_cash_sales</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL DEFAULT 0.00</td>
+          <td>Sum of Cash tender invoices</td>
+        </tr>
+        <tr>
+          <td><strong>Card & UPI Digital Total</strong></td>
+          <td><code>total_card_sales</code>, <code>total_upi_sales</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL DEFAULT 0.00</td>
+          <td>EDC machine batch & UPI QR total</td>
+        </tr>
+        <tr>
+          <td><strong>Petty Cash Payouts</strong></td>
+          <td><code>total_cash_payouts</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Branch miscellaneous expenses</td>
+        </tr>
+        <tr>
+          <td><strong>Expected Cash in Till</strong></td>
+          <td><code>expected_closing_cash</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td><code>opening_cash_float + total_cash_sales - total_cash_payouts</code></td>
+          <td>Theoretical cash in register</td>
+        </tr>
+        <tr>
+          <td><strong>Physical Hand-Counted Cash</strong></td>
+          <td><code>actual_closing_cash</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Physical notes counted at EOD</td>
+        </tr>
+        <tr>
+          <td><strong>Cash Variance (Over/Short)</strong></td>
+          <td><code>cash_variance_delta</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td><code>actual_closing_cash - expected_closing_cash</code></td>
+          <td>Discrepancy (+ / -)</td>
+        </tr>
+        <tr>
+          <td><strong>Manager EOD Sign-off</strong></td>
+          <td><code>closed_by_user_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; users(id)</td>
+          <td>Manager closing the day</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Branch Manager Operational Database Specification.
+    </div>
+  </div>
+</body>
+
+</html>

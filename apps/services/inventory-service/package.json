@@ -1,0 +1,48 @@
+{
+  "name": "@salon-spa-saas/inventory-service",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "lint": "biome check src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prisma:generate": "node --env-file=../../../.env node_modules/prisma/build/index.js generate",
+    "prisma:migrate": "node --env-file=../../../.env node_modules/prisma/build/index.js migrate dev",
+    "prisma:push": "node --env-file=../../../.env node_modules/prisma/build/index.js db push",
+    "db:push": "node --env-file=../../../.env node_modules/prisma/build/index.js db push",
+    "db:migrate": "node --env-file=../../../.env node_modules/prisma/build/index.js migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "@salon-spa-saas/common-types": "workspace:*",
+    "@salon-spa-saas/contracts": "workspace:*",
+    "@salon-spa-saas/events": "workspace:*",
+    "@salon-spa-saas/logger": "workspace:*",
+    "@salon-spa-saas/observability": "workspace:*",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "ioredis": "^5.6.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/helmet": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-ui-express": "^4.1.7",
+    "prisma": "^6.4.1",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.8"
+  }
+}

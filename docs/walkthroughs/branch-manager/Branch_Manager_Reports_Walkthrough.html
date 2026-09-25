@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Brand Owner Reports & Analytics PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid #efe6ff;
+      vertical-align: top;
+      color: #332d41;
+    }
+
+    tr:nth-child(even) td {
+      background: #fdfcff;
+    }
+
+    .req-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: #f3ecff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 8.5px;
+      font-weight: 700;
+      background: #e6f9f0;
+      color: #0d8a50;
+      border: 1px solid #b3edd0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .card {
+      background: #faf8ff;
+      border: 1px solid #eee5ff;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card strong {
+      color: #2D1552;
+      display: block;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .card p {
+      font-size: 10px;
+      margin: 0;
+      color: #5c556b;
+    }
+
+    ul {
+      margin: 0 0 10px 0;
+      padding-left: 18px;
+      color: #4b4458;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header Badge -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+
+  <h1>Brand Owner / Head Office → Reports &amp; Analytics Module</h1>
+  <p><strong>System Walkthrough, Architectural Specification &amp; Implementation Traceability Matrix</strong></p>
+
+  <!-- Executive Summary Box -->
+  <div class="callout-box">
+    <strong>Executive Architectural Summary:</strong>
+    The Reports &amp; Analytics module acts as the centralized business intelligence layer for the Brand Owner,
+    integrating cross-module telemetry across Operations, Revenue, Staff Productivity, Client Retention, Inventory
+    Consumption, Marketing Campaign ROI, and Franchise Performance Scorecards.
+    It deliberately avoids duplicating operational workflows, focusing strictly on high-level multi-branch benchmarking,
+    trend analytics, custom report builders, and multi-format exports (CSV, Excel, PDF).
+  </div>
+
+  <h2>1. Official PRD Traceability Matrix</h2>
+  <p>Mapping all official product requirements to their concrete implementation within the codebase:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 14%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 32%;">Product Requirement Description</th>
+        <th style="width: 32%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="req-code">SALO-PRD-083</span></td>
+        <td><strong>Executive Overview Dashboard</strong></td>
+        <td>High-level business velocity, 8 comparative KPI cards, and cross-module intelligence.</td>
+        <td><code>ExecutiveOverviewTab.tsx</code>: 8 KPI cards with previous period deltas, 7 visual trend cards, and
+          multi-branch comparison table.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-084</span></td>
+        <td><strong>Operations &amp; Occupancy</strong></td>
+        <td>Bookings, completions, cancellations, no-shows, walk-ins, waitlist, and workstation occupancy.</td>
+        <td><code>OperationsAnalyticsTab.tsx</code>: 7 operational KPIs, slot occupancy pacing bars, booking source
+          channels, and branch comparison matrix.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-085</span></td>
+        <td><strong>Revenue &amp; Collections</strong></td>
+        <td>Services, retail sales, packages, memberships, tax, discounts, refunds, and net turnover.</td>
+        <td><code>RevenueAnalyticsTab.tsx</code>: 9 PRD revenue measures, ritual category splits, payment tender
+          methods, and branch revenue ledger.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-086</span></td>
+        <td><strong>Staff Productivity &amp; Scorecard</strong></td>
+        <td>Utilisation, completed services, retail upsell, rebooking rates, ratings, targets, and commission.</td>
+        <td><code>StaffPerformanceAnalyticsTab.tsx</code>: Stylist performance matrix, target achievement badges, and
+          commission accruals.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-087</span></td>
+        <td><strong>Client Retention &amp; Cohorts</strong></td>
+        <td>New vs repeat ratio, rebooking conversion, inactive cohorts, frequency, LTV, and churn risk.</td>
+        <td><code>ClientRetentionAnalyticsTab.tsx</code>: 5 cohort segments (Champions, Regulars, New, Inactive, At
+          Risk) with frequency and spend metrics.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-088</span></td>
+        <td><strong>Inventory &amp; Recipe Yield</strong></td>
+        <td>Stockholding value, consumption, wastage discrepancies, expiring stock, and recipe vs actual.</td>
+        <td><code>InventoryAnalyticsTab.tsx</code>: 6 inventory KPIs, recipe vs actual yield variance ledger, and branch
+          stock valuation breakdown.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-089</span></td>
+        <td><strong>Campaign ROI &amp; Conversion</strong></td>
+        <td>Audience reach, delivered rate, bookings, attendance, attributed revenue, coupon usage, and opt-outs.</td>
+        <td><code>MarketingAnalyticsTab.tsx</code>: Multi-channel campaign ROI ledger, conversion multipliers, and
+          opt-out tracking.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-090</span></td>
+        <td><strong>Franchise Scorecard</strong></td>
+        <td>Territory partner revenue, chair utilisation, customer CSAT ratings, royalty fees, and compliance.</td>
+        <td><code>FranchiseAnalyticsTab.tsx</code>: Partner scorecard table, regional distribution benchmarking, and 10%
+          royalty pool tracking.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-091</span></td>
+        <td><strong>Custom Report Builder</strong></td>
+        <td>Dynamic report builder with domain module, primary dimensions, and calculated measures.</td>
+        <td><code>CustomReportsTab.tsx</code>: Interactive builder panel with live table preview canvas and instant
+          library saving.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-092</span></td>
+        <td><strong>Saved Reports Library</strong></td>
+        <td>Repository of custom saved queries, automated schedules, duplication, and export actions.</td>
+        <td><code>CustomReportsTab.tsx</code>: Saved reports table with status badges (Scheduled, Generated, Saved) and
+          query duplication.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-093</span></td>
+        <td><strong>Universal Multi-Format Export</strong></td>
+        <td>Portaled export engine supporting CSV, Excel (.xlsx), and print-ready PDF dossiers.</td>
+        <td><code>UniversalExportModal.tsx</code>: Full-screen portaled modal (<code>z-[9999]</code>) with custom column
+          picker and date range filters.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <p>A detailed rationale explaining the commercial need and architectural choices for each capability:</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <strong>1. Why Centralized Analytics without Operational Workflows?</strong>
+      <p>Operational execution (editing shifts, managing inventory, booking appointments) belongs in specialized
+        modules. Centralized Analytics gives the Brand Owner a holistic 360° overview across all 6 branches without
+        operational clutter.</p>
+    </div>
+    <div class="card">
+      <strong>2. Why Specific PRD Revenue Stream Measures?</strong>
+      <p>Salon businesses operate on blended revenue streams. Separating in-salon services (68.8%) from retail products
+        (12.9%), package advances (10.4%), and recurring memberships (7.4%) gives leadership actionable cashflow
+        visibility.</p>
+    </div>
+    <div class="card">
+      <strong>3. Why Recipe vs Actual Yield Variance Ledger?</strong>
+      <p>Chemical over-dispensing (hair color, developer, facial serums) causes direct margin leakage. Tracking standard
+        recipe doses against actual bowl dispensing enforces stylist discipline and reduces wastage to &lt;0.4%.</p>
+    </div>
+    <div class="card">
+      <strong>4. Why Cohort Segmentation with Churn Risk?</strong>
+      <p>Customer retention is 5x more cost-effective than new acquisition. Identifying 1,240 dormant clients (60-90
+        days lapsed) triggers targeted win-back campaigns before they become permanent churn risks.</p>
+    </div>
+    <div class="card">
+      <strong>5. Why Multi-Format Universal Export Engine?</strong>
+      <p>Different executive stakeholders require specific formats: finance teams require raw CSV/Excel for
+        reconciliation, while board members and auditors need styled executive PDF dossiers.</p>
+    </div>
+    <div class="card">
+      <strong>6. Why Lightweight Custom Report Builder?</strong>
+      <p>Eliminates the complexity of heavy external BI tools while giving Brand Owners instant flexibility to mix
+        modules (Revenue, Staff, Inventory) with primary grouping dimensions (Branch, Date, Category).</p>
+    </div>
+  </div>
+
+  <h2>3. UI Architecture &amp; Page Navigation Flow</h2>
+  <p>The Reports &amp; Analytics module is structured under a unified responsive master container with persistent
+    sub-navigation:</p>
+
+  <ul>
+    <li><strong>Executive Overview (<code>/reports?tab=overview</code>):</strong> 8 comparative KPI cards, monthly
+      revenue velocity bars, client ratio widgets, and branch ranking.</li>
+    <li><strong>Operations (<code>/reports?tab=operations</code>):</strong> 7 appointment KPIs, weekly slot occupancy
+      pacing, and origin channel distribution (App 48%, Call Center 22%).</li>
+    <li><strong>Revenue (<code>/reports?tab=revenue</code>):</strong> 9 PRD revenue measures, service category split,
+      payment tender methods, and multi-branch revenue matrix.</li>
+    <li><strong>Staff Performance (<code>/reports?tab=staff</code>):</strong> Stylist productivity scorecard,
+      workstation utilisation, rebooking rates, and commission accruals.</li>
+    <li><strong>Client &amp; Retention (<code>/reports?tab=clients</code>):</strong> 5 client cohort segments, visit
+      frequency rhythm, and churn risk alerts.</li>
+    <li><strong>Inventory (<code>/reports?tab=inventory</code>):</strong> Stock valuation, consumable usage, wastage
+      discard, and recipe vs actual yield matrix.</li>
+    <li><strong>Marketing (<code>/reports?tab=marketing</code>):</strong> Campaign reach, direct bookings captured,
+      attendance rates, and ROI multipliers.</li>
+    <li><strong>Franchise (<code>/reports?tab=franchise</code>):</strong> Licensed partner performance scorecard, chair
+      utilisation, and 10% royalty pool tracking.</li>
+    <li><strong>Custom Reports (<code>/reports?tab=custom</code>):</strong> Sub-tab toggle between the Custom Report
+      Builder and the Saved Reports Library.</li>
+  </ul>
+
+  <!-- Standard Footer -->
+  <div
+    style="margin-top: 24px; padding-top: 10px; border-top: 1px solid #eee5ff; display: flex; justify-content: space-between; font-size: 9px; color: #887d99;">
+    <span> Salon SaaS · Enterprise Brand Owner Panel</span>
+    <span>CONFIDENTIAL &amp; PROPRIETARY · GENERATED AUGUST 2026</span>
+  </div>
+
+</body>
+
+</html>

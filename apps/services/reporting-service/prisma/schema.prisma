@@ -1,0 +1,175 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("REPORTING_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model DailyBranchMetrics {
+  id                     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String   @map("tenant_id") @db.Uuid
+  branchId               String   @map("branch_id") @db.Uuid
+  metricDate             DateTime @map("metric_date") @db.Date
+  appointmentsBooked     Int      @default(0) @map("appointments_booked")
+  appointmentsCompleted  Int      @default(0) @map("appointments_completed")
+  appointmentsCancelled  Int      @default(0) @map("appointments_cancelled")
+  noShows                Int      @default(0) @map("no_shows")
+  grossSales             Decimal  @default(0.00) @map("gross_sales") @db.Decimal(12, 2)
+  netSales               Decimal  @default(0.00) @map("net_sales") @db.Decimal(12, 2)
+  taxCollected           Decimal  @default(0.00) @map("tax_collected") @db.Decimal(12, 2)
+  serviceRevenue         Decimal  @default(0.00) @map("service_revenue") @db.Decimal(12, 2)
+  retailRevenue          Decimal  @default(0.00) @map("retail_revenue") @db.Decimal(12, 2)
+  customerCount          Int      @default(0) @map("customer_count")
+  newCustomers           Int      @default(0) @map("new_customers")
+  averageTicketValue     Decimal  @default(0.00) @map("average_ticket_value") @db.Decimal(10, 2)
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@unique([branchId, metricDate])
+  @@index([tenantId, metricDate])
+  @@map("daily_branch_metrics")
+}
+
+model TenantDailyMetrics {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId          String   @map("tenant_id") @db.Uuid
+  metricDate        DateTime @map("metric_date") @db.Date
+  branchCount       Int      @default(1) @map("branch_count")
+  activeStaffCount  Int      @default(0) @map("active_staff_count")
+  bookings          Int      @default(0) @map("bookings")
+  completedServices Int      @default(0) @map("completed_services")
+  grossRevenue      Decimal  @default(0.00) @map("gross_revenue") @db.Decimal(12, 2)
+  netRevenue        Decimal  @default(0.00) @map("net_revenue") @db.Decimal(12, 2)
+  newCustomers      Int      @default(0) @map("new_customers")
+  inventoryAlerts   Int      @default(0) @map("inventory_alerts")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@unique([tenantId, metricDate])
+  @@index([metricDate])
+  @@map("tenant_daily_metrics")
+}
+
+model StaffPerformanceDaily {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId              String   @map("tenant_id") @db.Uuid
+  branchId              String   @map("branch_id") @db.Uuid
+  employeeId            String   @map("employee_id") @db.Uuid
+  metricDate            DateTime @map("metric_date") @db.Date
+  appointments          Int      @default(0) @map("appointments")
+  completedServices     Int      @default(0) @map("completed_services")
+  serviceRevenue        Decimal  @default(0.00) @map("service_revenue") @db.Decimal(10, 2)
+  retailRevenue         Decimal  @default(0.00) @map("retail_revenue") @db.Decimal(10, 2)
+  commissionEarned      Decimal  @default(0.00) @map("commission_earned") @db.Decimal(10, 2)
+  utilizationPercentage Decimal  @default(0.00) @map("utilization_percentage") @db.Decimal(5, 2)
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@unique([employeeId, metricDate])
+  @@index([branchId, metricDate])
+  @@index([tenantId, metricDate])
+  @@map("staff_performance_daily")
+}
+
+model FranchiseDailyMetrics {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId       String   @map("tenant_id") @db.Uuid
+  franchiseId    String   @map("franchise_id") @db.Uuid
+  metricDate     DateTime @map("metric_date") @db.Date
+  branchCount    Int      @default(1) @map("branch_count")
+  grossSales     Decimal  @default(0.00) @map("gross_sales") @db.Decimal(12, 2)
+  netSales       Decimal  @default(0.00) @map("net_sales") @db.Decimal(12, 2)
+  royaltyAccrued Decimal  @default(0.00) @map("royalty_accrued") @db.Decimal(10, 2)
+  royaltyPaid    Decimal  @default(0.00) @map("royalty_paid") @db.Decimal(10, 2)
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@unique([franchiseId, metricDate])
+  @@index([tenantId, metricDate])
+  @@map("franchise_daily_metrics")
+}
+
+model InventoryDailyMetrics {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String   @map("tenant_id") @db.Uuid
+  branchId         String   @map("branch_id") @db.Uuid
+  metricDate       DateTime @map("metric_date") @db.Date
+  inventoryValue   Decimal  @default(0.00) @map("inventory_value") @db.Decimal(12, 2)
+  lowStockCount    Int      @default(0) @map("low_stock_count")
+  outOfStockCount  Int      @default(0) @map("out_of_stock_count")
+  purchaseValue    Decimal  @default(0.00) @map("purchase_value") @db.Decimal(12, 2)
+  consumptionValue Decimal  @default(0.00) @map("consumption_value") @db.Decimal(12, 2)
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([branchId, metricDate])
+  @@index([tenantId, metricDate])
+  @@map("inventory_daily_metrics")
+}
+
+model CallCenterDailyMetrics {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId           String   @map("tenant_id") @db.Uuid
+  agentUserId        String?  @map("agent_user_id") @db.Uuid
+  metricDate         DateTime @map("metric_date") @db.Date
+  calls              Int      @default(0) @map("calls")
+  answered           Int      @default(0) @map("answered")
+  missed             Int      @default(0) @map("missed")
+  appointmentsBooked Int      @default(0) @map("appointments_booked")
+  leadsCreated       Int      @default(0) @map("leads_created")
+  conversionRate     Decimal  @default(0.00) @map("conversion_rate") @db.Decimal(5, 2)
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@unique([tenantId, agentUserId, metricDate])
+  @@index([tenantId, metricDate])
+  @@map("call_center_daily_metrics")
+}
+
+model AuditEvent {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId       String   @unique @map("event_id")
+  tenantId      String?  @map("tenant_id") @db.Uuid
+  branchId      String?  @map("branch_id") @db.Uuid
+  franchiseId   String?  @map("franchise_id") @db.Uuid
+  principalType String?  @map("principal_type")
+  actorUserId   String?  @map("actor_user_id") @db.Uuid
+  action        String   @map("action")
+  entityType    String   @map("entity_type")
+  entityId      String   @map("entity_id")
+  correlationId String   @map("correlation_id")
+  beforeJson    Json?    @map("before_json")
+  afterJson     Json?    @map("after_json")
+  metadataJson  Json?    @map("metadata_json")
+  ipAddress     String?  @map("ip_address")
+  userAgent     String?  @map("user_agent")
+  occurredAt    DateTime @map("occurred_at")
+  ingestedAt    DateTime @default(now()) @map("ingested_at")
+
+  @@index([tenantId, entityType])
+  @@index([entityId])
+  @@index([correlationId])
+  @@index([occurredAt])
+  @@map("audit_events")
+}
+
+model ReportExportJob {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId          String    @map("tenant_id") @db.Uuid
+  requestedByUserId String?   @map("requested_by_user_id") @db.Uuid
+  reportType        String    @map("report_type")
+  fileUrl           String?   @map("file_url")
+  status            JobStatus @default(PENDING)
+  parameters        Json?     @map("parameters")
+  errorReason       String?   @map("error_reason")
+  expiresAt         DateTime? @map("expires_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  completedAt       DateTime? @map("completed_at")
+
+  @@index([tenantId])
+  @@map("report_export_jobs")
+}

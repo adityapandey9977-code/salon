@@ -1,0 +1,153 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("BOOKING_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+enum AppointmentStatus {
+  HOLD
+  PENDING_CONFIRMATION
+  CONFIRMED
+  CHECKED_IN
+  IN_SERVICE
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum BookingSource {
+  ADMIN
+  BRANCH
+  ONLINE
+  CALL_CENTER
+  WALK_IN
+  CUSTOMER_APP
+}
+
+model Appointment {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String            @map("tenant_id") @db.Uuid
+  branchId         String            @map("branch_id") @db.Uuid // Ref to organization-service
+  customerId       String            @map("customer_id") @db.Uuid // Ref to customer-service
+  bookingNumber    String            @map("booking_number")
+  source           BookingSource     @default(ADMIN)
+  status           AppointmentStatus @default(PENDING_CONFIRMATION)
+  scheduledStartAt DateTime          @map("scheduled_start_at")
+  scheduledEndAt   DateTime          @map("scheduled_end_at")
+  timezone         String            @default("Asia/Kolkata")
+  subtotalEstimate Decimal           @default(0.0) @map("subtotal_estimate") @db.Decimal(10, 2)
+  depositRequired  Boolean           @default(false) @map("deposit_required")
+  depositAmount    Decimal           @default(0.0) @map("deposit_amount") @db.Decimal(10, 2)
+  notes            String?
+  confirmedAt      DateTime?         @map("confirmed_at")
+  cancelledAt      DateTime?         @map("cancelled_at")
+  completedAt      DateTime?         @map("completed_at")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  items            AppointmentItem[]
+  resources        AppointmentResource[]
+  statusHistory    AppointmentStatusHistory[]
+
+  @@unique([tenantId, bookingNumber])
+  @@index([tenantId])
+  @@index([tenantId, branchId, scheduledStartAt])
+  @@index([tenantId, customerId])
+  @@map("appointments")
+}
+
+model AppointmentItem {
+  id                      String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId                String            @map("tenant_id") @db.Uuid
+  appointmentId           String            @map("appointment_id") @db.Uuid
+  serviceId               String            @map("service_id") @db.Uuid // Ref to commerce-service
+  staffId                 String?           @map("staff_id") @db.Uuid // Ref to people-service
+  scheduledStartAt        DateTime          @map("scheduled_start_at")
+  scheduledEndAt          DateTime          @map("scheduled_end_at")
+  priceSnapshot           Decimal           @map("price_snapshot") @db.Decimal(10, 2)
+  durationMinutesSnapshot Int               @map("duration_minutes_snapshot")
+  status                  AppointmentStatus @default(PENDING_CONFIRMATION)
+  createdAt               DateTime          @default(now()) @map("created_at")
+  updatedAt               DateTime          @updatedAt @map("updated_at")
+
+  appointment             Appointment       @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  resources               AppointmentResource[]
+
+  @@index([tenantId])
+  @@index([appointmentId])
+  @@index([tenantId, staffId, scheduledStartAt])
+  @@map("appointment_items")
+}
+
+model AppointmentResource {
+  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId          String           @map("tenant_id") @db.Uuid
+  appointmentId     String           @map("appointment_id") @db.Uuid
+  appointmentItemId String?          @map("appointment_item_id") @db.Uuid
+  resourceId        String           @map("resource_id") @db.Uuid // Ref to organization-service
+  resourceType      String           @default("ROOM") @map("resource_type")
+  createdAt         DateTime         @default(now()) @map("created_at")
+
+  appointment       Appointment      @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  appointmentItem   AppointmentItem? @relation(fields: [appointmentItemId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, resourceId])
+  @@index([appointmentId])
+  @@map("appointment_resources")
+}
+
+model BookingHold {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  branchId   String   @map("branch_id") @db.Uuid
+  holdToken  String   @unique @map("hold_token")
+  customerId String?  @map("customer_id") @db.Uuid
+  startsAt   DateTime @map("starts_at")
+  endsAt     DateTime @map("ends_at")
+  expiresAt  DateTime @map("expires_at")
+  status     String   @default("ACTIVE")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId, branchId, startsAt])
+  @@index([expiresAt])
+  @@map("booking_holds")
+}
+
+model WaitlistEntry {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId           String   @map("tenant_id") @db.Uuid
+  branchId           String   @map("branch_id") @db.Uuid
+  customerId         String   @map("customer_id") @db.Uuid
+  serviceId          String   @map("service_id") @db.Uuid
+  preferredStaffId   String?  @map("preferred_staff_id") @db.Uuid
+  preferredDate      DateTime @map("preferred_date") @db.Date
+  preferredStartTime String?  @map("preferred_start_time")
+  preferredEndTime   String?  @map("preferred_end_time")
+  status             String   @default("WAITING") // WAITING, NOTIFIED, BOOKED, EXPIRED, CANCELLED
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@index([tenantId, branchId, preferredDate])
+  @@map("waitlist_entries")
+}
+
+model AppointmentStatusHistory {
+  id                     String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String             @map("tenant_id") @db.Uuid
+  appointmentId          String             @map("appointment_id") @db.Uuid
+  fromStatus             AppointmentStatus? @map("from_status")
+  toStatus               AppointmentStatus  @map("to_status")
+  changedByPrincipalType String             @default("USER") @map("changed_by_principal_type")
+  changedByUserId        String?            @map("changed_by_user_id") @db.Uuid
+  reason                 String?
+  createdAt              DateTime           @default(now()) @map("created_at")
+
+  appointment            Appointment        @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, appointmentId])
+  @@map("appointment_status_histories")
+}

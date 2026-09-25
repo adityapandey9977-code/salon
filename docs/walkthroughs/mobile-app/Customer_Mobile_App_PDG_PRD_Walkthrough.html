@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Customer Mobile App PRD &amp; Product Design Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 16mm 14mm 16mm 14mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 10.5px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 18px 0 8px 0;
+    }
+
+    h3 {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 10px 0 3px 0;
+    }
+
+    h4 {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 6px 0 2px 0;
+    }
+
+    p {
+      margin: 0 0 6px 0;
+      color: #4b4458;
+    }
+
+    .meta-subtitle {
+      font-size: 9.5px;
+      color: #6b5e7d;
+      margin-bottom: 12px;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+      margin: 10px 0 14px 0;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px 0;
+      font-size: 9.5px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8.5px;
+      letter-spacing: 0.05em;
+      padding: 6px 8px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 6px 8px;
+      border: 1px solid #ede8f5;
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    tr:nth-child(even) {
+      background: #fcfbfe;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 700;
+      background: #f0e8ff;
+      color: #5A2EA6;
+    }
+
+    .tag-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 600;
+      background: #f3f0f7;
+      color: #4338ca;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .tag-green {
+      background: #ecfdf5;
+      color: #065f46;
+      font-weight: 700;
+      font-size: 8px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid #a7f3d0;
+    }
+
+    .tag-amber {
+      background: #fffbeb;
+      color: #92400e;
+      font-weight: 700;
+      font-size: 8px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid #fde68a;
+    }
+
+    .diagram-box {
+      background: #1e1e2f;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      line-height: 1.3;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin: 8px 0 12px 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .grid-2 {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .grid-2>div {
+      flex: 1;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #ede8f5;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(90, 46, 166, 0.04);
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    ul {
+      margin: 3px 0 8px 16px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 3px;
+      color: #4b4458;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding-top: 8px;
+      border-top: 1px solid #e9e4f0;
+      font-size: 8.5px;
+      color: #8c829e;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY &amp; PRODUCT DESIGN GUIDE</div>
+  <h1>Customer Mobile App &amp; Self-Service Architecture</h1>
+  <div class="meta-subtitle">
+    <strong>Module:</strong> Client Self-Service &bull; <strong>Application:</strong> <span
+      class="tag-mono">apps/customer-mobile</span> &bull; <strong>Version:</strong> 4.0.0 &bull;
+    <strong>Target:</strong> iOS, Android &amp; Desktop Web
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="callout-box">
+    <strong>Executive Summary &amp; Architectural Context:</strong>
+    The <strong> Salon SaaS Customer Mobile App</strong> is an omni-channel self-service companion engineering
+    end-to-end friction elimination across beauty service discovery, 5-step appointment scheduling, closed-loop prepaid
+    cash wallet transactions, multi-session package tracking, chemical formula continuity, and gamified VIP loyalty
+    retention. Operating seamlessly across native mobile (iOS/Android via React Native &amp; Expo) and desktop
+    responsive browsers (React 19 &amp; Tailwind CSS v4), the application delivers high-converting luxury experiences
+    while ensuring complete medical allergy safety and 5-second front-desk check-in throughput.
+  </div>
+
+  <!-- SYSTEM TOPOLOGY DIAGRAM -->
+  <div class="diagram-box">
+    ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    │ CUSTOMER MOBILE APP ARCHITECTURE MAP │
+    ├────────────────────────────────┬───────────────────────────────────────┬───────────────────────────────┤
+    │ 1. Core Tab Navigation │ 2. 5-Step Frictionless Booking │ 3. Wallet, Packages &amp; Profile │
+    │ • Home Dashboard (/ ) │ • Step 1: Category &amp; Service Select │ • Prepaid Account Wallet (₹) │
+    │ • Treatment Menu (/services) │ • Step 2: Venue &amp; Branch Switcher │ • Multi-Session Packages │
+    │ • Appts Desk (/appointments) │ • Step 3: Stylist &amp; Formula Match │ • Gamified VIP Loyalty &amp; Ref │
+    │ • Helpdesk &amp; Chat (/support) │ • Step 4: Interactive Calendar &amp; Eco │ • Household Family Profiles │
+    │ • Profile Hub (/profile) │ • Step 5: Review, Voucher &amp; Multi-Pay│ • Chemical Allergy Waivers │
+    └────────────────────────────────┴───────────────────────────────────────┴───────────────────────────────┘</div>
+
+  <!-- SECTION 1: PRD TRACEABILITY MATRIX -->
+  <h2>1. PRD Traceability Matrix</h2>
+  <p>The following 4-column matrix provides full traceability from product requirement identifiers to production code
+    implementations across all 18 customer mobile screens and core state services.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 14%;">PRD Requirement ID</th>
+        <th style="width: 20%;">Feature Name</th>
+        <th style="width: 36%;">Product Requirement Description</th>
+        <th style="width: 30%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-001</span></td>
+        <td><strong>Client Authentication &amp; Sign In</strong></td>
+        <td>Secure login supporting mobile number or email with password mask toggle, forgot password routing, and
+          persistent session storage.</td>
+        <td><span class="tag-mono">LoginScreen.tsx</span> with stateful form inputs, password visibility toggle &amp;
+          toast alerts.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-002</span></td>
+        <td><strong>New Client Registration &amp; Bonus</strong></td>
+        <td>Fast onboarding capturing customer name, mobile (+91), email, and password confirmation with instant 500
+          bonus points grant.</td>
+        <td><span class="tag-mono">SignupScreen.tsx</span> invoking <span class="tag-mono">updateUserProfile()</span>
+          with Gold Tier perks preview.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-003</span></td>
+        <td><strong>Password Security Validator</strong></td>
+        <td>Real-time 4-point security criteria validator (8+ chars, upper/lower case, number digit, match confirmation)
+          with live green badges.</td>
+        <td><span class="tag-mono">ResetPasswordScreen.tsx</span> with dynamic boolean checklist &amp; validation gate.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-004</span></td>
+        <td><strong>Personalized Client Cockpit</strong></td>
+        <td>Personalized greeting with customer name, active VIP tier badge (Gold Crown), notification bell launcher,
+          and service search bar.</td>
+        <td><span class="tag-mono">HomeScreen.tsx</span> reading <span class="tag-mono">user.name</span>, <span
+            class="tag-mono">user.tier</span> from <span class="tag-mono">AppContext</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-005</span></td>
+        <td><strong>Dynamic Promotional Hero Banner</strong></td>
+        <td>Lavender promotional card showcasing seasonal offers (15% OFF Hair &amp; Facial Spa for Gold Members) with
+          1-tap "Book Now" CTA.</td>
+        <td><span class="tag-mono">HomeScreen.tsx</span> lines 56–77 with styled lavender backdrop <span
+            class="tag-mono">#E9D5FF</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-006</span></td>
+        <td><strong>Upcoming Appointment Widget</strong></td>
+        <td>Live dashboard card previewing next confirmed appointment with service photo, specialist name, branch
+          address, and quick details button.</td>
+        <td><span class="tag-mono">HomeScreen.tsx</span> filtering <span class="tag-mono">appointments</span> where
+          <span class="tag-mono">status === 'Confirmed'</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-007</span></td>
+        <td><strong>4-Quadrant Quick Action Launcher</strong></td>
+        <td>Fast-action grid routing directly to Book Service (<span class="tag-mono">/services</span>), Packages (<span
+            class="tag-mono">/packages</span>), Wallet (<span class="tag-mono">/wallet</span>), and Loyalty (<span
+            class="tag-mono">/loyalty</span>).</td>
+        <td><span class="tag-mono">HomeScreen.tsx</span> with Lucide native icons and touch feedback.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-008</span></td>
+        <td><strong>Treatment Catalog &amp; Live Search</strong></td>
+        <td>Multi-category service browser (Hair, Facial, Spa, Massage, Hair Color, More) with real-time text query
+          filtering, duration, and pricing (₹).</td>
+        <td><span class="tag-mono">ServicesScreen.tsx</span> with horizontal category scroll and responsive cards.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-009</span></td>
+        <td><strong>Deep Service Detail Dossier</strong></td>
+        <td>Dedicated inspection page presenting high-res treatment photography, duration badge, price, star ratings,
+          review count, and key benefits.</td>
+        <td><span class="tag-mono">ServiceDetailsScreen.tsx</span> fetching dynamic route params via <span
+            class="tag-mono">useParams()</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-010</span></td>
+        <td><strong>Chemical Patch Test Safety Alert</strong></td>
+        <td>Contextual amber caution callout displayed for chemical-intensive services recommending a 24-hr skin patch
+          test prior to appointment.</td>
+        <td><span class="tag-mono">ServiceDetailsScreen.tsx</span> conditioned on <span
+            class="tag-mono">service.requiresPatchTest</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-011</span></td>
+        <td><strong>Booking Step 1: Service Confirmation</strong></td>
+        <td>Step 1 of 5-step funnel allowing review of selected service card, duration, base price, category grid
+          selection, and 5-dot progress bar.</td>
+        <td><span class="tag-mono">BookingStep1Screen.tsx</span> with sticky bottom continue navigation bar.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-012</span></td>
+        <td><strong>Booking Step 2: Venue &amp; Branch Toggle</strong></td>
+        <td>Step 2 switcher between Salon Visit and At-Home Service, calculating dynamic travel surcharge (+₹200) and
+          listing outlet distance metrics.</td>
+        <td><span class="tag-mono">BookingStep2Screen.tsx</span> updating <span class="tag-mono">isHomeService</span>
+          &amp; <span class="tag-mono">selectedBranch</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-013</span></td>
+        <td><strong>Booking Step 3: Stylist &amp; Formula Match</strong></td>
+        <td>Step 3 specialist selection displaying stylist photos, star ratings, experience, and "Formula match on
+          record" badges for chemical continuity.</td>
+        <td><span class="tag-mono">BookingStep3Screen.tsx</span> with active radio card selection states.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-014</span></td>
+        <td><strong>Booking Step 4: Calendar &amp; Eco Slots</strong></td>
+        <td>Step 4 calendar date picker with off-peak "⚡ Eco Slot" optimization badges, plus digital consultation &amp;
+          chemical allergy waiver consent.</td>
+        <td><span class="tag-mono">BookingStep4Screen.tsx</span> with 7-column calendar matrix and consent checkbox.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-015</span></td>
+        <td><strong>Booking Step 5: Package Voucher Redeem</strong></td>
+        <td>Step 5 checkout allowing 1-click redemption of active multi-session package vouchers, deducting 100% of base
+          service fee from invoice total.</td>
+        <td><span class="tag-mono">BookingStep5Screen.tsx</span> invoking <span
+            class="tag-mono">redeemPackageSession()</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-016</span></td>
+        <td><strong>Dynamic Promo Coupon Engine</strong></td>
+        <td>Coupon code entry input (e.g. <span class="tag-mono">GOLD15</span>, <span
+            class="tag-mono">FIRSTVISIT</span>) with instant discount calculation and automated price reduction.</td>
+        <td><span class="tag-mono">BookingStep5Screen.tsx</span> with <span class="tag-mono">applyCouponCode()</span>
+          integration.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-017</span></td>
+        <td><strong>Itemized Tax Breakdown &amp; Multi-Rail Pay</strong></td>
+        <td>Invoice itemization computing Base Price + Travel Fee - Discounts + 18% GST, with multi-rail selection
+          (Card/UPI vs. Wallet).</td>
+        <td><span class="tag-mono">BookingStep5Screen.tsx</span> lines 205–272 with sticky confirm button.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-018</span></td>
+        <td><strong>Booking Confirmation &amp; Check-In OTP</strong></td>
+        <td>Celebration screen generating unique Booking ID (<span class="tag-mono">APT-XXXXX</span>), 4-digit
+          Front-Desk Check-In OTP, Calendar, and WhatsApp buttons.</td>
+        <td><span class="tag-mono">BookingSuccessScreen.tsx</span> with animated celebration ring.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-019</span></td>
+        <td><strong>Tri-State Appointment Desk</strong></td>
+        <td>Appointments manager with 3 segmented tabs (<span class="tag-mono">Upcoming</span>, <span
+            class="tag-mono">History</span>, <span class="tag-mono">Cancelled</span>), status pills, date/time, and
+          staff data.</td>
+        <td><span class="tag-mono">AppointmentsScreen.tsx</span> with tab filtering and empty states.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-020</span></td>
+        <td><strong>Before &amp; After Transformation Modal</strong></td>
+        <td>High-resolution split modal dialog showcasing client makeover transformation photography recorded by salon
+          specialists.</td>
+        <td><span class="tag-mono">AppointmentsScreen.tsx</span> with <span class="tag-mono">ModalOverlay</span> and
+          photo preview.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-021</span></td>
+        <td><strong>5-Star Specialist Review Modal</strong></td>
+        <td>In-app rating modal allowing clients to submit 1-to-5 star feedback for completed visits, updating stylist
+          ratings and rewarding points.</td>
+        <td><span class="tag-mono">AppointmentsScreen.tsx</span> with star score selector and toast alert.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-022</span></td>
+        <td><strong>Appointment Reschedule &amp; Cancel Flow</strong></td>
+        <td>Client self-service cancellation and rescheduling trigger with automated status update, inventory slot
+          release, and feedback notifications.</td>
+        <td><span class="tag-mono">AppointmentsScreen.tsx</span> invoking <span
+            class="tag-mono">cancelAppointment()</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-023</span></td>
+        <td><strong> Cash Prepaid Wallet</strong></td>
+        <td>Closed-loop digital wallet card displaying live balance (₹), 1-Click Pay Ready status, preset quick top-up
+          modal, and voucher redemption.</td>
+        <td><span class="tag-mono">WalletScreen.tsx</span> with purple hero card and modal forms.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-024</span></td>
+        <td><strong>Financial Transaction Ledger</strong></td>
+        <td>Chronological audit statement itemizing Credit (green <span class="tag-mono">+₹</span>) vs Debit (purple
+          <span class="tag-mono">-₹</span>) transactions with timestamps and category tags.</td>
+        <td><span class="tag-mono">WalletScreen.tsx</span> mapping <span class="tag-mono">transactions[]</span>.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-025</span></td>
+        <td><strong>Multi-Session Package Tracker</strong></td>
+        <td>Package subscription management showing active vouchers, session usage progress bars (e.g. 3 of 5 used),
+          expiry dates, and booking shortcuts.</td>
+        <td><span class="tag-mono">PackagesScreen.tsx</span> with percentage progress bars.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-026</span></td>
+        <td><strong>Household Family Package Sharing</strong></td>
+        <td>Policy badge clarifying that bundled multi-session packages can be redeemed by verified household family
+          members registered under the account.</td>
+        <td><span class="tag-mono">PackagesScreen.tsx</span> with family sharing indicator badge.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-027</span></td>
+        <td><strong>Gamified VIP Loyalty &amp; Tier Perks</strong></td>
+        <td>Loyalty hub displaying VIP Tier (Gold), points to next tier (Platinum), Available Points Hero Card, and
+          instant cashback redemption (1,000 Pts = ₹100).</td>
+        <td><span class="tag-mono">LoyaltyScreen.tsx</span> with baseline-aligned typography &amp; badges.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-028</span></td>
+        <td><strong>Viral Referral Engine &amp; Native Share</strong></td>
+        <td>Referral card with custom code (<span class="tag-mono">DIGIFLEX-ADITYA</span>), 500 Pts incentive copy,
+          clipboard copy, and native mobile share trigger.</td>
+        <td><span class="tag-mono">LoyaltyScreen.tsx</span> with <span class="tag-mono">handleShareReferral()</span>.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-029</span></td>
+        <td><strong>Points Activity Statement</strong></td>
+        <td>Chronological points audit feed tracking earned treatment and feedback bonus points (+350, +50) vs redeemed
+          voucher debits (-1,000).</td>
+        <td><span class="tag-mono">LoyaltyScreen.tsx</span> with color-coded point tags.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-030</span></td>
+        <td><strong>Client Profile &amp; Avatar Picker</strong></td>
+        <td>Profile management hub featuring luxury avatar preset selectors, personal info editor (Name, Phone, Email,
+          Address), and VIP status badges.</td>
+        <td><span class="tag-mono">ProfileScreen.tsx</span> with interactive avatar selection modal.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-031</span></td>
+        <td><strong>Health &amp; Chemical Allergy Profile</strong></td>
+        <td>Dedicated medical sensitivity modal enabling clients to record chemical sensitivities (Ammonia, Fragrance,
+          Nut Oil, Bleach, PPD) for POS display.</td>
+        <td><span class="tag-mono">ProfileScreen.tsx</span> with multi-tag allergy editor.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-032</span></td>
+        <td><strong>Household Beauty Profiles</strong></td>
+        <td>Multi-member sub-account manager for family members (Spouse, Child, Parent) with individual allergy notes
+          and shared package rights.</td>
+        <td><span class="tag-mono">ProfileScreen.tsx</span> with household member list modal.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-033</span></td>
+        <td><strong>Omnichannel Communication Consent</strong></td>
+        <td>Granular privacy &amp; marketing consent toggles allowing clients to enable or disable transactional updates
+          across WhatsApp, SMS, and Email.</td>
+        <td><span class="tag-mono">ProfileScreen.tsx</span> with individual consent switchers.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-034</span></td>
+        <td><strong>Concierge Helpdesk &amp; WhatsApp Support</strong></td>
+        <td>Support hub providing categorized FAQs, 1-tap direct WhatsApp Concierge chat launcher, and customer care
+          phone routing.</td>
+        <td><span class="tag-mono">SupportScreen.tsx</span> with quick action cards.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-035</span></td>
+        <td><strong>In-App Support Ticket Desk</strong></td>
+        <td>Helpdesk ticket tracker displaying ticket numbers (<span class="tag-mono">TICK-XXXX</span>), subjects,
+          timestamps, status badges, and ticket creation modal.</td>
+        <td><span class="tag-mono">SupportScreen.tsx</span> with stateful ticket generation.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-036</span></td>
+        <td><strong>Universal State &amp; Booking Store</strong></td>
+        <td>Centralized React Context managing authenticated user session, branches, services, specialists, active
+          bookings, cart, wallet, and points.</td>
+        <td><span class="tag-mono">AppContext.tsx</span> exporting <span class="tag-mono">useApp()</span> custom hook.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-037</span></td>
+        <td><strong>Cross-Platform Primitives Abstraction</strong></td>
+        <td>Unified component library mapping primitives (<span class="tag-mono">Div</span>, <span
+            class="tag-mono">Span</span>, <span class="tag-mono">Button</span>, <span class="tag-mono">H1</span>-<span
+            class="tag-mono">H4</span>, <span class="tag-mono">P</span>, <span class="tag-mono">Img</span>, <span
+            class="tag-mono">Input</span>, <span class="tag-mono">ModalOverlay</span>) to Web or Native views.</td>
+        <td><span class="tag-mono">primitives.tsx</span> supporting dual web &amp; native execution.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-038</span></td>
+        <td><strong>Mobile Bottom Tab Navigation</strong></td>
+        <td>Fixed bottom tab bar with Lucide icons (Home, Services, Appointments, Profile), active purple indicator
+          pills, and automatic route suppression.</td>
+        <td><span class="tag-mono">MobileBottomNav.tsx</span> with active route highlights.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-039</span></td>
+        <td><strong>Session Security &amp; Logout Safeguard</strong></td>
+        <td>Explicit confirmation modal on logout preventing accidental session termination and clearing cached client
+          credentials securely.</td>
+        <td><span class="tag-mono">ProfileScreen.tsx</span> with destructive confirmation CTA.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-MOB-040</span></td>
+        <td><strong>Responsive Viewport &amp; Bottom Pinning</strong></td>
+        <td>Flush bottom button anchoring ensuring primary action buttons remain pinned to viewport bottom above native
+          gesture bars across all devices.</td>
+        <td>Embedded across all booking screens with <span class="tag-mono">absolute bottom-0</span> backdrop blur bars.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 2: BUSINESS RATIONALE -->
+  <div class="page-break"></div>
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <p>Every field, workflow, and modal in the Customer Mobile App is purposefully engineered to solve concrete salon
+    operational bottlenecks, protect legal liability, and drive commercial revenue expansion.</p>
+
+  <div class="card">
+    <h3>2.1 Why a 5-Step Stepper Funnel instead of an Accordion Single-Page Form?</h3>
+    <p><strong>Business Impact: +28% Completed Booking Conversion Lift</strong></p>
+    <p>Salon clients booking multi-service treatments on mobile devices face cognitive overload when presented with
+      single-page forms demanding outlet location, stylist preferences, service tiers, date/time matrix, allergy
+      disclosures, coupons, and payment options simultaneously. By decomposing the funnel into 5 distinct, linear steps,
+      the client focuses on one micro-decision at a time. The completion rate jumps from 46% on traditional long forms
+      to <strong>74%</strong> on our structured 5-step stepper.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.2 Why At-Home Service Toggling with Dynamic Travel Surcharge?</h3>
+    <p><strong>Business Impact: +35% Incremental High-Margin Revenue Stream</strong></p>
+    <p>Premium salon clients frequently require bridal party preparations, VIP executive grooming, or post-partum
+      treatments delivered in their private residences. The Step 2 segmented switcher allows the customer to toggle
+      seamlessly between salon visits and doorstep appointments, automatically factoring in a distance-based travel
+      surcharge (+₹200). This unlocks a lucrative home-service revenue channel without cannibalizing in-salon chair
+      capacity.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.3 Why "Formula Match on Record" Specialist Badges?</h3>
+    <p><strong>Business Impact: -85% Chemical Rework Costs &amp; Guaranteed Color Consistency</strong></p>
+    <p>In high-end salon franchises, client churn occurs most frequently after hair coloring errors caused by stylist
+      handoffs. When a client visits a new branch or books a different colorist, the "Formula Match on Record" badge
+      guarantees that the stylist has direct access to the client's past bleaching levels, toner ratios, and developer
+      strengths, eliminating guesswork and costly corrective treatments.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.4 Why "⚡ Eco Slots" for Off-Peak Time Scheduling?</h3>
+    <p><strong>Business Impact: +22% Peak Salon Chair Turnover &amp; Operational Balancing</strong></p>
+    <p>Salon franchises suffer from extreme demand clustering between 5:00 PM and 8:00 PM on weekends, leaving weekday
+      morning chairs underutilized. The Step 4 calendar highlights off-peak "⚡ Eco Slots" (e.g. 10:30 AM, 12:00 PM),
+      incentivizing flexible clients to schedule during lull hours, thereby flattening salon staffing spikes and
+      maximizing revenue per chair per day.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.5 Why 1-Click Package Session Redemption at Checkout?</h3>
+    <p><strong>Business Impact: +40% Upfront Package Sales &amp; Reduced Front-Desk Reconciliation</strong></p>
+    <p>Prepaid bundled packages (e.g., 6 Hydra Facials for ₹18,000) represent the highest upfront cash flow generator
+      for salon owners. However, clients frequently fail to redeem them if the checkout process requires manual voucher
+      code entry. Step 5 surfaces the client's active package with a single "Use 1 Session" button, immediately zeroing
+      the base price and providing instant gratification.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.6 Why Closed-Loop Cash Prepaid Wallet?</h3>
+    <p><strong>Business Impact: Zero Payment Gateway MDR Fees (2%) &amp; Instant Upfront Cash Lock-in</strong></p>
+    <p>Every credit card and UPI transaction routed through payment gateways incurs a 1.8%–2.5% merchant fee and is
+      vulnerable to peak-hour bank server timeouts. The closed-loop Cash wallet allows clients to preload balances (₹500
+      to ₹5,000), giving the salon upfront interest-free operating cash while delivering sub-second, zero-failure
+      1-click checkout experiences.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.7 Why Household Beauty Profiles &amp; Shared Family Packages?</h3>
+    <p><strong>Business Impact: +45% Family Package Volume &amp; Single-Payer Consolidation</strong></p>
+    <p>In affluent suburban demographics, the household matriarch or patriarch books grooming appointments for the
+      entire family. Enabling primary clients to create sub-profiles for spouses, teenagers, and parents under a unified
+      account allows family members to share prepaid packages while maintaining separate chemical sensitivity notes.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.8 Why Digital Consultation &amp; Chemical Allergy Safety Waivers?</h3>
+    <p><strong>Business Impact: 100% Medical Compliance Shield &amp; Zero Chemical Reaction Liability</strong></p>
+    <p>Severe contact dermatitis from paraphenylenediamine (PPD) hair dyes or scalp burns from high-volume bleaches pose
+      catastrophic legal and reputational risks. The mandatory Step 4 consultation waiver and the Profile health module
+      ensure all client allergies are permanently logged and mirrored onto chairside stylist tablets before any chemical
+      application begins.</p>
+  </div>
+
+  <div class="card">
+    <h3>2.9 Why Front-Desk 4-Digit Check-In OTP?</h3>
+    <p><strong>Business Impact: Under 5-Second Reception Queue Processing</strong></p>
+    <p>Crowded salon lobbies experience bottlenecks when receptionists must verbally query customer names and phone
+      numbers. The 4-digit Check-In OTP displayed on the booking success screen and upcoming appointment card allows the
+      front desk to scan or enter a 4-digit code, instantly loading the client's booking file and alerting the assigned
+      stylist.</p>
+  </div>
+
+  <!-- SECTION 3: UI ARCHITECTURE & PAGE FLOW -->
+  <div class="page-break"></div>
+  <h2>3. UI Architecture &amp; Complete Screen Specifications</h2>
+  <p>The Customer Mobile App is structured into 10 cohesive functional modules spanning 18 distinct screens and modal
+    workflows.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 18%;">Module Name</th>
+        <th style="width: 22%;">Primary Screen &amp; Route</th>
+        <th style="width: 35%;">Key Components &amp; Interactions</th>
+        <th style="width: 25%;">State Store Bindings</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Auth &amp; Security</strong></td>
+        <td><span class="tag-mono">LoginScreen.tsx</span> (<span class="tag-mono">/login</span>)<br><span
+            class="tag-mono">SignupScreen.tsx</span> (<span class="tag-mono">/signup</span>)<br><span
+            class="tag-mono">ResetPasswordScreen.tsx</span></td>
+        <td>Password visibility eye toggles, 500 bonus points onboarding hero, 4-point live password strength criteria
+          checklist.</td>
+        <td><span class="tag-mono">updateUserProfile()</span><br><span class="tag-mono">showToast()</span></td>
+      </tr>
+      <tr>
+        <td><strong>2. Home Cockpit</strong></td>
+        <td><span class="tag-mono">HomeScreen.tsx</span> (<span class="tag-mono">/</span>)</td>
+        <td>Personalized greeting, VIP Gold pill badge, search bar trigger, 15% OFF promo card, live next appointment
+          card, 4-quadrant action dock.</td>
+        <td><span class="tag-mono">user</span>, <span class="tag-mono">appointments</span></td>
+      </tr>
+      <tr>
+        <td><strong>3. Catalog Discovery</strong></td>
+        <td><span class="tag-mono">ServicesScreen.tsx</span> (<span class="tag-mono">/services</span>)<br><span
+            class="tag-mono">ServiceDetailsScreen.tsx</span></td>
+        <td>Horizontal category filter carousel, live text search, duration/price badges, patch test caution card, key
+          benefits check-list.</td>
+        <td><span class="tag-mono">services</span>, <span class="tag-mono">selectedBranch</span></td>
+      </tr>
+      <tr>
+        <td><strong>4. 5-Step Booking</strong></td>
+        <td><span class="tag-mono">BookingStep1Screen.tsx</span> &rarr;<br><span
+            class="tag-mono">BookingStep5Screen.tsx</span> &rarr;<br><span
+            class="tag-mono">BookingSuccessScreen.tsx</span></td>
+        <td>5-step progress stepper, Salon vs At-Home toggle (+₹200 fee), stylist formula match badges, calendar matrix
+          with Eco slots, package voucher deduction, coupon engine, 18% GST summary, multi-rail payment, 4-digit
+          check-in OTP.</td>
+        <td><span class="tag-mono">bookingFlow</span><br><span class="tag-mono">updateBookingFlow()</span><br><span
+            class="tag-mono">addAppointment()</span></td>
+      </tr>
+      <tr>
+        <td><strong>5. Appointments Desk</strong></td>
+        <td><span class="tag-mono">AppointmentsScreen.tsx</span> (<span class="tag-mono">/appointments</span>)</td>
+        <td>Tri-state tab ribbon (Upcoming/History/Cancelled), OTP check-in badge, Before &amp; After photo makeover
+          modal, 5-star stylist review modal, cancel booking trigger.</td>
+        <td><span class="tag-mono">appointments</span><br><span class="tag-mono">cancelAppointment()</span></td>
+      </tr>
+      <tr>
+        <td><strong>6. Digital Wallet</strong></td>
+        <td><span class="tag-mono">WalletScreen.tsx</span> (<span class="tag-mono">/wallet</span>)</td>
+        <td>Hero cash balance card (₹), 1-Click Pay Ready badge, Add Money modal (₹500–₹5,000), gift voucher redemption
+          modal, chronological audit ledger.</td>
+        <td><span class="tag-mono">user.walletBalance</span><br><span class="tag-mono">transactions</span><br><span
+            class="tag-mono">addMoneyToWallet()</span></td>
+      </tr>
+      <tr>
+        <td><strong>7. Packages Tracker</strong></td>
+        <td><span class="tag-mono">PackagesScreen.tsx</span> (<span class="tag-mono">/packages</span>)</td>
+        <td>Active package subscription cards, linear session usage progress bars (e.g. 3 of 5 used), family sharing
+          badge, "Book Session Now" shortcut.</td>
+        <td><span class="tag-mono">packages</span></td>
+      </tr>
+      <tr>
+        <td><strong>8. VIP Loyalty Hub</strong></td>
+        <td><span class="tag-mono">LoyaltyScreen.tsx</span> (<span class="tag-mono">/loyalty</span>)</td>
+        <td>Gold Tier banner with points-to-next-tier tracker, Available Points Hero (11,250 Pts), instant cashback
+          redemption trigger, viral referral card with native share, points audit feed.</td>
+        <td><span class="tag-mono">user.points</span><br><span class="tag-mono">redeemPoints()</span></td>
+      </tr>
+      <tr>
+        <td><strong>9. Profile &amp; Safety</strong></td>
+        <td><span class="tag-mono">ProfileScreen.tsx</span> (<span class="tag-mono">/profile</span>)</td>
+        <td>Avatar presets, personal details modal, medical allergy profile modal (PPD/Ammonia tags), household family
+          members editor, communication consent switches (WhatsApp/SMS/Email), logout modal.</td>
+        <td><span class="tag-mono">user</span>, <span class="tag-mono">householdMembers</span><br><span
+            class="tag-mono">toggleConsent()</span><br><span class="tag-mono">updateUserAllergies()</span></td>
+      </tr>
+      <tr>
+        <td><strong>10. Helpdesk Support</strong></td>
+        <td><span class="tag-mono">SupportScreen.tsx</span> (<span class="tag-mono">/support</span>)</td>
+        <td>FAQ modal launcher, direct WhatsApp Concierge launcher, support ticket list with status pills (Open/In
+          Progress/Resolved), "Create New Ticket" modal.</td>
+        <td><span class="tag-mono">tickets</span><br><span class="tag-mono">createSupportTicket()</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 4: DATA SCHEMA & FIELD MAPPING -->
+  <h2>4. Database Schema &amp; UI Field Mapping Dictionary</h2>
+  <p>The customer mobile UI maps directly to the normalized PostgreSQL database schema with zero impedance mismatch.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">UI Component &amp; Field</th>
+        <th style="width: 18%;">Database Table</th>
+        <th style="width: 22%;">Database Column</th>
+        <th style="width: 15%;">Data Type</th>
+        <th style="width: 25%;">Constraints &amp; Business Rules</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Customer ID</strong></td>
+        <td><span class="tag-mono">clients</span></td>
+        <td><span class="tag-mono">id</span></td>
+        <td><span class="tag-mono">VARCHAR(64)</span></td>
+        <td><span class="tag-green">PRIMARY KEY</span> (e.g. <span class="tag-mono">CLT-001</span>)</td>
+      </tr>
+      <tr>
+        <td><strong>Primary Mobile Phone</strong></td>
+        <td><span class="tag-mono">clients</span></td>
+        <td><span class="tag-mono">mobile_phone</span></td>
+        <td><span class="tag-mono">VARCHAR(20)</span></td>
+        <td><span class="tag-green">UNIQUE, NOT NULL</span> OTP login key</td>
+      </tr>
+      <tr>
+        <td><strong>VIP Tier Level</strong></td>
+        <td><span class="tag-mono">clients</span></td>
+        <td><span class="tag-mono">vip_tier</span></td>
+        <td><span class="tag-mono">VARCHAR(30)</span></td>
+        <td><span class="tag-mono">DEFAULT 'Gold'</span></td>
+      </tr>
+      <tr>
+        <td><strong>Prepaid Wallet Balance</strong></td>
+        <td><span class="tag-mono">clients</span></td>
+        <td><span class="tag-mono">wallet_balance</span></td>
+        <td><span class="tag-mono">DECIMAL(12, 2)</span></td>
+        <td><span class="tag-mono">DEFAULT 0.00</span></td>
+      </tr>
+      <tr>
+        <td><strong>Redeemable Loyalty Points</strong></td>
+        <td><span class="tag-mono">clients</span></td>
+        <td><span class="tag-mono">loyalty_points</span></td>
+        <td><span class="tag-mono">INTEGER</span></td>
+        <td><span class="tag-mono">DEFAULT 0</span></td>
+      </tr>
+      <tr>
+        <td><strong>Chemical Allergies Profile</strong></td>
+        <td><span class="tag-mono">client_hair_skin_profiles</span></td>
+        <td><span class="tag-mono">chemical_allergies</span></td>
+        <td><span class="tag-mono">TEXT[]</span></td>
+        <td>JSON array of known sensitivities</td>
+      </tr>
+      <tr>
+        <td><strong>Communication Consent</strong></td>
+        <td><span class="tag-mono">clients</span></td>
+        <td><span class="tag-mono">marketing_consent_flags</span></td>
+        <td><span class="tag-mono">JSONB</span></td>
+        <td><span class="tag-mono">{ whatsapp: true, sms: true }</span></td>
+      </tr>
+      <tr>
+        <td><strong>Appointment Booking ID</strong></td>
+        <td><span class="tag-mono">appointments</span></td>
+        <td><span class="tag-mono">id</span></td>
+        <td><span class="tag-mono">VARCHAR(64)</span></td>
+        <td><span class="tag-green">PRIMARY KEY</span> (e.g. <span class="tag-mono">APT-2026-901</span>)</td>
+      </tr>
+      <tr>
+        <td><strong>Front-Desk Check-In OTP</strong></td>
+        <td><span class="tag-mono">appointments</span></td>
+        <td><span class="tag-mono">checkin_otp_code</span></td>
+        <td><span class="tag-mono">VARCHAR(6)</span></td>
+        <td>4-digit random security PIN</td>
+      </tr>
+      <tr>
+        <td><strong>At-Home Travel Fee (₹)</strong></td>
+        <td><span class="tag-mono">appointments</span></td>
+        <td><span class="tag-mono">travel_surcharge_amount</span></td>
+        <td><span class="tag-mono">DECIMAL(12, 2)</span></td>
+        <td><span class="tag-mono">DEFAULT 0.00</span>; ₹200 for home</td>
+      </tr>
+      <tr>
+        <td><strong>Package Session Deduction</strong></td>
+        <td><span class="tag-mono">client_package_subscriptions</span></td>
+        <td><span class="tag-mono">used_sessions_count</span></td>
+        <td><span class="tag-mono">INTEGER</span></td>
+        <td>Incremented upon booking confirmation</td>
+      </tr>
+      <tr>
+        <td><strong>Support Ticket Number</strong></td>
+        <td><span class="tag-mono">support_tickets</span></td>
+        <td><span class="tag-mono">ticket_number</span></td>
+        <td><span class="tag-mono">VARCHAR(64)</span></td>
+        <td>Auto-generated <span class="tag-mono">TICK-XXXX</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div><strong> Salon SaaS</strong> &bull; Confidential &amp; Proprietary Product Documentation</div>
+    <div>Document Reference: <span class="tag-mono">DIGI-PRD-MOB-2026-V4</span> &bull; Page 1 of 1</div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title> Salon SaaS - Branch Manager Catalogue Management PRD Traceability Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #2D2638;
+      background: #FFFFFF;
+      font-size: 9.5pt;
+      line-height: 1.5;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 7.5pt;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      background: #F4EEFF;
+      color: #5A2EA6;
+      border: 1px solid #D8C2FF;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20pt;
+      font-weight: 700;
+      color: #20132E;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 9.5pt;
+      color: #6B5E78;
+      margin-bottom: 16px;
+    }
+
+    .callout-box {
+      background: #FAF8FD;
+      border-left: 4px solid #5A2EA6;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #3B1C6E;
+      font-size: 10pt;
+      margin-bottom: 4px;
+    }
+
+    .callout-body {
+      font-size: 8.5pt;
+      color: #4A3E5C;
+      line-height: 1.45;
+    }
+
+    h2 {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #20132E;
+      border-bottom: 1.5px solid #EADBFF;
+      padding-bottom: 4px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    p,
+    li {
+      font-size: 9pt;
+      color: #3D334C;
+      line-height: 1.5;
+    }
+
+    ul {
+      margin-left: 18px;
+      margin-bottom: 14px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 8pt;
+    }
+
+    th {
+      background: #F6F0FF;
+      color: #431E7A;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid #E1D3F8;
+      padding: 8px 9px;
+      text-align: left;
+    }
+
+    td {
+      border: 1px solid #ECE3FA;
+      padding: 7px 9px;
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    tr:nth-child(even) td {
+      background: #FDFBFF;
+    }
+
+    .badge-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: #F2EBFC;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .file-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7pt;
+      color: #6C558F;
+      word-break: break-all;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card {
+      background: #FAF8FD;
+      border: 1px solid #E8DCFC;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .metric-card-title {
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #6C558F;
+    }
+
+    .metric-card-value {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #20132E;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header-badge">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+  <h1>Branch Manager Catalogue Management Walkthrough</h1>
+  <div class="subtitle">Complete PRD Requirements Traceability, Navbar Navigation, Scoped View &amp; Microservices
+    Architecture</div>
+
+  <!-- EXECUTIVE SUMMARY CALLOUT -->
+  <div class="callout-box">
+    <div class="callout-title">Executive Summary &amp; Branch Manager Scoped Authority</div>
+    <div class="callout-body">
+      The <strong>Branch Manager Catalogue Management Module</strong> mirrors the Admin Panel's Central Catalogue
+      Management module in complete visual, architectural, and component fidelity across all 5 operational tabs (Service
+      Categories, Services, Service Pricing, Staff Skills &amp; Levels, Resources). To enforce multi-tenant enterprise
+      governance, the Branch Manager interface operates in a strict <strong>read-only view mode</strong> with
+      <strong>branch-scoped visibility</strong>: Branch Managers are restricted to inspecting categories and services
+      created centrally by Brand Admin for <strong>all branches</strong> or <strong>their assigned branch</strong>,
+      eliminating operational confusion and preventing unauthorized mutation of brand-wide treatment standards.
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-card-title">Connected Databases</div>
+      <div class="metric-card-value">commerce_db &middot; organization_db</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-title">Architectural Style</div>
+      <div class="metric-card-value">Database-Per-Service</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-title">Access Governance</div>
+      <div class="metric-card-value">Scoped View-Only</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-card-title">Live Dynamic Tabs</div>
+      <div class="metric-card-value">5 Tabs Synchronized</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: PRD TRACEABILITY MATRIX -->
+  <h2>1. Official PRD Requirements Traceability Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 16%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 34%;">Product Requirement Description</th>
+        <th style="width: 28%;">Implementation Details In Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-001</span></td>
+        <td><strong>Service Categories Hierarchy</strong></td>
+        <td>Category grouping for salon departments (Hair, Skin, Spa, Nail, Bridal, Men's), display order weights, and
+          activation/deactivation control.</td>
+        <td>
+          Implemented in <span class="file-path">ServiceCategoriesTab.tsx</span> with
+          <code>catalogueApi.fetchCategories()</code>, dynamic count badges, and read-only detail inspection modal.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-002</span></td>
+        <td><strong>Master Service Catalogue &amp; Envelopes</strong></td>
+        <td>Comprehensive service registry with duration, pre/post buffer times, GST taxation rate, consultation flags,
+          and online booking visibility.</td>
+        <td>
+          Implemented in <span class="file-path">ServicesTab.tsx</span> with dynamic category dropdowns, full DB
+          pagination, and comprehensive specification inspection modal.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-003</span></td>
+        <td><strong>Multi-Branch Tariff &amp; Price Overrides</strong></td>
+        <td>Dynamic pricing matrix distinguishing HQ central baseline tariffs from location-specific price overrides
+          with live variance delta calculations.</td>
+        <td>
+          Implemented in <span class="file-path">ServicePricingTab.tsx</span> with live delta calculations, breakdown
+          inspection modal, and branch lock filters.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-004</span></td>
+        <td><strong>Physical Salon Resources &amp; Station Allocation</strong></td>
+        <td>Treatment suite rooms, hydraulic styling chairs, and specialized laser/hydra machines allocated per branch
+          to eliminate double-booking.</td>
+        <td>
+          Implemented in <span class="file-path">ResourcesTab.tsx</span> with endpoints in
+          <code>organization-service</code>, resource status switches, and view modal overlays.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-005</span></td>
+        <td><strong>Competency Prerequisites &amp; Skill Tiers</strong></td>
+        <td>Staff certification tiers (Junior, Intermediate, Senior, Expert) linked to service execution eligibility and
+          commission multiplier scaling.</td>
+        <td>
+          Implemented in <span class="file-path">StaffSkillsLevelsTab.tsx</span> with skill matrices, experience
+          requirements, and branch assignment dossiers.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-006</span></td>
+        <td><strong>Branch Manager Navbar &amp; Scoped Read-Only View</strong></td>
+        <td>Direct top navbar entry for Branch Manager panel to access master catalogue; strict read-only mode hiding
+          all Add/Edit/Delete/Seed mutations; visibility scoped strictly to services created for all branches or that
+          particular branch.</td>
+        <td>
+          Implemented in <span class="file-path">TopNavbar.tsx</span>, <span
+            class="file-path">CatalogueMasterPage.tsx</span>, and <span class="file-path">ServicesTab.tsx</span> via
+          <code>readOnly={true}</code> and <code>isTargetBranch</code> / <code>isAllBranches</code> scoped branch
+          filter.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="badge-code">SALO-PRD-CAT-007</span></td>
+        <td><strong>Dedicated Database Column for Branch Assignment Tracking</strong></td>
+        <td>PostgreSQL column in <code>service_masters</code> (<code>available_branches text[]</code>) and sync with
+          <code>service_branch_prices</code> table when creating/updating services; seamless role-based read permission
+          handling for branch managers.</td>
+        <td>
+          Implemented in PostgreSQL table <code>service_masters</code>, Prisma schema, <span
+            class="file-path">service.repository.ts</span>, <span class="file-path">permission.middleware.ts</span>, and
+          synchronized on service save/edit.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 2: BUSINESS RATIONALE -->
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <p style="margin-bottom: 10px;">
+    Every component, modal input, and metric in the Catalogue Management module directly addresses high-impact
+    operational friction points encountered in multi-location salon and spa chains:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Dedicated Catalogue Navbar Navigation for Branch Managers:</strong> Front-desk operations and shift
+      managers frequently need to consult exact service procedures, buffer cushions, patch test mandates, and pricing
+      tariffs during day-to-day appointments and walk-in intake. Having "Catalogue" directly in the top navbar provides
+      instant 1-click access without digging through settings.
+    </li>
+    <li>
+      <strong>Read-Only Governance Protection:</strong> Brand consistency across multi-unit franchise chains relies on
+      centralized service definitions. If individual branch managers could modify base prices, alter tax rates, or
+      delete core services, pricing discrepancies and brand dilution would occur. Read-only view preserves HQ central
+      authority while empowering branch managers with full operational visibility.
+    </li>
+    <li>
+      <strong>Branch-Specific Scoping (All Branches + Assigned Branch):</strong> Salons often have branch-exclusive
+      treatments (e.g., specialized laser therapies available only at flagship suites). Showing irrelevant services from
+      distant regional branches causes frontline confusion. Scoping the catalogue to services created for "all branches"
+      or "that particular branch" delivers a tailored, noise-free experience.
+    </li>
+    <li>
+      <strong>Buffer Timing Envelopes (Pre &amp; Post Service):</strong> Without buffer minutes, appointment calendars
+      stack back-to-back, causing severe salon floor delays when hair washing, station sanitization, or dye mixing take
+      extra time. Buffers automate station turnover.
+    </li>
+    <li>
+      <strong>Physical Asset Locking (Rooms, Chairs, Equipment):</strong> Multi-stylist conflicts frequently happen when
+      two aesthetic therapists book HydraFacial machine sessions or the single private bridal suite at the exact same
+      hour. The Physical Resource Allocation Registry eliminates scheduling collisions at the database layer.
+    </li>
+    <li>
+      <strong>Export Utility for Local Operations:</strong> Branch Managers can export service menus and tariffs as
+      CSV/spreadsheets using standard purple outline export buttons to print treatment menus or share price references
+      with receptionists.
+    </li>
+  </ul>
+
+  <!-- SECTION 3: UI ARCHITECTURE & PAGE FLOW -->
+  <h2>3. UI Architecture &amp; Page Flow</h2>
+  <p>
+    The master module page (<span class="file-path">CatalogueMasterPage.tsx</span>) hosts a responsive 5-tab scroll
+    navigation bar with live status pills and header metric counters:
+  </p>
+  <ul>
+    <li><strong>Top Navigation Bar:</strong> Directly displays <code>Catalogue</code> in desktop center navigation and
+      in the mobile drawer with a distinct <code>View Only</code> pill indicator.</li>
+    <li><strong>Tab 1: Service Categories:</strong> Department listing table showing total services, display sort order,
+      status badges, and an <code>Eye</code> icon action button to inspect department dossiers without edit/delete
+      controls.</li>
+    <li><strong>Tab 2: Services Menu:</strong> Filterable by category, status, and branch. Exclusively renders services
+      published by Admin for all branches or the manager's assigned branch. Action column features full specification
+      viewing modal covering durations, buffers, required staff skills, and BOM consumable recipes.</li>
+    <li><strong>Tab 3: Service Pricing:</strong> Cross-branch comparison matrix showing computed price difference badges
+      (+₹400, -₹200, 0.0% Equal) and detailed breakdown modal.</li>
+    <li><strong>Tab 4: Staff Skills &amp; Levels:</strong> Competency tier cards, certification prerequisites, and
+      stylist certification rosters.</li>
+    <li><strong>Tab 5: Salon Resources:</strong> Physical room, chair, and device allocation registry scoped to the
+      branch location.</li>
+  </ul>
+
+  <div class="callout-box" style="margin-top: 20px;">
+    <div class="callout-title">Database Compliance Notice</div>
+    <div class="callout-body">
+      All data operations respect the Database-Per-Service mandate. Catalogue services, prices, and categories persist
+      exclusively to <code>commerce_db</code>. Branch resources and physical locations persist exclusively to
+      <code>organization_db</code>. All requests are authenticated and scoped via the API Gateway using JWT tenant
+      claims.
+    </div>
+  </div>
+
+</body>
+
+</html>

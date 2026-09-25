@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Finance & HR Accounts PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 7px 10px;
+      border: 1px solid #ede8f5;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background: #fcfbfe;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 8.5px;
+      font-weight: 700;
+      background: #f0e8ff;
+      color: #5A2EA6;
+    }
+
+    .tag-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      background: #f3f0f7;
+      color: #4338ca;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    ul {
+      margin: 4px 0 10px 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+      color: #4b4458;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #e9e4f0;
+      font-size: 9px;
+      color: #8c829e;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+  <h1>Finance, Accounting &amp; HR Payroll Architecture</h1>
+  <p><strong>Module:</strong> Corporate Finance &amp; Branch Accounts &bull; <strong>Version:</strong> 2.0 &bull;
+    <strong>Scope:</strong> Multi-Branch Invoicing, Cash Drawer Z-Reports, Tiered Stylist Commissions, Indian Statutory
+    Payroll &amp; Unit P&amp;L</p>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="callout-box">
+    <strong>Executive Summary &amp; Architectural Context:</strong>
+    The Salon SaaS Finance &amp; HR Module is an enterprise-grade accounting and payroll governance system engineered
+    for single and multi-branch luxury salon chains. It unifies high-frequency daily floor cash registers (Shift opening
+    floats, petty cash vouchers, and physical hand-count Z-Reports) with statutory tax engines (SAC 999721 service GST
+    vs HSN 3305 retail product taxes), tiered graduated stylist commission slabs (5% &rarr; 10% &rarr; 15%), backbar
+    chemical cost deductions, biometric attendance synchronization, and corporate banking batch exports (HDFC / ICICI
+    CMS NEFT).
+  </div>
+
+  <!-- SECTION 1: PRD TRACEABILITY MATRIX -->
+  <h2>1. PRD Traceability Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 33%;">Product Requirement Description</th>
+        <th style="width: 30%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-01</span></td>
+        <td><strong>Executive Finance Dashboard &amp; Multi-Branch Matrix</strong></td>
+        <td>8 dynamic KPI cards (Today Revenue, Invoices Issued, Refunds, Pending Settlements, Payroll Pool,
+          Commissions, EBITDA Margin, Net GST), quick operational sub-module links, recent transaction stream, and
+          multi-branch comparative matrix comparing all 5 branches.</td>
+        <td>Implemented in <code>DashboardPage.tsx</code> powered by <code>FinanceBranchContext.tsx</code> with
+          branch-filtered KPIs and multi-branch health matrix.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-02</span></td>
+        <td><strong>Sales Receipts &amp; GST Invoicing Ledger</strong></td>
+        <td>Comprehensive customer sales receipts table with SAC 999721 (Services at 18% GST: CGST 9% + SGST 9%) and HSN
+          3305/3304 (Retail cosmetics) separation, B2B customer GSTIN tagging, multi-tender split view, and printable
+          tax invoice dossiers.</td>
+        <td>Implemented in <code>ReceiptsPage.tsx</code> with real-time tax calculation dialog, B2B tax invoice modal,
+          and CSV export standard.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-03</span></td>
+        <td><strong>Refunds &amp; 5-Stage Approval Pipeline</strong></td>
+        <td>5-stage maker-checker refund pipeline (Request &rarr; Review &rarr; Approval &rarr; Refund &rarr;
+          Completed), reason classification (Duplicate, Complaint, Wrong Billing), digital wallet credit vs payment
+          gateway reversal tender selection.</td>
+        <td>Implemented in <code>RefundsPage.tsx</code> with visual 5-stage pipeline header, manager sign-off actions,
+          and wallet refund routing.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-04</span></td>
+        <td><strong>Daily Cash Drawer Closeout &amp; Gateway Settlements</strong></td>
+        <td>Daily register opening float (₹5,000), cash drops, petty cash expense vouchers, physical hand-count vs
+          system expected book cash overage/shortage variance sign-off, and payment gateway 1.5% MDR + 18% GST fee
+          reconciliation.</td>
+        <td>Implemented in <code>SettlementsPage.tsx</code> with Z-Report dialog, petty cash voucher creation modal, and
+          gateway batch UTR ledger.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-05</span></td>
+        <td><strong>Stylist Commission &amp; Incentive Engine</strong></td>
+        <td>Tiered graduated commission slab matrix (0-50k: 5%, 50k-1L: 10%, >1L: 15%), 12% retail product upsell
+          incentive, backbar chemical material cost deduction, and 100% direct client tip pass-through.</td>
+        <td>Implemented in <code>CommissionsPage.tsx</code> with dynamic formula calculator modal, backbar offset, and
+          payroll posting trigger.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-06</span></td>
+        <td><strong>Staff Payroll &amp; Statutory Slips (PF/ESI/PT/TDS)</strong></td>
+        <td>Complete monthly payroll batch workflow (Draft &rarr; Generated &rarr; Approved &rarr; Paid) with 10 salary
+          components (Basic, HRA, Travel, Commission, Bonus, PF 12%, ESI 0.75%, State PT ₹200, TDS Section 192) and
+          printable salary slip dossiers.</td>
+        <td>Implemented in <code>PayrollPage.tsx</code> with 2-column earnings vs deductions breakdown and encrypted
+          salary slip view.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-07</span></td>
+        <td><strong>Corporate Payroll Bank Batch Export</strong></td>
+        <td>4 standard export formatters: Excel (.XLSX) workbook with formula audit, CSV universal tabular import,
+          official executive PDF, and HDFC / ICICI Corporate CMS NEFT/RTGS direct deposit batch.</td>
+        <td>Implemented in <code>PayrollExportPage.tsx</code> with branch, month, department, and employee scope
+          filters.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-08</span></td>
+        <td><strong>Unit Economics &amp; Branch P&amp;L Profitability</strong></td>
+        <td>Consolidated P&amp;L net operating profit analysis, EBITDA margins (>30%), backbar inventory COGS ratio,
+          service department contribution (Hair Care, Skin, Hair Spa, Nails), and regional benchmark comparison.</td>
+        <td>Implemented in <code>ProfitabilityPage.tsx</code> with side-by-side branch ranking and department margins.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-09</span></td>
+        <td><strong>Staff Financial Dossiers &amp; Verified KYC Vault</strong></td>
+        <td>Individual employee compensation dossiers with 4 tabbed views: Payroll history, Commission ledger, Biometric
+          attendance/overtime logs, and verified KYC compliance documents (Form 16, Aadhaar, PAN).</td>
+        <td>Implemented in <code>EmployeeFinancePage.tsx</code> with branch-scoped staff profiles.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-10</span></td>
+        <td><strong>Biometric Attendance &amp; LOP Synchronization</strong></td>
+        <td>Daily attendance check-in/out logs, leave entitlement tracking (Casual, Sick, Paid, Unpaid), overtime
+          accumulation, and automatic Loss of Pay (LOP) payroll deduction calculation.</td>
+        <td>Implemented in <code>AttendanceLeavePage.tsx</code> with manual attendance logging modal.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-11</span></td>
+        <td><strong>Statutory Audit Reports &amp; Financial Downloads</strong></td>
+        <td>8 audit-ready reports: Sales Receipts &amp; GST, Customer Refunds, Daily Settlements, Stylist Commissions,
+          Payroll Register, Executive P&amp;L, Salon OpEx/COGS, and Multi-Branch Benchmark.</td>
+        <td>Implemented in <code>ReportsPage.tsx</code> with instant CSV download and ZIP bundle export.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-FIN-12</span></td>
+        <td><strong>Chart of Accounts, Tax &amp; Payment Gateway Config</strong></td>
+        <td>Master settings cockpit: General ledger FY cycle, tiered commission slabs, 10 salary components, Indian GST
+          SAC 999721 &amp; HSN 3305, payment gateway tenders, and daily register variance tolerances.</td>
+        <td>Implemented in <code>SettingsPage.tsx</code> with reactive tabbed configuration.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 2: BUSINESS RATIONALE -->
+  <div class="page-break"></div>
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+
+  <h3>A. Multi-Branch Real-Time Scoping &amp; RBAC Perspectives</h3>
+  <p>
+    In high-growth luxury salon chains, financial opacity between individual outlets and the corporate treasury leads to
+    revenue leakage and unverified cashier shortfalls. By implementing <code>FinanceBranchContext.tsx</code>, corporate
+    CFOs can toggle between consolidated chain views (Mumbai, Delhi, Bangalore, Hyderabad, Bhiwandi) and branch-specific
+    sub-ledgers. Role-based perspectives (Corporate CFO, Branch Accountant, HR &amp; Payroll Lead, Finance Manager)
+    ensure that staff only access authorized data.
+  </p>
+
+  <h3>B. GST SAC 999721 &amp; HSN 3305 Compliance</h3>
+  <p>
+    Indian tax laws enforce a strict distinction between salon grooming services (SAC <code>999721</code> at 18% GST:
+    CGST 9% + SGST 9% or IGST 18%) and retail cosmetic product sales (HSN <code>3305</code> / <code>3304</code>). The
+    customer receipt ledger explicitly isolates these tax components and records B2B client GSTIN numbers, enabling
+    seamless GSTR-1 and GSTR-3B filings without manual accounting reconciliations.
+  </p>
+
+  <h3>C. Cash Drawer Control, Shift Closeout &amp; Z-Report Sign-off</h3>
+  <p>
+    Salon cash drawers are vulnerable to cash shrinkage during shift handovers. Our daily register architecture mandates
+    opening float logging (₹5,000), petty cash vouchers with authorization sign-offs, and physical cash hand-count
+    comparisons against book revenue. Any variance requires mandatory explanation before the drawer is locked and
+    Z-Report posted.
+  </p>
+
+  <h3>D. Graduated Stylist Commission Slabs &amp; Backbar Chemical Deductions</h3>
+  <p>
+    Top colorists and stylists generate significant service volume but also consume expensive chemical products
+    (Olaplex, L'Oréal, Schwarzkopf). Our tiered commission engine calculates progressive slabs (5% under ₹50k, 10%
+    between ₹50k-₹1L, 15% over ₹1L) on net service sales after deducting backbar chemical material costs, plus a 12%
+    retail upsell bonus and 100% direct tip pass-through.
+  </p>
+
+  <h3>E. Statutory Payroll Engine &amp; Corporate Bank Direct Deposit</h3>
+  <p>
+    Indian labor regulations mandate strict Provident Fund (PF 12% of basic), Employee State Insurance (ESI 0.75% of
+    gross), State Professional Tax (PT ₹200/mo), and Income Tax TDS (Section 192). The payroll engine computes all 10
+    standard components from biometric attendance logs and generates bank-ready CMS NEFT direct deposit batch files for
+    HDFC, ICICI, and Kotak Mahindra Bank.
+  </p>
+
+  <!-- SECTION 3: UI ARCHITECTURE & PAGE FLOW -->
+  <h2>3. UI Architecture &amp; Page Flow</h2>
+  <ul>
+    <li><strong>Top Command Center &amp; Scope Switcher:</strong> Live multi-branch dropdown popover with active outlet
+      badges, revenue indicators, and RBAC perspective selector in <code>Sidebar.tsx</code>.</li>
+    <li><strong>Executive Dashboard (<code>/finance</code>):</strong> 8 dynamic KPI cards, sub-module launchpad, live
+      transaction stream, and multi-branch cash matrix.</li>
+    <li><strong>Sales Receipts (<code>/finance/receipts</code>):</strong> SAC 999721 service invoices, B2B GSTIN
+      tagging, and thermal/A4 printable receipts.</li>
+    <li><strong>Settlements &amp; Cash Register (<code>/finance/settlements</code>):</strong> Z-Report closing dialog,
+      petty cash expense vouchers, and gateway MDR deductions.</li>
+    <li><strong>Commissions (<code>/finance/commissions</code>):</strong> Tiered slab calculator, backbar chemical
+      offsets, and tip pass-through tracking.</li>
+    <li><strong>Monthly Payroll (<code>/finance/payroll</code>):</strong> 4-stage batch workflow with PF/ESI/PT/TDS
+      deduction breakdown and PDF payslips.</li>
+    <li><strong>Payroll Bank Export (<code>/finance/payroll-export</code>):</strong> HDFC/ICICI Corporate CMS NEFT CSV
+      batch export.</li>
+    <li><strong>Profitability &amp; P&amp;L (<code>/finance/profitability</code>):</strong> Unit economics, EBITDA %
+      margins, and departmental profitability.</li>
+    <li><strong>Reports &amp; Settings (<code>/finance/reports</code>, <code>/finance/settings</code>):</strong> 8
+      statutory reports and Chart of Accounts / GST configuration.</li>
+  </ul>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span> Salon SaaS &bull; Enterprise Finance &amp; HR Accounts Architecture</span>
+    <span>Confidential &bull; Generated for Brand Governance</span>
+  </div>
+
+</body>
+
+</html>

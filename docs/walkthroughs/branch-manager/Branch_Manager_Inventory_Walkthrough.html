@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Branch Manager & Head Office Inventory PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 7px 10px;
+      border: 1px solid #ede8f5;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background: #fcfbfe;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 8.5px;
+      font-weight: 700;
+      background: #f0e8ff;
+      color: #5A2EA6;
+    }
+
+    .tag-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      background: #f3f0f7;
+      color: #4338ca;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    ul {
+      margin: 4px 0 10px 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+      color: #4b4458;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #e9e4f0;
+      font-size: 9px;
+      color: #8c829e;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+  <h1>Head Office &amp; Branch Manager Inventory Architecture</h1>
+  <p><strong>Module:</strong> Brand Owner / Head Office &rarr; Inventory &bull; <strong>Version:</strong> 2.0 &bull;
+    <strong>Scope:</strong> Multi-Branch Stock, Service BOM, Transfers, Consumption &amp; Procurement</p>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="callout-box">
+    <strong>Executive Summary &amp; Architectural Context:</strong>
+    The Salon SaaS platform maintains strict separation of concerns between the <strong>Brand Owner Inventory
+      Desk</strong> and the separate <strong>Inventory / Procurement Operations Panel</strong>. While day-to-day store
+    clerks perform physical receiving and stockroom picking in their operational desk, the Brand Owner interface serves
+    as the centralized governance cockpit—overseeing multi-branch stock valuation, Service Recipe BOM compliance,
+    Maker-Checker PO authorizations, inter-branch balancing transfers, chairside consumption variance leakage, and
+    physical stocktake adjustments.
+  </div>
+
+  <!-- SECTION 1: PRD TRACEABILITY MATRIX -->
+  <h2>1. PRD Traceability Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 33%;">Product Requirement Description</th>
+        <th style="width: 30%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-01</span></td>
+        <td><strong>Inventory Dashboard &amp; Multi-Branch Comparison</strong></td>
+        <td>10 centralized KPI cards (Total Stock ₹28.5L, Low Stock, Expired, POs, Transfers, Wastage), Donut Health
+          visualization, and multi-branch comparison table with sorting.</td>
+        <td>Implemented in <code>InventoryOverviewTab.tsx</code> with reactive filter controls, health distribution
+          bars, and branch comparison ranking.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-02</span></td>
+        <td><strong>Master Products &amp; Consumables Catalogue</strong></td>
+        <td>Unified catalogue supporting Retail Products and Professional-use consumables with UOM, FIFO cost, selling
+          MRP, reorder limits, and detailed batch profile drawer.</td>
+        <td>Implemented in <code>ProductsConsumablesTab.tsx</code> with sub-tabs for Retail vs. Consumables and
+          comprehensive product dossier modal.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-03</span></td>
+        <td><strong>Service Recipe / BOM Specifications</strong></td>
+        <td>Service recipe management mapping exact consumable quantities (ml/gm/unit) to salon services with versioning
+          (e.g. v2.2) and material cost estimates.</td>
+        <td>Implemented in <code>ProductsConsumablesTab.tsx</code> (Service BOM tab) with recipe inspection,
+          duplication, and historical version changelog.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-04</span></td>
+        <td><strong>Running Stock Ledger &amp; Movement Timeline</strong></td>
+        <td>Real-time multi-branch stock ledger with available/reserved/damaged counts and chronological movement log
+          with running balance.</td>
+        <td>Implemented in <code>StockTab.tsx</code> with positive/negative quantity delta badges (+24 / -1) and
+          reference document tracking.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-05</span></td>
+        <td><strong>Batch &amp; Expiry Risk Monitoring</strong></td>
+        <td>Pre-expiry mitigation system with 7/15/30/60/90 days filters and days-to-expiry gauges to prevent chemical
+          spoilage.</td>
+        <td>Implemented in <code>StockTab.tsx</code> (Batch &amp; Expiry tab) with quick quarantine and transfer
+          suggestions.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-06</span></td>
+        <td><strong>Procurement &amp; Purchase Order Governance</strong></td>
+        <td>Maker-checker PO review, receiving progress bars (ordered vs received), vendor directory, GRN inward logs,
+          and purchase returns.</td>
+        <td>Implemented in <code>ProcurementTab.tsx</code> with PO Dossier modal and cross-links to Finance Panel for
+          accounting settlement.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-07</span></td>
+        <td><strong>Inter-Branch Stock Transfers</strong></td>
+        <td>Multi-branch stock balancing with 5-stage chain-of-custody progress tracker (Requested &rarr; Approved
+          &rarr; Dispatched &rarr; In Transit &rarr; Received).</td>
+        <td>Implemented in <code>TransfersTab.tsx</code> with source/destination branch inventory validation and HO
+          authorization modal.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-08</span></td>
+        <td><strong>Consumption &amp; Recipe Variance Lifecycle</strong></td>
+        <td>Full PRD lifecycle: Recipe suggested &rarr; Actual confirmed &rarr; Stock reduced &rarr; Variance flagged
+          &rarr; Wastage approved.</td>
+        <td>Implemented in <code>ConsumptionWastageTab.tsx</code> with stylist leakage detection and loss authorization
+          workflows.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-09</span></td>
+        <td><strong>Physical Stocktake &amp; Reconciliation</strong></td>
+        <td>Monthly cycle count verification comparing system book stock against physical shelf counts with discrepancy
+          approval.</td>
+        <td>Implemented in <code>StocktakeTab.tsx</code> with line-item discrepancy audits and ledger adjustment
+          posting.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-mono">SALO-PRD-INV-10</span></td>
+        <td><strong>Inventory Reports, Alerts &amp; Audit Trail</strong></td>
+        <td>6 statutory report categories, multi-format export (CSV, Excel, PDF), 4-severity inventory risk alerts, and
+          immutable audit journal.</td>
+        <td>Implemented in <code>InventoryReportsTab.tsx</code> with interactive preview canvas and statutory compliance
+          logs.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- SECTION 2: BUSINESS RATIONALE -->
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+
+  <h3>1. Why Centralized Stock Valuation is Critical for Brand Owners</h3>
+  <p>In multi-branch salon networks, inventory represents the second largest current asset after cash. The <strong>FIFO
+      Valuation Engine</strong> computes stock worth across all 5 branches (₹28,50,000), giving leadership immediate
+    visibility into capital locked in backwash chemicals and retail displays without waiting for end-of-month accounting
+    books.</p>
+
+  <h3>2. Why Service Recipe / BOM (Bill of Materials) is Enforced</h3>
+  <p>Without standardized recipes, colour mixing and treatment applications vary wildly by stylist. By enforcing
+    <strong>Service BOMs (e.g. 50ml Majirel + 75ml Developer)</strong>, the POS automatically calculates expected stock
+    reduction upon service completion. When a stylist dispenses 75ml instead of 60ml (+25% variance), the system flags
+    the leakage instantly, enabling targeted training rather than absorbing unbilled product loss.</p>
+
+  <h3>3. Why Inter-Branch Stock Transfers Prevent Dead Stock</h3>
+  <p>Slow-moving inventory in smaller branches (e.g., Ujjain or Bhopal) often expires before utilization. The
+    <strong>Pre-Expiry Risk Matrix</strong> alerts Head Office 30 days prior, allowing one-click authorization of an
+    <strong>Inter-Branch Transfer</strong> to high-volume locations like Indore Central, ensuring 100% stock utilization
+    and zero chemical write-off.</p>
+
+  <h3>4. Why Maker-Checker Purchase Order Approval is Mandatory</h3>
+  <p>To eliminate unauthorized store purchases, storekeepers submit PO requisitions that require <strong>Head Office
+      Brand Owner Sign-Off</strong> before vendor dispatch. Once delivered, Goods Receipt Notes (GRN) verify physical
+    counts before sending summary notices to the separate Finance Panel for bank disbursement.</p>
+
+  <!-- SECTION 3: UI ARCHITECTURE & PAGE FLOW -->
+  <h2>3. UI Architecture &amp; Page Flow</h2>
+  <ul>
+    <li><strong>Master Layout (<code>InventoryMasterPage.tsx</code>):</strong> Hosts 8 sub-navigation tabs, breadcrumb
+      context, and reactive search param synchronizer.</li>
+    <li><strong>Overview Tab (<code>InventoryOverviewTab.tsx</code>):</strong> 10 KPI summary cards, interactive shelf
+      pacing distribution bar, and branch comparison table with multi-column sorting.</li>
+    <li><strong>Products &amp; Consumables (<code>ProductsConsumablesTab.tsx</code>):</strong> Retail catalogue,
+      professional consumables, Product Dossier modal with batch inventory, and Service Recipe BOM interface.</li>
+    <li><strong>Stock Tab (<code>StockTab.tsx</code>):</strong> Central stock ledger, running movement journal with
+      delta badges, batch expiration monitor, and stock ageing analysis (0–30d to 180+d).</li>
+    <li><strong>Procurement Tab (<code>ProcurementTab.tsx</code>):</strong> PO register, Vendor directory, GRN inward
+      logs, Purchase Returns, and Finance Panel integration hooks.</li>
+    <li><strong>Transfers Tab (<code>TransfersTab.tsx</code>):</strong> Inter-branch stock transfer ledger with 5-stage
+      chain-of-custody progress tracker.</li>
+    <li><strong>Consumption &amp; Wastage (<code>ConsumptionWastageTab.tsx</code>):</strong> Backwash consumption
+      ledger, Recipe vs. Actual variance analytics, Wastage approvals, and Retail returns.</li>
+    <li><strong>Stocktake Tab (<code>StocktakeTab.tsx</code>):</strong> Physical cycle count ledger with line-by-line
+      discrepancy reconciliation drawer.</li>
+    <li><strong>Reports &amp; Audit (<code>InventoryReportsTab.tsx</code>):</strong> 6 report categories, multi-format
+      export (CSV/Excel/PDF), 4-severity risk alerts, and immutable audit journal.</li>
+  </ul>
+
+  <div class="footer">
+    <span> Salon SaaS · Enterprise Inventory Management</span>
+    <span>Page 2 of 2</span>
+  </div>
+
+</body>
+
+</html>

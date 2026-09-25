@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Stylist Panel Module Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · STYLIST & THERAPIST DATA DICTIONARY</span>
+    <h1>Stylist Panel Module Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 3.1.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Stylist Workspace & Tablet App (`/stylist-portal/*`) &nbsp;|&nbsp;
+      <strong>Key Domains:</strong> Daily Chair Queue, Digital Colour Formula Cards, BOM Recipe Consumable Logging,
+      Real-Time Commission Wallet & Before/After Portfolio Gallery
+    </div>
+
+    <div class="callout">
+      <strong>Stylist Scoping Architecture:</strong> Direct personal tablet & mobile app access scoped to the performing
+      stylist ID (<code>WHERE staff_id = :current_stylist_id</code>) for managing client treatment formula cards,
+      in-chair add-on upsells, and daily commission payouts.
+    </div>
+
+    <h2>1. Stylist Shift Roster & Daily Appointments Queue</h2>
+    <h3>Table: <code>appointments</code> & <code>appointment_line_items</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field / Column</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints / Default</th>
+          <th>Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Booking Reference</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Booking ID (e.g. <code>APT-2026-901</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Customer Client</strong></td>
+          <td><code>client_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; clients(id)</td>
+          <td>Customer Profile</td>
+        </tr>
+        <tr>
+          <td><strong>Styling Station / Chair</strong></td>
+          <td><code>station_chair_number</code></td>
+          <td>VARCHAR(30)</td>
+          <td>NOT NULL</td>
+          <td>Assigned Chair Station</td>
+        </tr>
+        <tr>
+          <td><strong>Service Start & End</strong></td>
+          <td><code>scheduled_start_time</code>, <code>scheduled_end_time</code></td>
+          <td>TIMESTAMPTZ</td>
+          <td>NOT NULL</td>
+          <td>Service appointment slot</td>
+        </tr>
+        <tr>
+          <td><strong>Chair Lifecycle Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Confirmed'</td>
+          <td><code>Confirmed</code>, <code>Arrived</code>, <code>In Service</code>, <code>Completed</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Client Consultation Dossier & Digital Formula Cards</h2>
+    <h3>Table: <code>client_treatment_formula_cards</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Formula Card Field</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Formula Card ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>Formula Record (e.g. <code>FORM-2026-081</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Base Hair Shade Level</strong></td>
+          <td><code>base_shade_level</code></td>
+          <td>VARCHAR(50)</td>
+          <td>e.g. "Level 4 Dark Brown (Virgin)"</td>
+        </tr>
+        <tr>
+          <td><strong>Target Shade Level</strong></td>
+          <td><code>target_shade_level</code></td>
+          <td>VARCHAR(50)</td>
+          <td>e.g. "Level 7 Caramel Blonde Balayage"</td>
+        </tr>
+        <tr>
+          <td><strong>Color Shade Formula</strong></td>
+          <td><code>primary_formula_sku</code></td>
+          <td>VARCHAR(80)</td>
+          <td>e.g. "Majirel 6.13 (45g)"</td>
+        </tr>
+        <tr>
+          <td><strong>Oxidant Developer Ratio</strong></td>
+          <td><code>developer_volume_ratio</code></td>
+          <td>VARCHAR(80)</td>
+          <td>e.g. "20 Vol (60ml) · 1:1.5 Ratio"</td>
+        </tr>
+        <tr>
+          <td><strong>Patch Test Status</strong></td>
+          <td><code>patch_test_cleared</code></td>
+          <td>BOOLEAN</td>
+          <td>Verified 24hr allergy clearance</td>
+        </tr>
+        <tr>
+          <td><strong>Scalp Sensitivity Notes</strong></td>
+          <td><code>scalp_sensitivity_notes</code></td>
+          <td>TEXT</td>
+          <td>Contraindications & allergy notes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Stylist Commission Wallet, Tips & Target Progress</h2>
+    <h3>Table: <code>staff_commission_ledger</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Wallet Field</th>
+          <th>Database Column / Query</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Today's Commission</strong></td>
+          <td><code>SUM(commission_amount) WHERE DATE = TODAY</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Real-time computed daily commission (₹)</td>
+        </tr>
+        <tr>
+          <td><strong>Today's Tips Collected</strong></td>
+          <td><code>SUM(invoices.tip_amount)</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Client gratuities attributed to stylist</td>
+        </tr>
+        <tr>
+          <td><strong>MTD Billed Sales (₹)</strong></td>
+          <td><code>SUM(service_billed_amount + retail_billed_amount)</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Gross revenue generated on chair</td>
+        </tr>
+        <tr>
+          <td><strong>Monthly Target %</strong></td>
+          <td><code>(revenue_billed / target_amount) * 100</code></td>
+          <td>DECIMAL(5, 2)</td>
+          <td>Monthly sales target progress bar</td>
+        </tr>
+        <tr>
+          <td><strong>Wallet Payout Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(20)</td>
+          <td><code>Accrued</code>, <code>Approved</code>, <code>Paid</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Stylist & Performing Specialist Workspace Database Specification.
+    </div>
+  </div>
+</body>
+
+</html>

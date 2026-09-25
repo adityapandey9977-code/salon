@@ -1,0 +1,245 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("PLATFORM_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+// ==========================================
+// Enums
+// ==========================================
+
+enum BillingInterval {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+  CUSTOM
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  SUSPENDED
+  CANCELLED
+  EXPIRED
+}
+
+enum DomainType {
+  ADMIN
+  CUSTOMER
+  PUBLIC
+  BOOKING
+}
+
+enum DomainStatus {
+  PENDING
+  VERIFYING
+  ACTIVE
+  FAILED
+  DISABLED
+}
+
+enum SSLStatus {
+  PENDING
+  ISSUED
+  FAILED
+  EXPIRED
+}
+
+enum ProvisioningStatus {
+  PENDING
+  CREATING_ORGANIZATION
+  CREATING_CREDENTIAL
+  CREATING_SUBSCRIPTION
+  CONFIGURING_ENTITLEMENTS
+  COMPLETED
+  FAILED
+}
+
+// ==========================================
+// SaaS Plan & Feature Catalog
+// ==========================================
+
+model SubscriptionPlan {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code            String          @unique // e.g. STARTER, GROWTH, ENTERPRISE
+  name            String
+  description     String?
+  billingInterval BillingInterval @default(MONTHLY) @map("billing_interval")
+  basePrice       Decimal         @map("base_price") @db.Decimal(10, 2)
+  currency        String          @default("INR")
+  trialDays       Int             @default(14) @map("trial_days")
+  maxBranches     Int             @default(1) @map("max_branches")
+  maxStaff        Int             @default(5) @map("max_staff")
+  maxCustomers    Int?            @map("max_customers")
+  isActive        Boolean         @default(true) @map("is_active")
+  isPublic        Boolean         @default(true) @map("is_public")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  planFeatures    PlanFeature[]
+  subscriptions   TenantSubscription[]
+  provisionings   TenantProvisioningRequest[]
+
+  @@map("subscription_plans")
+}
+
+model FeatureDefinition {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String   @unique // e.g. BOOKING, POS, INVENTORY, FINANCE, FRANCHISE, CALL_CENTER, ADVANCED_REPORTING, CUSTOM_DOMAIN, CUSTOMER_MOBILE, MULTI_BRANCH
+  name        String
+  description String?
+  category    String?  // CORE, OPERATIONS, GROWTH, ENTERPRISE
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  planFeatures PlanFeature[]
+  overrides    TenantFeatureOverride[]
+
+  @@map("feature_definitions")
+}
+
+model PlanFeature {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  planId     String   @map("plan_id") @db.Uuid
+  featureId  String   @map("feature_id") @db.Uuid
+  enabled    Boolean  @default(true)
+  limitValue Int?     @map("limit_value")
+  configJson Json?    @map("config_json")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  plan       SubscriptionPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+  feature    FeatureDefinition @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, featureId])
+  @@map("plan_features")
+}
+
+// ==========================================
+// Tenant Subscriptions & Entitlement Overrides
+// ==========================================
+
+model TenantSubscription {
+  id                     String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String             @unique @map("tenant_id") @db.Uuid // Logical reference to organization-service
+  planId                 String             @map("plan_id") @db.Uuid
+  status                 SubscriptionStatus @default(TRIALING)
+  startsAt               DateTime           @default(now()) @map("starts_at")
+  trialEndsAt            DateTime?          @map("trial_ends_at")
+  currentPeriodStart     DateTime           @map("current_period_start")
+  currentPeriodEnd       DateTime           @map("current_period_end")
+  cancelAtPeriodEnd      Boolean            @default(false) @map("cancel_at_period_end")
+  cancelledAt            DateTime?          @map("cancelled_at")
+  provider               String?            @map("provider") // STRIPE, RAZORPAY, MANUAL
+  providerSubscriptionId String?            @map("provider_subscription_id")
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
+
+  plan                   SubscriptionPlan   @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([status])
+  @@map("tenant_subscriptions")
+}
+
+model TenantFeatureOverride {
+  id            String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId      String            @map("tenant_id") @db.Uuid
+  featureId     String            @map("feature_id") @db.Uuid
+  enabled       Boolean?          @map("enabled")
+  limitValue    Int?              @map("limit_value")
+  configJson    Json?             @map("config_json")
+  reason        String?
+  effectiveFrom DateTime          @default(now()) @map("effective_from")
+  effectiveTo   DateTime?         @map("effective_to")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  feature       FeatureDefinition @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, featureId])
+  @@index([tenantId])
+  @@map("tenant_feature_overrides")
+}
+
+// ==========================================
+// Custom Domains & White-label Branding
+// ==========================================
+
+model CustomDomain {
+  id                 String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId           String       @map("tenant_id") @db.Uuid
+  hostname           String       @unique
+  domainType         DomainType   @default(ADMIN) @map("domain_type")
+  isPrimary          Boolean      @default(false) @map("is_primary")
+  status             DomainStatus @default(PENDING)
+  verificationToken  String?      @map("verification_token")
+  verificationMethod String?      @default("TXT") @map("verification_method")
+  verifiedAt         DateTime?    @map("verified_at")
+  sslStatus          SSLStatus    @default(PENDING) @map("ssl_status")
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+
+  @@index([tenantId])
+  @@map("custom_domains")
+}
+
+model TenantBranding {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String   @unique @map("tenant_id") @db.Uuid
+  brandName        String?  @map("brand_name")
+  primaryColor     String   @default("#8B5CF6") @map("primary_color")
+  secondaryColor   String   @default("#EC4899") @map("secondary_color")
+  logoObjectKey    String?  @map("logo_object_key")
+  faviconObjectKey String?  @map("favicon_object_key")
+  appTitle         String   @default("  Salon") @map("app_title")
+  customCss        String?  @map("custom_css")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("tenant_brandings")
+}
+
+// ==========================================
+// Tenant Provisioning Orchestration Saga
+// ==========================================
+
+model TenantProvisioningRequest {
+  id                   String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  requestedByUserId    String?            @map("requested_by_user_id") @db.Uuid
+  planId               String             @map("plan_id") @db.Uuid
+  salonName            String             @map("salon_name")
+  loginEmail           String             @map("login_email")
+  subdomain            String?            @map("subdomain")
+  ownerPhone           String?            @map("owner_phone")
+  status               ProvisioningStatus @default(PENDING)
+  organizationTenantId String?            @map("organization_tenant_id") @db.Uuid
+  failureStep          String?            @map("failure_step")
+  failureReason        String?            @map("failure_reason")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+  completedAt          DateTime?          @map("completed_at")
+
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([status])
+  @@map("tenant_provisioning_requests")
+}
+
+// ==========================================
+// Platform Configuration
+// ==========================================
+
+model PlatformConfig {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_configs")
+}

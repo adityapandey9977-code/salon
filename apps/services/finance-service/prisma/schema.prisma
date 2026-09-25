@@ -1,0 +1,371 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("FINANCE_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+// ==========================================
+// Enums
+// ==========================================
+
+enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+enum AccountingPeriodStatus {
+  OPEN
+  CLOSED
+  LOCKED
+}
+
+enum JournalStatus {
+  DRAFT
+  POSTED
+  REVERSED
+}
+
+enum CalculationType {
+  PERCENTAGE
+  FIXED
+  TIERED
+  HYBRID
+}
+
+enum CommissionStatus {
+  PENDING
+  APPROVED
+  PAYABLE
+  PAID
+  REVERSED
+}
+
+enum PayrollStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  PROCESSING
+  PAID
+  CANCELLED
+}
+
+enum RoyaltyRevenueBasis {
+  GROSS_SALES
+  NET_SALES
+  SERVICE_REVENUE
+  SELECTED_CATEGORIES
+}
+
+enum SettlementStatus {
+  DRAFT
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+// ==========================================
+// Chart of Accounts & General Ledger
+// ==========================================
+
+model ChartOfAccount {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String         @map("tenant_id") @db.Uuid
+  code            String         @map("code")
+  name            String
+  type            AccountType
+  parentAccountId String?        @map("parent_account_id") @db.Uuid
+  description     String?
+  isSystem        Boolean        @default(false) @map("is_system")
+  isActive        Boolean        @default(true) @map("is_active")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  parentAccount   ChartOfAccount? @relation("AccountHierarchy", fields: [parentAccountId], references: [id], onDelete: SetNull)
+  childAccounts   ChartOfAccount[] @relation("AccountHierarchy")
+  journalLines    JournalLine[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("chart_of_accounts")
+}
+
+model AccountingPeriod {
+  id        String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String                 @map("tenant_id") @db.Uuid
+  name      String
+  startDate DateTime               @map("start_date") @db.Date
+  endDate   DateTime               @map("end_date") @db.Date
+  status    AccountingPeriodStatus @default(OPEN)
+  createdAt DateTime               @default(now()) @map("created_at")
+  updatedAt DateTime               @updatedAt @map("updated_at")
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("accounting_periods")
+}
+
+model JournalEntry {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId      String        @map("tenant_id") @db.Uuid
+  branchId      String?       @map("branch_id") @db.Uuid
+  journalNumber String        @map("journal_number")
+  entryDate     DateTime      @default(now()) @map("entry_date") @db.Date
+  sourceType    String        @map("source_type") // SALE, PAYMENT, REFUND, PAYROLL, GRN, REVERSAL, MANUAL
+  sourceId      String?       @map("source_id") @db.Uuid
+  description   String?
+  status        JournalStatus @default(POSTED)
+  correlationId String?       @map("correlation_id")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  postedAt      DateTime?     @default(now()) @map("posted_at")
+
+  lines         JournalLine[]
+
+  @@unique([tenantId, journalNumber])
+  @@index([tenantId, branchId])
+  @@index([entryDate])
+  @@map("journal_entries")
+}
+
+model JournalLine {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId       String         @map("tenant_id") @db.Uuid
+  journalEntryId String         @map("journal_entry_id") @db.Uuid
+  accountId      String         @map("account_id") @db.Uuid
+  debit          Decimal        @default(0.0) @db.Decimal(12, 2)
+  credit         Decimal        @default(0.0) @db.Decimal(12, 2)
+  description    String?
+
+  journalEntry   JournalEntry   @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  account        ChartOfAccount @relation(fields: [accountId], references: [id], onDelete: Restrict)
+
+  @@index([tenantId, accountId])
+  @@map("journal_lines")
+}
+
+// ==========================================
+// Staff Commission Rules & Transactions
+// ==========================================
+
+model CommissionRule {
+  id                  String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId            String          @map("tenant_id") @db.Uuid
+  name                String
+  ruleType            String          @default("GENERAL") @map("rule_type") // SERVICE, RETAIL, HYBRID
+  appliesToBranchId   String?         @map("applies_to_branch_id") @db.Uuid
+  appliesToEmployeeId String?         @map("applies_to_employee_id") @db.Uuid
+  appliesToServiceId  String?         @map("applies_to_service_id") @db.Uuid
+  appliesToCategoryId String?         @map("applies_to_category_id") @db.Uuid
+  calculationType     CalculationType @default(PERCENTAGE) @map("calculation_type")
+  percentage          Decimal?        @map("percentage") @db.Decimal(5, 2)
+  fixedAmount         Decimal?        @map("fixed_amount") @db.Decimal(10, 2)
+  thresholdJson       Json?           @map("threshold_json")
+  effectiveFrom       DateTime        @default(now()) @map("effective_from")
+  effectiveTo         DateTime?       @map("effective_to")
+  priority            Int             @default(100)
+  version             Int             @default(1)
+  isActive            Boolean         @default(true) @map("is_active")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+
+  transactions        CommissionTransaction[]
+
+  @@index([tenantId])
+  @@map("commission_rules")
+}
+
+model CommissionTransaction {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String           @map("tenant_id") @db.Uuid
+  branchId         String           @map("branch_id") @db.Uuid
+  employeeId       String           @map("employee_id") @db.Uuid
+  saleId           String           @map("sale_id") @db.Uuid
+  invoiceId        String           @map("invoice_id") @db.Uuid
+  invoiceItemId    String?          @map("invoice_item_id") @db.Uuid
+  ruleId           String?          @map("rule_id") @db.Uuid
+  ruleVersion      Int              @default(1) @map("rule_version")
+  eligibleAmount   Decimal          @map("eligible_amount") @db.Decimal(12, 2)
+  commissionAmount Decimal          @map("commission_amount") @db.Decimal(12, 2)
+  status           CommissionStatus @default(PENDING)
+  earnedAt         DateTime         @default(now()) @map("earned_at")
+  createdAt        DateTime         @default(now()) @map("created_at")
+
+  rule             CommissionRule?  @relation(fields: [ruleId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, employeeId])
+  @@index([tenantId, invoiceId])
+  @@map("commission_transactions")
+}
+
+model TipTransaction {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId   String          @map("tenant_id") @db.Uuid
+  branchId   String          @map("branch_id") @db.Uuid
+  invoiceId  String          @map("invoice_id") @db.Uuid
+  totalTip   Decimal         @map("total_tip") @db.Decimal(10, 2)
+  createdAt  DateTime        @default(now()) @map("created_at")
+
+  allocations TipAllocation[]
+
+  @@unique([tenantId, invoiceId])
+  @@index([tenantId, branchId])
+  @@map("tip_transactions")
+}
+
+model TipAllocation {
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String         @map("tenant_id") @db.Uuid
+  tipTransactionId String         @map("tip_transaction_id") @db.Uuid
+  employeeId       String         @map("employee_id") @db.Uuid
+  amount           Decimal        @db.Decimal(10, 2)
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  tipTransaction   TipTransaction @relation(fields: [tipTransactionId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, employeeId])
+  @@map("tip_allocations")
+}
+
+// ==========================================
+// Payroll Runs & Monetary Calculations
+// ==========================================
+
+model PayrollRun {
+  id               String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String               @map("tenant_id") @db.Uuid
+  periodStart      DateTime             @map("period_start") @db.Date
+  periodEnd        DateTime             @map("period_end") @db.Date
+  status           PayrollStatus        @default(DRAFT)
+  createdByUserId  String?              @map("created_by_user_id") @db.Uuid
+  approvedByUserId String?              @map("approved_by_user_id") @db.Uuid
+  grossTotal       Decimal              @default(0.0) @map("gross_total") @db.Decimal(14, 2)
+  deductionTotal   Decimal              @default(0.0) @map("deduction_total") @db.Decimal(14, 2)
+  netTotal         Decimal              @default(0.0) @map("net_total") @db.Decimal(14, 2)
+  createdAt        DateTime             @default(now()) @map("created_at")
+  completedAt      DateTime?            @map("completed_at")
+
+  employees        PayrollRunEmployee[]
+
+  @@index([tenantId])
+  @@map("payroll_runs")
+}
+
+model PayrollRunEmployee {
+  id                   String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId             String     @map("tenant_id") @db.Uuid
+  payrollRunId         String     @map("payroll_run_id") @db.Uuid
+  employeeId           String     @map("employee_id") @db.Uuid
+  baseSalary           Decimal    @default(0.0) @map("base_salary") @db.Decimal(10, 2)
+  attendanceAdjustment Decimal    @default(0.0) @map("attendance_adjustment") @db.Decimal(10, 2)
+  overtimeAmount       Decimal    @default(0.0) @map("overtime_amount") @db.Decimal(10, 2)
+  commissionAmount     Decimal    @default(0.0) @map("commission_amount") @db.Decimal(10, 2)
+  tipAmount            Decimal    @default(0.0) @map("tip_amount") @db.Decimal(10, 2)
+  bonusAmount          Decimal    @default(0.0) @map("bonus_amount") @db.Decimal(10, 2)
+  deductionAmount      Decimal    @default(0.0) @map("deduction_amount") @db.Decimal(10, 2)
+  grossPay             Decimal    @default(0.0) @map("gross_pay") @db.Decimal(10, 2)
+  netPay               Decimal    @default(0.0) @map("net_pay") @db.Decimal(10, 2)
+  status               String     @default("CALCULATED")
+
+  payrollRun           PayrollRun @relation(fields: [payrollRunId], references: [id], onDelete: Cascade)
+
+  @@unique([payrollRunId, employeeId])
+  @@index([tenantId, employeeId])
+  @@map("payroll_run_employees")
+}
+
+// ==========================================
+// Franchise Royalty & Partner Settlements
+// ==========================================
+
+model RoyaltyRule {
+  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String              @map("tenant_id") @db.Uuid
+  franchiseId     String?             @map("franchise_id") @db.Uuid
+  name            String
+  calculationType CalculationType     @default(PERCENTAGE) @map("calculation_type")
+  percentage      Decimal?            @map("percentage") @db.Decimal(5, 2)
+  fixedAmount     Decimal?            @map("fixed_amount") @db.Decimal(10, 2)
+  revenueBasis    RoyaltyRevenueBasis @default(GROSS_SALES) @map("revenue_basis")
+  effectiveFrom   DateTime            @default(now()) @map("effective_from")
+  effectiveTo     DateTime?           @map("effective_to")
+  priority        Int                 @default(100)
+  version         Int                 @default(1)
+  isActive        Boolean             @default(true) @map("is_active")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+
+  overrides       BranchRoyaltyOverride[]
+
+  @@index([tenantId, franchiseId])
+  @@map("royalty_rules")
+}
+
+model BranchRoyaltyOverride {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String          @map("tenant_id") @db.Uuid
+  branchId        String          @map("branch_id") @db.Uuid
+  royaltyRuleId   String?         @map("royalty_rule_id") @db.Uuid
+  calculationType CalculationType @default(PERCENTAGE) @map("calculation_type")
+  percentage      Decimal?        @map("percentage") @db.Decimal(5, 2)
+  fixedAmount     Decimal?        @map("fixed_amount") @db.Decimal(10, 2)
+  effectiveFrom   DateTime        @default(now()) @map("effective_from")
+  effectiveTo     DateTime?       @map("effective_to")
+  priority        Int             @default(10)
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  royaltyRule     RoyaltyRule?    @relation(fields: [royaltyRuleId], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, branchId])
+  @@index([tenantId, branchId])
+  @@map("branch_royalty_overrides")
+}
+
+model RoyaltyTransaction {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  branchId        String   @map("branch_id") @db.Uuid
+  franchiseId     String   @map("franchise_id") @db.Uuid
+  invoiceId       String   @map("invoice_id") @db.Uuid
+  saleId          String   @map("sale_id") @db.Uuid
+  ruleId          String?  @map("rule_id") @db.Uuid
+  ruleVersion     Int?     @map("rule_version")
+  eligibleRevenue Decimal  @map("eligible_revenue") @db.Decimal(12, 2)
+  royaltyAmount   Decimal  @map("royalty_amount") @db.Decimal(12, 2)
+  status          String   @default("ACCRUED") // ACCRUED, SETTLED, REVERSED
+  occurredAt      DateTime @default(now()) @map("occurred_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId, franchiseId])
+  @@index([tenantId, invoiceId])
+  @@map("royalty_transactions")
+}
+
+model FranchiseSettlement {
+  id                   String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId             String           @map("tenant_id") @db.Uuid
+  franchiseId          String           @map("franchise_id") @db.Uuid
+  periodStart          DateTime         @map("period_start") @db.Date
+  periodEnd            DateTime         @map("period_end") @db.Date
+  grossEligibleRevenue Decimal          @map("gross_eligible_revenue") @db.Decimal(14, 2)
+  royaltyAmount        Decimal          @map("royalty_amount") @db.Decimal(14, 2)
+  adjustmentAmount     Decimal          @default(0.0) @map("adjustment_amount") @db.Decimal(10, 2)
+  totalPayable         Decimal          @map("total_payable") @db.Decimal(14, 2)
+  status               SettlementStatus @default(DRAFT)
+  dueAt                DateTime?        @map("due_at")
+  paidAt               DateTime?        @map("paid_at")
+  paymentReferenceId   String?          @map("payment_reference_id")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+
+  @@index([tenantId, franchiseId])
+  @@map("franchise_settlements")
+}

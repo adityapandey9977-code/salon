@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS · Roles & Permissions PRD Walkthrough</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a162b;
+      line-height: 1.5;
+      font-size: 11px;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: #f6f0ff;
+      color: #5A2EA6;
+      border: 1px solid #e3d2ff;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2D1552;
+      margin: 0 0 6px 0;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D1552;
+      border-bottom: 1.5px solid #f0e6ff;
+      padding-bottom: 4px;
+      margin: 20px 0 10px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5A2EA6;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #4b4458;
+    }
+
+    .callout-box {
+      background: #faf7ff;
+      border-left: 4px solid #5A2EA6;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0 16px 0;
+      font-size: 11px;
+    }
+
+    .callout-box strong {
+      color: #2D1552;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px 0;
+      font-size: 10px;
+    }
+
+    th {
+      background: #f6f0ff;
+      color: #5A2EA6;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      padding: 8px 10px;
+      border: 1px solid #e9ddff;
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid #efe6ff;
+      vertical-align: top;
+      color: #332d41;
+    }
+
+    tr:nth-child(even) td {
+      background: #fdfcff;
+    }
+
+    .req-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #5A2EA6;
+      background: #f3ecff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 8.5px;
+      font-weight: 700;
+      background: #e6f9f0;
+      color: #0d8a50;
+      border: 1px solid #b3edd0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .card {
+      background: #faf8ff;
+      border: 1px solid #eee5ff;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card strong {
+      color: #2D1552;
+      display: block;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .card p {
+      font-size: 10px;
+      margin: 0;
+      color: #5c556b;
+    }
+
+    ul {
+      margin: 0 0 10px 0;
+      padding-left: 18px;
+      color: #4b4458;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header Badge -->
+  <div class="badge-pill">DIGIFLEX SALON SAAS · PRD TRACEABILITY</div>
+
+  <h1>Brand Owner / Head Office → Roles &amp; Permissions Governance Module</h1>
+  <p><strong>System Walkthrough, Architectural Specification &amp; Implementation Traceability Matrix</strong></p>
+
+  <!-- Executive Summary Box -->
+  <div class="callout-box">
+    <strong>Executive Architectural Summary:</strong>
+    The Roles &amp; Permissions section provides centralized Role-Based Access Control (RBAC) governance for the Brand
+    Owner / Head Office across 9 default system personas, custom salon roles, a 14-module × 6-permission interactive
+    matrix (View, Create, Edit, Delete, Approve, Export), active staff credential assignments across 6 network salons,
+    and maker-checker approval audit trails.
+  </div>
+
+  <h2>1. Official PRD Traceability Matrix</h2>
+  <p>Mapping all official product requirements to their concrete implementation within the codebase:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 14%;">PRD Requirement ID</th>
+        <th style="width: 22%;">Feature Name</th>
+        <th style="width: 32%;">Product Requirement Description</th>
+        <th style="width: 32%;">Implementation Details in Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="req-code">SALO-PRD-107</span></td>
+        <td><strong>Roles Master Directory</strong></td>
+        <td>System &amp; Custom role register, user counts, scope controls, and permissions count.</td>
+        <td><code>RolesListTab.tsx</code>: Filterable roles table, type switcher (System vs Custom), and quick action
+          controls.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-108</span></td>
+        <td><strong>9 Default System Personas</strong></td>
+        <td>Brand Owner, Admin, Branch Manager, Reception, Stylist, Storekeeper, Finance, Call Centre, Franchise.</td>
+        <td><code>RolesListTab.tsx</code>: 9 permanent system roles with protected deletion rules and tailored scopes.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-109</span></td>
+        <td><strong>Create / Edit Custom Role</strong></td>
+        <td>Frontend modal defining role identity, operational mandate, and organizational scope.</td>
+        <td><code>CreateEditRoleModal.tsx</code>: Portaled modal with required validation and direct matrix routing.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-110</span></td>
+        <td><strong>Role Profile Dossier</strong></td>
+        <td>Inspection modal with 4 summary KPI cards, description, module pills, and clone tool.</td>
+        <td><code>RoleDossierModal.tsx</code>: Role profile modal with 1-click duplicate action and status toggle.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-111</span></td>
+        <td><strong>Interactive Permission Matrix</strong></td>
+        <td>Core matrix: 14 Modules × 6 Permission Types (View, Create, Edit, Delete, Approve, Export).</td>
+        <td><code>PermissionMatrixTab.tsx</code>: Dynamic interactive grid with sticky columns, check toggles, and live
+          updates.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-112</span></td>
+        <td><strong>5-Tier Permission Grouping</strong></td>
+        <td>Expandable groups: Core (1), Business (5), Administration (5), Analytics (1), Configuration (2).</td>
+        <td><code>PermissionMatrixTab.tsx</code>: Collapsible headers grouping 14 modules with module count badges.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-113</span></td>
+        <td><strong>Bulk Matrix Controls</strong></td>
+        <td>Shortcuts for All View, All Create, All Edit, All Approve, All Export, and Module Select-All.</td>
+        <td><code>PermissionMatrixTab.tsx</code>: 1-click bulk toggle bar and module row mass selectors.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-114</span></td>
+        <td><strong>Safety Confirmation Dialogs</strong></td>
+        <td>Confirmation modals before granting sensitive permissions (Finance, Settings, Bulk).</td>
+        <td><code>PermissionMatrixTab.tsx</code>: Portaled security dialog detailing impact before granting sensitive
+          permissions.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-115</span></td>
+        <td><strong>Staff Role Assignments Ledger</strong></td>
+        <td>Mapping active staff credentials to system roles, employee IDs, and branch scopes.</td>
+        <td><code>RoleAssignmentsTab.tsx</code>: Filterable staff roster with Change Role and Revoke actions.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-116</span></td>
+        <td><strong>Assignment Details Dossier</strong></td>
+        <td>User profile modal with inherited permissions breakdown and branch scope boundaries.</td>
+        <td><code>AssignmentDossierModal.tsx</code>: Portaled dossier displaying contact details and inherited policy
+          rules.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-117</span></td>
+        <td><strong>Permission Change History</strong></td>
+        <td>Immutable audit log tracking role, module, previous value, new value, and author.</td>
+        <td><code>PermissionHistoryTab.tsx</code>: Audit table with before/after delta values and timestamp
+          verification.</td>
+      </tr>
+      <tr>
+        <td><span class="req-code">SALO-PRD-118</span></td>
+        <td><strong>Maker-Checker Approval Flow</strong></td>
+        <td>Approval workflow UI for sensitive permission modifications with Approve/Reject actions.</td>
+        <td><code>PermissionHistoryTab.tsx</code>: Approval state badges and Permission Delta Dossier modal.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>2. Business Rationale &amp; Why We Implemented Everything</h2>
+  <p>A detailed rationale explaining the commercial need and architectural choices for each capability:</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <strong>1. Why Centralized RBAC Matrix without Backend Enforcement?</strong>
+      <p>Brand Owners managing 97 staff across 6 salons need immediate visual clarity over who has access to customer
+        phone numbers, invoices, and discount approvals before signing off on operational policies.</p>
+    </div>
+    <div class="card">
+      <strong>2. Why 9 Default Personas &amp; Custom Role Clones?</strong>
+      <p>Standard roles (Branch Manager, Reception, Stylist) cover 90% of daily workflows, while specialized bridal
+        leads or colorist supervisors require custom elevated privileges without altering standard presets.</p>
+    </div>
+    <div class="card">
+      <strong>3. Why 5 Expandable Module Groups with Sticky Columns?</strong>
+      <p>A 14-module × 6-permission table has 84 distinct toggle cells. Grouping them by Core, Business, Admin,
+        Analytics, and Configuration prevents cognitive overload and keeps the matrix intuitive on desktop and tablet.
+      </p>
+    </div>
+    <div class="card">
+      <strong>4. Why Safety Confirmation for Sensitive Permissions?</strong>
+      <p>Accidentally granting Delete or Finance access to junior staff introduces compliance risk. Portaled security
+        confirmation prompts force deliberate executive verification.</p>
+    </div>
+    <div class="card">
+      <strong>5. Why Inherited Permissions in Staff Assignment Dossier?</strong>
+      <p>Staff members inherit permissions from their role. The assignment dossier makes it crystal clear what actions a
+        specific stylist or receptionist can perform at their assigned branch.</p>
+    </div>
+    <div class="card">
+      <strong>6. Why Maker-Checker Approval Trail for Permission Deltas?</strong>
+      <p>Enterprise ISO &amp; SOC2 standards require dual-authorization for security privilege escalations. The
+        maker-checker workflow allows branch managers to request changes and HQ CFOs to approve them.</p>
+    </div>
+  </div>
+
+  <h2>3. UI Architecture &amp; Page Navigation Flow</h2>
+  <p>The Roles &amp; Permissions module is structured under a unified responsive master container with persistent
+    sub-navigation:</p>
+
+  <ul>
+    <li><strong>Roles Directory (<code>/roles-permissions?tab=roles</code>):</strong> Master system &amp; custom roles
+      table, user counts, Create Role modal, and Role Dossier modal.</li>
+    <li><strong>Permission Matrix (<code>/roles-permissions?tab=matrix</code>):</strong> Role selector, 5 collapsible
+      module groups, 6 permission types, and bulk shortcuts.</li>
+    <li><strong>Role Assignments (<code>/roles-permissions?tab=assignments</code>):</strong> Staff credential ledger,
+      branch scope filters, Change Role modal, and Assignment Dossier.</li>
+    <li><strong>Permission History (<code>/roles-permissions?tab=history</code>):</strong> Immutable configuration
+      change log, maker-checker approval actions, and Delta Dossier.</li>
+  </ul>
+
+  <!-- Standard Footer -->
+  <div
+    style="margin-top: 24px; padding-top: 10px; border-top: 1px solid #eee5ff; display: flex; justify-content: space-between; font-size: 9px; color: #887d99;">
+    <span> Salon SaaS · Enterprise Brand Owner Panel</span>
+    <span>CONFIDENTIAL &amp; PROPRIETARY · GENERATED AUGUST 2026</span>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Call Center Panel Module Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · CALL CENTER TELEPHONY DATA DICTIONARY</span>
+    <h1>Call Center Panel Module Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 3.0.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Call Center Concierge Desk (`/call-center/*`) &nbsp;|&nbsp;
+      <strong>Key Domains:</strong> CTI Telephony Inbound Screen-Pops, Cross-Branch Booking Dispatch, Telephony Call
+      Logs & Audio Vault, Inquiries & Support Tickets, Outbound Lapsed Client Rebooking Queue
+    </div>
+
+    <div class="callout">
+      <strong>Central Telephony Dispatch Architecture:</strong> Instant CTI screen-pops matching incoming phone numbers
+      to full CRM profiles (favourite stylists, VIP wallet balance, chemical allergies) with multi-branch calendar
+      availability dispatch.
+    </div>
+
+    <h2>1. Inbound CTI Telephony & Agent Status</h2>
+    <h3>Table: <code>call_center_agents</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field / Metric</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Agent ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Agent Identifier (e.g. <code>AGT-001</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Agent Name</strong></td>
+          <td><code>agent_name</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td>Concierge Representative</td>
+        </tr>
+        <tr>
+          <td><strong>SIP Extension #</strong></td>
+          <td><code>telephony_extension</code></td>
+          <td>VARCHAR(20)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>Softphone / WebRTC Extension</td>
+        </tr>
+        <tr>
+          <td><strong>CTI Provider</strong></td>
+          <td><code>telephony_provider</code></td>
+          <td>VARCHAR(40)</td>
+          <td>DEFAULT 'Exotel'</td>
+          <td><code>Exotel</code>, <code>Twilio</code>, <code>Knowlarity</code></td>
+        </tr>
+        <tr>
+          <td><strong>Agent Real-Time Status</strong></td>
+          <td><code>agent_status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Available'</td>
+          <td><code>Available</code>, <code>On Call</code>, <code>Wrap-Up</code>, <code>Break</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Inbound Screen-Pop Caller CRM Dossier</h2>
+    <h3>Table: <code>clients</code> & <code>appointments</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Screen-Pop Element</th>
+          <th>Database Column / Query</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Caller Phone Number</strong></td>
+          <td><code>clients.mobile_phone</code></td>
+          <td>VARCHAR(20)</td>
+          <td>Inbound caller ID</td>
+        </tr>
+        <tr>
+          <td><strong>Customer Name</strong></td>
+          <td><code>first_name</code>, <code>last_name</code></td>
+          <td>VARCHAR(80)</td>
+          <td>Client Full Name</td>
+        </tr>
+        <tr>
+          <td><strong>VIP Tier Badge</strong></td>
+          <td><code>vip_tier</code></td>
+          <td>VARCHAR(30)</td>
+          <td><code>Bronze</code>, <code>Silver</code>, <code>Gold</code>, <code>Diamond VIP</code></td>
+        </tr>
+        <tr>
+          <td><strong>Prepaid Wallet Balance</strong></td>
+          <td><code>wallet_balance</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>Available advance credit (₹)</td>
+        </tr>
+        <tr>
+          <td><strong>Chemical Allergies Notes</strong></td>
+          <td><code>allergies_notes</code></td>
+          <td>TEXT</td>
+          <td>Critical contraindications (e.g. Ammonia)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Telephony Call Audio Logs & Dispositions</h2>
+    <h3>Table: <code>telephony_call_logs</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Call Log ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Call Session (e.g. <code>CALL-20260825-081</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Handling Agent</strong></td>
+          <td><code>agent_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; call_center_agents(id)</td>
+          <td>Attending Executive</td>
+        </tr>
+        <tr>
+          <td><strong>Call Start Timestamp</strong></td>
+          <td><code>call_start_time</code></td>
+          <td>TIMESTAMPTZ</td>
+          <td>NOT NULL</td>
+          <td>Call connection timestamp</td>
+        </tr>
+        <tr>
+          <td><strong>Call Duration (Secs)</strong></td>
+          <td><code>duration_seconds</code></td>
+          <td>INTEGER</td>
+          <td>NOT NULL</td>
+          <td>Conversation length</td>
+        </tr>
+        <tr>
+          <td><strong>Audio Recording URL</strong></td>
+          <td><code>recording_audio_url</code></td>
+          <td>TEXT</td>
+          <td>NULL</td>
+          <td>S3 Audio Recording Playback Link</td>
+        </tr>
+        <tr>
+          <td><strong>Call Intent Disposition</strong></td>
+          <td><code>disposition_category</code></td>
+          <td>VARCHAR(60)</td>
+          <td>NOT NULL</td>
+          <td><code>Appointment Booked</code>, <code>Reschedule</code>, <code>Inquiry</code>, <code>Complaint</code>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Resulting Booking</strong></td>
+          <td><code>resulting_appointment_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; appointments(id)</td>
+          <td>Converted Booking Link</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Customer Support Tickets & Outbound Rebooking Queue</h2>
+    <h3>Table: <code>customer_support_tickets</code> & <code>outbound_campaign_leads</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Field</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Support Ticket ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Ticket ID (e.g. <code>TCK-2026-042</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Affected Branch</strong></td>
+          <td><code>branch_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; branches(id)</td>
+          <td>Salon outlet involved</td>
+        </tr>
+        <tr>
+          <td><strong>Issue Classification</strong></td>
+          <td><code>issue_category</code></td>
+          <td>VARCHAR(60)</td>
+          <td>NOT NULL</td>
+          <td><code>Service Quality</code>, <code>Billing</code>, <code>Allergy Reaction</code></td>
+        </tr>
+        <tr>
+          <td><strong>SLA Priority</strong></td>
+          <td><code>priority_level</code></td>
+          <td>VARCHAR(20)</td>
+          <td>DEFAULT 'Medium'</td>
+          <td><code>Low</code>, <code>Medium</code>, <code>High</code>, <code>Critical</code></td>
+        </tr>
+        <tr>
+          <td><strong>Compensation Credit (₹)</strong></td>
+          <td><code>compensation_credit</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Goodwill wallet refund</td>
+        </tr>
+        <tr>
+          <td><strong>Campaign Name</strong></td>
+          <td><code>campaign_name</code></td>
+          <td>VARCHAR(120)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "Lapsed 60-Day Rebooking"</td>
+        </tr>
+        <tr>
+          <td><strong>Lead Conversion Status</strong></td>
+          <td><code>lead_status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Queued'</td>
+          <td><code>Queued</code>, <code>No Answer</code>, <code>Booked / Converted</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Central Call Center & Telephony Concierge Database Specification.
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,225 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("ORGANIZATION_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/infrastructure/prisma/generated-client"
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  PAST_DUE
+  ARCHIVED
+}
+
+enum BranchStatus {
+  ACTIVE
+  INACTIVE
+  TEMPORARILY_CLOSED
+}
+
+enum ResourceType {
+  ROOM
+  CHAIR
+  EQUIPMENT
+  OTHER
+}
+
+model OrganizationTenant {
+  id                      String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                    String?            @unique
+  slug                    String?            @unique
+  salonName               String?            @map("salon_name")
+  legalName               String             @map("legal_name")
+  tradeName               String             @map("trade_name")
+  displayName             String?            @map("display_name")
+  businessEmail           String?            @map("business_email")
+  businessPhone           String?            @map("business_phone")
+  gstin                   String?
+  pan                     String?
+  addressLine1            String?            @map("address_line1")
+  addressLine2            String?            @map("address_line2")
+  city                    String?
+  state                   String?
+  postalCode              String?            @map("postal_code")
+  country                 String             @default("IN")
+  currency                String             @default("INR")
+  timezone                String             @default("Asia/Kolkata")
+  status                  TenantStatus       @default(ACTIVE)
+  subscriptionReferenceId String?            @map("subscription_reference_id")
+  customDomain            String?            @map("custom_domain")
+  primaryColor            String?            @default("#7C3AED") @map("primary_color")
+  whiteLabelEmail         Boolean            @default(true) @map("white_label_email")
+  createdAt               DateTime           @default(now()) @map("created_at")
+  updatedAt               DateTime           @updatedAt @map("updated_at")
+
+  brands                  Brand[]
+  franchises              FranchisePartner[]
+  branches                Branch[]
+  complianceRequirements  ComplianceRequirement[]
+
+  @@index([code])
+  @@index([status])
+  @@map("organization_tenants")
+}
+
+model Brand {
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId    String             @map("tenant_id") @db.Uuid
+  name        String
+  code        String             @unique
+  logoUrl     String?            @map("logo_url")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+
+  tenant      OrganizationTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  branches    Branch[]
+
+  @@index([tenantId])
+  @@map("brands")
+}
+
+model FranchisePartner {
+  id              String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String             @map("tenant_id") @db.Uuid
+  companyName     String             @map("company_name")
+  contactPerson   String             @map("contact_person")
+  contactEmail    String             @unique @map("contact_email")
+  contactPhone    String             @map("contact_phone")
+  gstin                  String?
+  code                   String?            @map("code")
+  address                String?            @map("address")
+  territoryRegion        String?            @map("territory_region")
+  authorizedOutletsCount Int                @default(1) @map("authorized_outlets_count")
+  royaltyModel           String?            @map("royalty_model")
+  status                 String             @default("ACTIVE") @map("status")
+  agreementStart         DateTime?          @map("agreement_start")
+  agreementEnd           DateTime?          @map("agreement_end")
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
+
+  tenant                 OrganizationTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  branches               Branch[]
+
+  @@index([tenantId])
+  @@map("franchise_partners")
+}
+
+model Branch {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId          String             @map("tenant_id") @db.Uuid
+  brandId           String?            @map("brand_id") @db.Uuid
+  franchiseId       String?            @map("franchise_id") @db.Uuid
+  name              String
+  code              String             @unique
+  addressLine1      String             @map("address_line1")
+  addressLine2      String?            @map("address_line2")
+  city              String
+  state             String
+  postalCode        String             @map("postal_code")
+  phone             String
+  email             String?
+  primaryManagerEmployeeId String?   @map("primary_manager_employee_id") @db.Uuid
+  status            BranchStatus       @default(ACTIVE)
+  gstin             String?
+  pan               String?
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  tenant            OrganizationTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  brand             Brand?             @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  franchise         FranchisePartner?  @relation(fields: [franchiseId], references: [id], onDelete: SetNull)
+  resources         BranchResource[]
+  operatingHours    OperatingHours[]
+  holidays          Holiday[]
+  config            BranchConfig?
+
+  @@index([tenantId])
+  @@index([franchiseId])
+  @@map("branches")
+}
+
+model BranchResource {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId    String       @map("branch_id") @db.Uuid
+  name        String
+  code        String?
+  type        ResourceType
+  capacity    Int          @default(1)
+  description String?
+  isAvailable Boolean      @default(true) @map("is_available")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  branch      Branch       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@index([branchId])
+  @@map("branch_resources")
+}
+
+model OperatingHours {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId    String   @map("branch_id") @db.Uuid
+  dayOfWeek   Int      @map("day_of_week") // 0 = Sunday, 6 = Saturday
+  openTime    String   @map("open_time") // HH:MM
+  closeTime   String   @map("close_time") // HH:MM
+  isOpen      Boolean  @default(true) @map("is_open")
+
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, dayOfWeek])
+  @@map("operating_hours")
+}
+
+model Holiday {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId    String   @map("branch_id") @db.Uuid
+  date        DateTime @db.Date
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, date])
+  @@map("holidays")
+}
+
+model BranchConfig {
+  branchId           String   @id @map("branch_id") @db.Uuid
+  allowOnlineBooking Boolean  @default(true) @map("allow_online_booking")
+  autoConfirmBooking Boolean  @default(false) @map("auto_confirm_booking")
+  slotIntervalMin    Int      @default(15) @map("slot_interval_min")
+  bufferTimeMin      Int      @default(5) @map("buffer_time_min")
+  cancellationCutoff Int      @default(120) @map("cancellation_cutoff_min")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  branch             Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@map("branch_configs")
+}
+
+model ComplianceRequirement {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId         String             @map("tenant_id") @db.Uuid
+  code             String
+  name             String
+  category         String
+  level            String             @default("outlet") // outlet, entity, both
+  renewalFrequency String             @map("renewal_frequency")
+  validityMonths   Int                @default(12) @map("validity_months")
+  mandatory        Boolean            @default(true)
+  requiresDocument Boolean            @default(true) @map("requires_document")
+  description      String?
+  isActive         Boolean            @default(true) @map("is_active")
+  isDefault        Boolean            @default(false) @map("is_default")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+
+  tenant           OrganizationTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("compliance_requirements")
+}

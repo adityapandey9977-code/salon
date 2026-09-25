@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { TenantController } from '../controllers/tenant.controller';
+
+const router: Router = Router();
+
+router.get('/dns-info', TenantController.getDnsInfo);
+router.get('/server-ip', TenantController.getDnsInfo);
+router.get('/', TenantController.listTenants);
+router.post('/', TenantController.createTenant);
+router.get('/:id', TenantController.getTenantById);
+router.patch('/:id', TenantController.updateTenant);
+router.delete('/:id', TenantController.deleteTenant);
+router.post('/:id/reprovision-credentials', TenantController.reprovisionCredentials);
+
+export const tenantRouter: Router = router;

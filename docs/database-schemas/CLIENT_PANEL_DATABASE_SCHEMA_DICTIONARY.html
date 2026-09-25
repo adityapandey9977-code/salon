@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Salon SaaS — Client Panel Module Database Schema & UI Mapping Dictionary</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1b2e;
+      background: #fdfcff;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e7e0f2;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(90, 46, 166, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f3ebff;
+      color: #5a2ea6;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #e0d0fa;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #2d1552;
+      margin: 0 0 12px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6d5b73;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #efeaf5;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #5a2ea6;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3ebff;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #2d1552;
+      margin-top: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px 0;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #ece4f7;
+    }
+
+    th {
+      background: #f8f4ff;
+      color: #5a2ea6;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background: #faf8fc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 11px;
+      background: #f3edfc;
+      color: #5a2ea6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .callout {
+      background: #fcfaff;
+      border-left: 4px solid #5a2ea6;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #3b2647;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <span class="badge">DIGIFLEX SALON SAAS · CLIENT MOBILE & WEB APP DATA DICTIONARY</span>
+    <h1>Client Panel Module Database Schema & UI Field Mapping Dictionary</h1>
+    <div class="meta">
+      <strong>Specification Version:</strong> 3.2.0 &nbsp;|&nbsp;
+      <strong>Scope:</strong> Customer Mobile App & Self-Service Web Portal (`apps/customer-mobile` &
+      `/client-portal/*`) &nbsp;|&nbsp;
+      <strong>Key Domains:</strong> Service Discovery, Multi-Service Cart Booking, Live QR Check-In, Prepaid Wallet &
+      Package Vouchers, Downloadable Tax Invoices, 5-Star Ratings & Stylist Digital Tipping
+    </div>
+
+    <div class="callout">
+      <strong>Client Scoping Architecture:</strong> Direct authenticated customer access scoped to the client's account
+      ID (<code>WHERE client_id = :current_client_id</code>) for managing personal appointments, active package
+      vouchers, wallet balances, and treatment history.
+    </div>
+
+    <h2>1. Client Profile & Preferences</h2>
+    <h3>Table: <code>clients</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Form Field / Profile Element</th>
+          <th>Database Column Name</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Business Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Customer ID</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Client Record (e.g. <code>CLT-001</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Primary Mobile Phone</strong></td>
+          <td><code>mobile_phone</code></td>
+          <td>VARCHAR(20)</td>
+          <td>UNIQUE, NOT NULL</td>
+          <td>OTP Authentication Login Key</td>
+        </tr>
+        <tr>
+          <td><strong>Customer Name</strong></td>
+          <td><code>first_name</code>, <code>last_name</code></td>
+          <td>VARCHAR(80)</td>
+          <td>NOT NULL</td>
+          <td>Given Name & Surname</td>
+        </tr>
+        <tr>
+          <td><strong>VIP Tier Badge</strong></td>
+          <td><code>vip_tier</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Regular'</td>
+          <td><code>Bronze</code>, <code>Silver</code>, <code>Gold</code>, <code>Diamond VIP</code></td>
+        </tr>
+        <tr>
+          <td><strong>Prepaid Wallet Balance (₹)</strong></td>
+          <td><code>wallet_balance</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Account advance credit</td>
+        </tr>
+        <tr>
+          <td><strong>Chemical Allergies Notes</strong></td>
+          <td><code>allergies_notes</code></td>
+          <td>TEXT</td>
+          <td>NULL</td>
+          <td>Scalp & skin contraindications</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Service Discovery & Multi-Service Cart Booking</h2>
+    <h3>Table: <code>appointments</code> & <code>appointment_line_items</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Booking Step</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Booking Reference</strong></td>
+          <td><code>id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>PRIMARY KEY</td>
+          <td>Booking ID (e.g. <code>APT-2026-901</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Selected Salon Outlet</strong></td>
+          <td><code>branch_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; branches(id)</td>
+          <td>Target Salon Branch</td>
+        </tr>
+        <tr>
+          <td><strong>Selected Specialist</strong></td>
+          <td><code>staff_id</code></td>
+          <td>VARCHAR(64)</td>
+          <td>FK &rarr; staff_profiles(id)</td>
+          <td>Stylist or "Any Available"</td>
+        </tr>
+        <tr>
+          <td><strong>Selected Time Slot</strong></td>
+          <td><code>scheduled_start_time</code></td>
+          <td>TIMESTAMPTZ</td>
+          <td>NOT NULL</td>
+          <td>Appointment Start Slot</td>
+        </tr>
+        <tr>
+          <td><strong>Total Cart Amount (₹)</strong></td>
+          <td><code>total_estimated_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>NOT NULL</td>
+          <td>Total value of services</td>
+        </tr>
+        <tr>
+          <td><strong>Booking Status</strong></td>
+          <td><code>status</code></td>
+          <td>VARCHAR(30)</td>
+          <td>DEFAULT 'Confirmed'</td>
+          <td><code>Confirmed</code>, <code>In Service</code>, <code>Completed</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Digital Wallet, Package Vouchers & Reviews</h2>
+    <h3>Table: <code>client_package_subscriptions</code> & <code>service_reviews_ratings</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>UI Component</th>
+          <th>Database Column</th>
+          <th>Data Type</th>
+          <th>Constraints</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Package Plan Name</strong></td>
+          <td><code>packages_memberships.name</code></td>
+          <td>VARCHAR(150)</td>
+          <td>NOT NULL</td>
+          <td>e.g. "Royal Bridal Glow Package"</td>
+        </tr>
+        <tr>
+          <td><strong>Remaining Sessions</strong></td>
+          <td><code>remaining_sessions</code></td>
+          <td>INTEGER</td>
+          <td>NOT NULL</td>
+          <td>Available sessions to redeem</td>
+        </tr>
+        <tr>
+          <td><strong>Package Expiry Date</strong></td>
+          <td><code>expiry_date</code></td>
+          <td>DATE</td>
+          <td>NOT NULL</td>
+          <td>Validity deadline</td>
+        </tr>
+        <tr>
+          <td><strong>Star Rating Score</strong></td>
+          <td><code>star_rating</code></td>
+          <td>SMALLINT</td>
+          <td>1 to 5 Stars</td>
+          <td>Service experience score</td>
+        </tr>
+        <tr>
+          <td><strong>Stylist Tip Gratuity (₹)</strong></td>
+          <td><code>stylist_tip_amount</code></td>
+          <td>DECIMAL(12, 2)</td>
+          <td>DEFAULT 0.00</td>
+          <td>Digital tip paid to stylist via UPI/Card</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #efeaf5; font-size: 11px; color: #8c7a94; text-align: center;">
+      Salon SaaS &copy; 2026. Customer Mobile & Web Workspace Database Specification.
+    </div>
+  </div>
+</body>
+
+</html>
