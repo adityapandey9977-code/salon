@@ -1,5 +1,7 @@
 import crypto from 'crypto';
-import { ConflictError, NotFoundError } from '@salon-spa-saas/common-types';
+import https from 'https';
+import os from 'os';
+import { BadRequestError, ConflictError, NotFoundError } from '@salon-spa-saas/common-types';
 import type {
   CreateBranchRequest,
   CreateResourceRequest,
@@ -40,9 +42,9 @@ async function resolvePublicServerIp(req?: any): Promise<string> {
     const ip = await new Promise<string>((resolve, reject) => {
       const timeout = setTimeout(() => reject(new Error('Timeout')), 2000);
       https
-        .get('https://api.ipify.org?format=json', (res) => {
+        .get('https://api.ipify.org?format=json', (res: any) => {
           let data = '';
-          res.on('data', (chunk) => {
+          res.on('data', (chunk: any) => {
             data += chunk;
           });
           res.on('end', () => {
@@ -59,7 +61,7 @@ async function resolvePublicServerIp(req?: any): Promise<string> {
             }
           });
         })
-        .on('error', (err) => {
+        .on('error', (err: any) => {
           clearTimeout(timeout);
           reject(err);
         });

@@ -157,6 +157,8 @@ export interface FullStaffRecord {
   firstName: string;
   lastName: string;
   fullName: string;
+  displayName?: string;
+  tenantId?: string;
   role: string;
   roleCode?: string;
   branch: string;

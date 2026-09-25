@@ -62,6 +62,7 @@ export interface ApiCustomerSummary {
   lastVisitAt?: string | null;
   firstVisitAt?: string | null;
   createdAt: string;
+  notes?: string | null;
 }
 
 export const customersApi = {

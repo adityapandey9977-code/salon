@@ -175,7 +175,7 @@ export function ClientsPage() {
           lastService: serviceName,
           lastDate: logItem.date,
           hairType: cust?.notes?.includes('Hair:')
-            ? cust.notes.split('Hair:')[1].split(';')[0].trim()
+            ? cust.notes.split('Hair:')[1]?.split(';')[0]?.trim() || 'Standard / Normal Texture'
             : 'Standard / Normal Texture',
           allergy: apt.notes?.toLowerCase().includes('allerg')
             ? apt.notes
