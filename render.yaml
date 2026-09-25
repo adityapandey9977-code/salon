@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: salon-backend
+    runtime: node
+    plan: free
+    region: ohio
+    buildCommand: pnpm install --frozen-lockfile && pnpm prisma:generate
+    startCommand: node scripts/start-services.mjs
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: SERVICE_INTERNAL_SECRET
+        sync: false
+      - key: IDENTITY_DATABASE_URL
+        sync: false
+      - key: ORGANIZATION_DATABASE_URL
+        sync: false
+      - key: PEOPLE_DATABASE_URL
+        sync: false
+      - key: CUSTOMER_DATABASE_URL
+        sync: false
+      - key: BOOKING_DATABASE_URL
+        sync: false
+      - key: COMMERCE_DATABASE_URL
+        sync: false
+      - key: PAYMENT_DATABASE_URL
+        sync: false
+      - key: INVENTORY_DATABASE_URL
+        sync: false
+      - key: FINANCE_DATABASE_URL
+        sync: false
+      - key: COMMUNICATION_DATABASE_URL
+        sync: false
+      - key: PLATFORM_DATABASE_URL
+        sync: false
+      - key: REPORTING_DATABASE_URL
+        sync: false

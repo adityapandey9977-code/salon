@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "start": "node scripts/start-services.mjs",
+    "start:services": "node scripts/start-services.mjs",
     "dev": "turbo run dev --concurrency=20",
     "dev:services": "turbo run dev --concurrency=20 --filter=@salon-spa-saas/api-gateway --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
     "db:push": "turbo run db:push --concurrency=20 --filter=@salon-spa-saas/identity-service --filter=@salon-spa-saas/organization-service --filter=@salon-spa-saas/people-service --filter=@salon-spa-saas/customer-service --filter=@salon-spa-saas/booking-service --filter=@salon-spa-saas/commerce-service --filter=@salon-spa-saas/payment-service --filter=@salon-spa-saas/inventory-service --filter=@salon-spa-saas/finance-service --filter=@salon-spa-saas/communication-service --filter=@salon-spa-saas/platform-service --filter=@salon-spa-saas/reporting-service",
@@ -45,5 +47,8 @@
     "*.{js,ts,jsx,tsx,json,css}": [
       "biome check --apply"
     ]
+  },
+  "dependencies": {
+    "tsx": "^4.19.2"
   }
 }
