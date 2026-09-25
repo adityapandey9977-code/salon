@@ -1,6 +1,5 @@
 node_modules
-apps/web/dist
-apps/customer-mobile/dist
+dist
 apps/api/
 apps/customer-web/
 build
